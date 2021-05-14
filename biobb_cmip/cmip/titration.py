@@ -23,7 +23,7 @@ class Titration:
         input_pdb_path (str): Path to the input PDB file. File type: input. `Sample file <TODO>`_. Accepted formats: pdb (edam:format_1476).
         output_pdb_path (str): Path to the output PDB file. File type: output. `Sample file <TODO>`_. Accepted formats: pdb (edam:format_1476).
         output_log_path (str): Path to the output Tritration log file LOG. File type: output. Accepted formats: log (edam:format_2330).
-        input_solvent_gro_path (str) (Optional): ("$CONDA_PREFIX/share/cmip/dat/vdwprm") TODO
+        input_vdw_params_path (str) (Optional): ("$CONDA_PREFIX/share/cmip/dat/vdwprm") TODO
         input_params_path (str) (Optional): TODO
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **params** (*dict*) - ({}) CMIP options specification.
