@@ -17,7 +17,7 @@ class Titration:
     """
     | biobb_cmip Titration
     | Wrapper class for the CMIP titration module.
-    | The CMIP titration module. TODO
+    | The CMIP titration module. CMIP titration module adds water molecules, positive ions (Na+) and negative ions (Cl-) in the energetically most favorable protein locations.
 
     Args:
         input_pdb_path (str): Path to the input PDB file. File type: input. `Sample file <TODO>`_. Accepted formats: pdb (edam:format_1476).
@@ -27,6 +27,9 @@ class Titration:
         input_params_path (str) (Optional): TODO
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **params** (*dict*) - ({}) CMIP options specification.
+            * **num_wats** (*int*) - (10) Number of water molecules to be added.
+            * **num_positive_ions (*int*) - (10) Number of positive ions to be added (Tipatom IP=Na+).
+            * **num_negative_ions (*int*) - (10) Number of negative ions to be added (Tipatom IM=Cl-).
             * **titration_path** (*str*) - ("titration") Path to the CMIP Titration executable binary.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
             * **restart** (*bool*) - (False) [WF property] Do not execute if output files exist.
@@ -36,6 +39,7 @@ class Titration:
             * **container_working_dir** (*str*) - (None) Path to the internal CWD in the container.
             * **container_user_id** (*str*) - (None) User number id to be mapped inside the container.
             * **container_shell_path** (*str*) - ("/bin/bash") Path to the binary executable of the container shell.
+
 
     Examples:
         This is a use example of how to use the building block from Python::

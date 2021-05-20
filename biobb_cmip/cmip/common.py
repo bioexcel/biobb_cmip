@@ -8,7 +8,9 @@ def params_grid(grid_type: str = 'cmip', pbfocus: bool = False, perfill: float =
                 grid_int: Sequence[float] = (0.5, 0.5, 0.5), grid_dim: Sequence[float] = (64, 64, 64),
                 grid_cen: Sequence[float] = (0.0, 0.0, 0.0)) -> Dict[str, str]:
     # grid_type older readgrid equivalences:
-    #     interaction = 0 , 3
+    #     2 proteina dist minima pecentatge, 4 distancia minima prot, 5 distancia al centre de masses
+    #     1
+    #     interaction = 0 , 3 explicita grid d'entrada
     #     cmip, titration, pbsolvation = 2, >3
 
     grid_dict = {}
