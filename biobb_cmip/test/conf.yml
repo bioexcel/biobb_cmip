@@ -4,36 +4,34 @@ working_dir_path: /tmp/biobb/unitests
 
 titration:
   paths:
-    input_pdb_path: file:test_data_dir/cmip/egfr.pdb
-    output_gro_path: output_gro.gro
-    output_top_zip_path: output_top_zip.zip
-    ref_output_top_zip_path: file:test_reference_dir/cmip/ref_pdb2gmx.zip
-    ref_output_gro_path: file:test_reference_dir/cmip/ref_pdb2gmx.gro
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_pdb_path: output_pdb.pdb
+    output_log_path: output_log.log
+    ref_output_pdb_path: file:test_reference_dir/cmip/1kim_neutral.pdb
   properties:
-    his: 0 0 1 1 0 0 0
+    remove_tmp: False
+    neutral: True
 
 titration_docker:
   paths:
-    input_pdb_path: file:test_data_dir/cmip/egfr.pdb
-    output_gro_path: output_gro.gro
-    output_top_zip_path: output_top_zip.zip
-    ref_output_top_zip_path: file:test_reference_dir/cmip/ref_pdb2gmx_container.zip
-    ref_output_gro_path: file:test_reference_dir/cmip/ref_pdb2gmx.gro
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_pdb_path: output_pdb.pdb
+    output_log_path: output_log.log
+    ref_output_pdb_path: file:test_reference_dir/cmip/1kim_neutral.pdb
   properties:
-    his: 0 0 1 1 0 0 0
+    neutral: True
     container_path: docker
-    container_image: longr/cmip-docker:latest
+    container_image: quay.io/biocontainers/cmip:2.6.7--h8c3ec31_0
     container_volume_path: /inout
 
 titration_singularity:
   paths:
-    input_pdb_path: file:test_data_dir/cmip/egfr.pdb
-    output_gro_path: output_gro.gro
-    output_top_zip_path: output_top_zip.zip
-    ref_output_top_zip_path: file:test_reference_dir/cmip/ref_pdb2gmx_container.zip
-    ref_output_gro_path: file:test_reference_dir/cmip/ref_pdb2gmx.gro
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_pdb_path: output_pdb.pdb
+    output_log_path: output_log.log
+    ref_output_pdb_path: file:test_reference_dir/cmip/1kim_neutral.pdb
   properties:
-    his: 0 0 1 1 0 0 0
+    neutral: True
     container_path: singularity
     container_image: cmip.simg
     container_volume_path: /inout

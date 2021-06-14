@@ -1,7 +1,19 @@
 """ Common functions for package biobb_cmip.cmip """
 import re
 import os
+
 from typing import List, Dict, Tuple, Mapping, Union, Set, Sequence
+
+
+def get_pdb_total_charge(pdb_file_path: str):
+    # Biopython 1.9 does not capture charge of atoms in CMIP format
+    # Should do it by hand
+    total_charge = 0
+    with open(pdb_file_path) as pdb_file:
+        for line in pdb_file:
+            if line[0:6].strip().upper() in ["ATOM", "HETATM"] and len(line) > 63:
+                total_charge += float(line[55:63].strip())
+    return total_charge
 
 
 def params_grid(grid_type: str = 'cmip', pbfocus: bool = False, perfill: float = 0.8,
@@ -101,7 +113,7 @@ def write_params_file(output_params_path: str, params_dict: Mapping[str, str]) -
             if params_key in ['grid_int', 'grid_cen', 'grid_dim']:
                 output_params_file.write(f" {params_value}\n")
             else:
-                output_params_file.write(f" {params_key}{params_value}\n")
+                output_params_file.write(f" {params_key} = {params_value}\n")
         output_params_file.write(f"&end\n")
     return output_params_path
 

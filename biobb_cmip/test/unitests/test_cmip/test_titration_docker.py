@@ -1,15 +1,15 @@
 from biobb_common.tools import test_fixtures as fx
-from biobb_cmip.gromacs.editconf import editconf
+from biobb_cmip.cmip.titration import titration
 
-class TestEditconfDocker():
+class TestTitrationDocker():
     def setUp(self):
-        fx.test_setup(self, 'editconf_docker')
+        fx.test_setup(self, 'titration_docker')
 
     def tearDown(self):
         #pass
         fx.test_teardown(self)
 
-    def test_editconf_docker(self):
-        editconf(properties=self.properties, **self.paths)
-        assert fx.not_empty(self.paths['output_gro_path'])
-        assert fx.equal(self.paths['output_gro_path'], self.paths['ref_output_gro_path'])
+    def test_titration_docker(self):
+        titration(properties=self.properties, **self.paths)
+        assert fx.not_empty(self.paths['output_pdb_path'])
+        assert fx.equal(self.paths['output_pdb_path'], self.paths['ref_output_pdb_path'])

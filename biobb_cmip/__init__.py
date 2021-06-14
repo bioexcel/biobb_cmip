@@ -1,3 +1,3 @@
 name = "biobb_cmip"
-__all__ = ["cmip", "common"]
+__all__ = ["cmip"]
 
