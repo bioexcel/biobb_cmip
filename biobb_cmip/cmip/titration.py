@@ -18,14 +18,14 @@ class Titration:
     """
     | biobb_cmip Titration
     | Wrapper class for the CMIP titration module.
-    | The CMIP titration module. CMIP titration module adds water molecules, positive ions (Na+) and negative ions (Cl-) in the energetically most favorable protein locations.
+    | The CMIP titration module. CMIP titration module adds water molecules, positive ions (Na+) and negative ions (Cl-) in the energetically most favorable structure locations.
 
     Args:
-        input_pdb_path (str): Path to the input PDB file. File type: input. `Sample file <TODO>`_. Accepted formats: pdb (edam:format_1476).
-        output_pdb_path (str): Path to the output PDB file. File type: output. `Sample file <TODO>`_. Accepted formats: pdb (edam:format_1476).
+        input_pdb_path (str): Path to the input PDB file. File type: input. `Sample file <https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/1kim_h.pdb>`_. Accepted formats: pdb (edam:format_1476).
+        output_pdb_path (str): Path to the output PDB file. File type: output. `Sample file <https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/1kim_neutral.pdb>`_. Accepted formats: pdb (edam:format_1476).
         output_log_path (str): Path to the output Tritration log file LOG. File type: output. Accepted formats: log (edam:format_2330).
-        input_vdw_params_path (str) (Optional): ("$CONDA_PREFIX/share/cmip/dat/vdwprm") TODO
-        input_params_path (str) (Optional): TODO
+        input_vdw_params_path (str) (Optional): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. Accepted formats: txt (edam:format_2330).
+        input_params_path (str) (Optional): Path to the CMIP input parameters file. File type: input. Accepted formats: txt (edam:format_2330).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **params** (*dict*) - ({}) CMIP options specification.
             * **num_wats** (*int*) - (10) Number of water molecules to be added.
