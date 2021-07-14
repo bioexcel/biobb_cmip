@@ -1,21 +1,23 @@
-[![](https://readthedocs.org/projects/biobb-md/badge/?version=latest)](https://biobb-md.readthedocs.io/en/latest/?badge=latest)
+[![](https://readthedocs.org/projects/biobb-cmip/badge/?version=latest)](https://biobb-cmip.readthedocs.io/en/latest/?badge=latest)
 [![](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://anaconda.org/bioconda/biobb_cmip)
 [![](https://img.shields.io/badge/docker-Quay.io-blue)](https://quay.io/repository/biocontainers/biobb_cmip)
+
+[//]: # (Singularity-hub link still to do)
 [![](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://www.singularity-hub.org/collections/2735/usage)
 [![](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # biobb_cmip
 
 ### Introduction
-biobb_cmip is the Biobb module collection to perform molecular dynamics simulations.
+Biobb_cmip is the Biobb module collection to compute classical molecular interaction potentials.
 Biobb (BioExcel building blocks) packages are Python building blocks that
 create new layer of compatibility and interoperability over popular
 bioinformatics tools.
 The latest documentation of this package can be found in our readthedocs site:
-[latest API documentation](http://biobb-md.readthedocs.io/en/latest/).
+[latest API documentation](http://biobb-cmip.readthedocs.io/en/latest/).
 
 ### Version
-v3.5.1 2020.4
+v3.6.0 2021.2
 
 ### Installation
 Using PIP:
@@ -25,33 +27,33 @@ Using PIP:
 * Installation:
 
 
-        pip install "biobb_cmip>=3.5.1"
+        pip install "biobb_cmip>=3.6.0"
 
 
-* Usage: [Python API documentation](https://biobb-md.readthedocs.io/en/latest/modules.html)
+* Usage: [Python API documentation](https://biobb-cmip.readthedocs.io/en/latest/modules.html)
 
 Using ANACONDA:
 
 * Installation:
 
 
-        conda install -c bioconda "biobb_cmip>=3.5.1"
+        conda install -c bioconda "biobb_cmip>=3.6.0"
 
 
-* Usage: With conda installation BioBBs can be used with the [Python API documentation](https://biobb-md.readthedocs.io/en/latest/modules.html) and the [Command Line documentation](https://biobb-md.readthedocs.io/en/latest/command_line.html)
+* Usage: With conda installation BioBBs can be used with the [Python API documentation](https://biobb-cmip.readthedocs.io/en/latest/modules.html) and the [Command Line documentation](https://biobb-cmip.readthedocs.io/en/latest/command_line.html)
 
 Using DOCKER:
 
 * Installation:
 
 
-        docker pull quay.io/biocontainers/biobb_cmip:3.5.1--py_0
+        docker pull quay.io/biocontainers/biobb_cmip:3.6.0--py_0
 
 
 * Usage:
 
 
-        docker run quay.io/biocontainers/biobb_cmip:3.5.1--py_0 <command>
+        docker run quay.io/biocontainers/biobb_cmip:3.6.0--py_0 <command>
 
 
 Using SINGULARITY:
@@ -70,7 +72,7 @@ Using SINGULARITY:
         singularity exec biobb_cmip.sif <command>
 
 
-The command list and specification can be found at the [Command Line documentation](https://biobb-md.readthedocs.io/en/latest/command_line.html).
+The command list and specification can be found at the [Command Line documentation](https://biobb-cmip.readthedocs.io/en/latest/command_line.html).
 
 
 ### Copyright & Licensing
