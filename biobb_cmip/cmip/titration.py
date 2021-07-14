@@ -30,8 +30,8 @@ class Titration:
             * **params** (*dict*) - ({}) CMIP options specification.
             * **num_wats** (*int*) - (10) Number of water molecules to be added.
             * **neutral** (*bool*) - (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account.
-            * **num_positive_ions (*int*) - (10) Number of positive ions to be added (Tipatom IP=Na+).
-            * **num_negative_ions (*int*) - (10) Number of negative ions to be added (Tipatom IM=Cl-).
+            * **num_positive_ions** (*int*) - (10) Number of positive ions to be added (Tipatom IP=Na+).
+            * **num_negative_ions** (*int*) - (10) Number of negative ions to be added (Tipatom IM=Cl-).
             * **titration_path** (*str*) - ("titration") Path to the CMIP Titration executable binary.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
             * **restart** (*bool*) - (False) [WF property] Do not execute if output files exist.
@@ -56,7 +56,7 @@ class Titration:
     Info:
         * wrapped_software:
             * name: CMIP Titration
-            * version: 2.6.7
+            * version: 2.7.0
             * license: Apache-2.0
         * ontology:
             * name: EDAM

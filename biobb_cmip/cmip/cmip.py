@@ -57,7 +57,7 @@ class Cmip:
     Info:
         * wrapped_software:
             * name: CMIP cmip
-            * version: 2.6.7
+            * version: 2.7.0
             * license: Apache-2.0
         * ontology:
             * name: EDAM
@@ -76,7 +76,7 @@ class Cmip:
         # Input/Output files
         self.io_dict = {
             "in": {"input_pdb_path": input_pdb_path, "input_probe_pdb_path": input_probe_pdb_path,
-                   "input_vdw_params_path": input_vdw_params_path,"input_params_path": input_params_path},
+                   "input_vdw_params_path": input_vdw_params_path, "input_params_path": input_params_path},
             "out": {"output_pdb_path": output_pdb_path, "output_grd_path": output_grd_path,
                     "output_cube_path": output_cube_path, "output_rst_path": output_rst_path,
                     "output_byat_path": output_byat_path}
@@ -126,10 +126,11 @@ class Cmip:
                 fu.log('Restart is enabled, this step: %s will the skipped' % self.step, out_log, self.global_log)
                 return 0
 
-        # Check if output_pdb_path ends with ".pdb")
-        if self.io_dict['out']['output_pdb_path'] and not self.io_dict['out']['output_pdb_path'].endswith('.pdb'):
-            fu.log('ERROR: output_pdb_path name must end in .pdb', out_log, self.global_log)
-            raise ValueError("ERROR: output_pdb_path name must end in .pdb")
+        # Check if output_pdb_path ends with ".pdb" and does not contain underscores
+        if self.io_dict['out']['output_pdb_path']:
+            if (not self.io_dict['out']['output_pdb_path'].endswith('.pdb')) or ("_" in str(Path(self.io_dict['out']['output_pdb_path']).name)):
+                fu.log(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) name must end in .pdb and not contain underscores", out_log, self.global_log)
+                raise ValueError(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) name must end in .pdb and not contain underscores")
 
         combined_params_dir = fu.create_unique_dir()
         tmp_files.append(combined_params_dir)
@@ -147,19 +148,22 @@ class Cmip:
                '-hs', container_io_dict['in']['input_pdb_path']]
 
         if container_io_dict["in"].get("input_probe_pdb_path") and Path(
-                container_io_dict["in"].get("input_probe_pdb_path")).exists():
+                self.io_dict["in"].get("input_probe_pdb_path")).exists():
             cmd.append('-pr')
             cmd.append(container_io_dict["in"].get("input_probe_pdb_path"))
 
         if container_io_dict["out"].get("output_pdb_path"):
             cmd.append('-outpdb')
-            cmd.append(container_io_dict['out']['output_pdb_path'][:-4])
+            cmd.append(container_io_dict['out']['output_pdb_path'])
+
         if container_io_dict["out"].get("output_grd_path"):
             cmd.append('-grdout')
             cmd.append(container_io_dict["out"]["output_grd_path"])
+
         if container_io_dict["out"].get("output_cube_path"):
             cmd.append('-cube')
             cmd.append(container_io_dict["out"]["output_cube_path"])
+
         if container_io_dict["out"].get("output_rst_path"):
             cmd.append('-rst')
             cmd.append(container_io_dict["out"]["output_rst_path"])
@@ -167,8 +171,8 @@ class Cmip:
             cmd.append('-byat')
             cmd.append(container_io_dict["out"]["output_byat_path"])
 
-
-        cmd = fu.create_cmd_line(cmd, container_path=self.container_path,
+        cmd = fu.create_cmd_line(cmd,
+                                 container_path=self.container_path,
                                  host_volume=container_io_dict.get("unique_dir"),
                                  container_volume=self.container_volume_path,
                                  container_working_dir=self.container_working_dir,
@@ -178,7 +182,28 @@ class Cmip:
                                  out_log=out_log, global_log=self.global_log)
 
         returncode = cmd_wrapper.CmdWrapper(cmd, out_log, err_log, self.global_log).launch()
+
+        # CMIP removes or adds a .pdb extension from pdb output name
+        if self.io_dict['out'].get('output_pdb_path'):
+            if self.container_path:
+                container_pdb_path = str(Path(container_io_dict.get('unique_dir')).joinpath(Path(container_io_dict["out"].get("output_pdb_path")).name))
+            else:
+                container_pdb_path = self.io_dict['out'].get('output_pdb_path')
+            if Path(container_pdb_path[:-4]).exists():
+                shutil.move(container_pdb_path[:-4], container_pdb_path)
+            elif Path(container_pdb_path + ".pdb").exists():
+                shutil.move(container_pdb_path + ".pdb", container_pdb_path)
+
         fu.copy_to_host(self.container_path, container_io_dict, self.io_dict)
+
+        # Replace "ATOMTM" tag for "ATOM  "
+        output_pdb_path = self.io_dict['out'].get('output_pdb_path')
+        if output_pdb_path:
+            with open(output_pdb_path) as pdb_file:
+                list_pdb_lines = pdb_file.readlines()
+            with open(output_pdb_path, 'w') as pdb_file:
+                for line in list_pdb_lines:
+                    pdb_file.write(line.replace('ATOMTM', 'ATOM  '))
 
         tmp_files.append(container_io_dict.get("unique_dir"))
         if self.remove_tmp:

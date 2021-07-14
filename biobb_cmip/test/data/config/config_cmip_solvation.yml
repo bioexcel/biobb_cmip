@@ -1,0 +1,3 @@
+properties:
+  execution_type: mip
+  remove_tmp: true

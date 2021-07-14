@@ -1,2 +1,2 @@
 name = "cmip"
-__all__ = ["titration", "common"]
+__all__ = ["titration", "cmip"]

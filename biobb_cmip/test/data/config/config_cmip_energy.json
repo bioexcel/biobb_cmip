@@ -1,0 +1,6 @@
+{
+  "properties": {
+    "remove_tmp": true,
+    "execution_type": "mip"
+  }
+}

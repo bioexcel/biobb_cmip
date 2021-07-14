@@ -13,3 +13,11 @@ cmip.titration module
     :undoc-members:
     :show-inheritance:
 
+cmip.cmip module
+------------------------------
+
+.. automodule:: cmip.cmip
+    :members:
+    :undoc-members:
+    :show-inheritance:
+

@@ -37,10 +37,6 @@ def params_grid(grid_type: str = 'cmip', readgrid: int = 0, perfill: float = 0.8
     #     cmip, titration, pbsolvation = 2, >3
 
     grid_dict = {}
-
-    pbfocus = '0' if pbfocus else ''
-    readgrid = '0' if grid_type in ['interaction' or 'energy'] else '2'
-
     grid_dict[f"readgrid"] = f"{readgrid}"
 
     if grid_type in ['interaction', 'mip', 'energy', 'docking']:
@@ -86,7 +82,8 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'dields':  2,
             'cubeoutput': 1, 'carmip': -1, 'fvdw': 0.8
         }
-
+#TODO 'carmip': 1,
+    # wat: tipcalc: 1 + titration: 'inifoc': 2, 'cutfoc': -0.5, 'focus': 1, 'ninter': 10,
     elif execution_type == 'solvation':
         grid_dict = params_grid(grid_type='solvation', readgrid=2, perfill=0.2,
                                 grid_int=(0.5, 0.5, 0.5))

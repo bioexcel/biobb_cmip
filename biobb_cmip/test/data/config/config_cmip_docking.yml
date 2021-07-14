@@ -1,0 +1,3 @@
+properties:
+  execution_type: docking
+  remove_tmp: false

@@ -1,0 +1,9 @@
+{
+  "properties": {
+    "remove_tmp": false,
+    "execution_type": "docking",
+    "container_path": "singularity",
+    "container_image": "cmip.simg",
+    "container_volume_path": "/inout"
+  }
+}

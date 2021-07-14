@@ -1,0 +1,5 @@
+properties:
+  container_image: cmip.simg
+  container_path: singularity
+  container_volume_path: /inout
+  neutral: true

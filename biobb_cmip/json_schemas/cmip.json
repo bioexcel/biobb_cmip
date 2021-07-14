@@ -1,0 +1,269 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://bioexcel.eu/biobb_cmip/json_schemas/1.0/cmip",
+    "name": "biobb_cmip Titration",
+    "title": "Wrapper class for the CMIP cmip module.",
+    "description": "The CMIP cmip module. CMIP cmip module compute classical molecular interaction potentials.",
+    "type": "object",
+    "info": {
+        "wrapped_software": {
+            "name": "CMIP cmip",
+            "version": "2.7.0",
+            "license": "Apache-2.0"
+        },
+        "ontology": {
+            "name": "EDAM",
+            "schema": "http://edamontology.org/EDAM.owl"
+        }
+    },
+    "required": [
+        "input_pdb_path"
+    ],
+    "properties": {
+        "input_pdb_path": {
+            "type": "string",
+            "description": "Path to the input PDB file",
+            "filetype": "input",
+            "sample": "https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/1kim_h.pdb",
+            "enum": [
+                ".*\\.pdb$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.pdb$",
+                    "description": "Path to the input PDB file",
+                    "edam": "format_1476"
+                }
+            ]
+        },
+        "input_probe_pdb_path": {
+            "type": "string",
+            "description": "Path to the input probe file in PDB format",
+            "filetype": "input",
+            "sample": null,
+            "enum": [
+                ".*\\.pdb$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.pdb$",
+                    "description": "Path to the input probe file in PDB format",
+                    "edam": "format_1476"
+                }
+            ]
+        },
+        "output_pdb_path": {
+            "type": "string",
+            "description": "Path to the output PDB file",
+            "filetype": "output",
+            "sample": "https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/1kim_neutral.pdb",
+            "enum": [
+                ".*\\.pdb$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.pdb$",
+                    "description": "Path to the output PDB file",
+                    "edam": "format_1476"
+                }
+            ]
+        },
+        "output_grd_path": {
+            "type": "string",
+            "description": "Path to the output grid file in GRD format",
+            "filetype": "output",
+            "sample": null,
+            "enum": [
+                ".*\\.grd$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.grd$",
+                    "description": "Path to the output grid file in GRD format",
+                    "edam": "format_2330"
+                }
+            ]
+        },
+        "output_cube_path": {
+            "type": "string",
+            "description": "Path to the output grid file in cube format",
+            "filetype": "output",
+            "sample": null,
+            "enum": [
+                ".*\\.cube$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.cube$",
+                    "description": "Path to the output grid file in cube format",
+                    "edam": "format_2330"
+                }
+            ]
+        },
+        "output_rst_path": {
+            "type": "string",
+            "description": "Path to the output restart file",
+            "filetype": "output",
+            "sample": null,
+            "enum": [
+                ".*\\.txt$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.txt$",
+                    "description": "Path to the output restart file",
+                    "edam": "format_2330"
+                }
+            ]
+        },
+        "output_byat_path": {
+            "type": "string",
+            "description": "Path to the output atom by atom energy file",
+            "filetype": "output",
+            "sample": null,
+            "enum": [
+                ".*\\.txt$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.txt$",
+                    "description": "Path to the output atom by atom energy file",
+                    "edam": "format_2330"
+                }
+            ]
+        },
+        "input_vdw_params_path": {
+            "type": "string",
+            "description": "Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used (\"$CONDA_PREFIX/share/cmip/dat/vdwprm\")",
+            "filetype": "input",
+            "sample": null,
+            "enum": [
+                ".*\\.txt$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.txt$",
+                    "description": "Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used (\"$CONDA_PREFIX/share/cmip/dat/vdwprm\")",
+                    "edam": "format_2330"
+                }
+            ]
+        },
+        "input_params_path": {
+            "type": "string",
+            "description": "Path to the CMIP input parameters file",
+            "filetype": "input",
+            "sample": null,
+            "enum": [
+                ".*\\.txt$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.txt$",
+                    "description": "Path to the CMIP input parameters file",
+                    "edam": "format_2330"
+                }
+            ]
+        },
+        "properties": {
+            "type": "object",
+            "properties": {
+                "execution_type": {
+                    "type": "string",
+                    "default": "mip",
+                    "wf_prop": false,
+                    "description": "Default options for the params file. Each one creates a different params file. ",
+                    "enum": [
+                        "mip",
+                        "solvation",
+                        "energy",
+                        "docking",
+                        "docking_rst"
+                    ],
+                    "property_formats": [
+                        {
+                            "name": "mip",
+                            "description": "MIP O-  Mehler Solmajer dielectric"
+                        },
+                        {
+                            "name": "solvation",
+                            "description": "Solvation & MEP"
+                        },
+                        {
+                            "name": "energy",
+                            "description": "Docking Interaction energy calculation. PB electrostatics"
+                        },
+                        {
+                            "name": "docking",
+                            "description": "Docking Mehler Solmajer dielectric"
+                        },
+                        {
+                            "name": "docking_rst",
+                            "description": "Docking from restart file"
+                        }
+                    ]
+                },
+                "params": {
+                    "type": "object",
+                    "default": {},
+                    "wf_prop": false,
+                    "description": "CMIP options specification."
+                },
+                "cmip_path": {
+                    "type": "string",
+                    "default": "cmip",
+                    "wf_prop": false,
+                    "description": "Path to the CMIP cmip executable binary."
+                },
+                "remove_tmp": {
+                    "type": "boolean",
+                    "default": true,
+                    "wf_prop": true,
+                    "description": "Remove temporal files."
+                },
+                "restart": {
+                    "type": "boolean",
+                    "default": false,
+                    "wf_prop": true,
+                    "description": "Do not execute if output files exist."
+                },
+                "container_path": {
+                    "type": "string",
+                    "default": null,
+                    "wf_prop": false,
+                    "description": "Path to the binary executable of your container."
+                },
+                "container_image": {
+                    "type": "string",
+                    "default": "cmip/cmip:latest",
+                    "wf_prop": false,
+                    "description": "Container Image identifier."
+                },
+                "container_volume_path": {
+                    "type": "string",
+                    "default": "/data",
+                    "wf_prop": false,
+                    "description": "Path to an internal directory in the container."
+                },
+                "container_working_dir": {
+                    "type": "string",
+                    "default": null,
+                    "wf_prop": false,
+                    "description": "Path to the internal CWD in the container."
+                },
+                "container_user_id": {
+                    "type": "string",
+                    "default": null,
+                    "wf_prop": false,
+                    "description": "User number id to be mapped inside the container."
+                },
+                "container_shell_path": {
+                    "type": "string",
+                    "default": "/bin/bash",
+                    "wf_prop": false,
+                    "description": "Path to the binary executable of the container shell."
+                }
+            }
+        }
+    },
+    "additionalProperties": false
+}

@@ -1,0 +1,6 @@
+properties:
+  container_image: cmip.simg
+  container_path: singularity
+  container_volume_path: /inout
+  execution_type: docking
+  remove_tmp: false

@@ -21,7 +21,7 @@ titration_docker:
   properties:
     neutral: True
     container_path: docker
-    container_image: quay.io/biocontainers/cmip:2.6.7--h8c3ec31_0
+    container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
 
 titration_singularity:
@@ -36,3 +36,167 @@ titration_singularity:
     container_image: cmip.simg
     container_volume_path: /inout
 
+cmip_mip:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_grd_path: output_grd.grd
+    output_cube_path: output_cube.cube
+    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
+    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+  properties:
+    remove_tmp: True
+    execution_type: mip
+
+cmip_mip_docker:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_grd_path: output_grd.grd
+    output_cube_path: output_cube.cube
+    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
+    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+  properties:
+    remove_tmp: True
+    execution_type: mip
+    container_path: docker
+    container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
+    container_volume_path: /inout
+
+cmip_mip_singularity:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_grd_path: output_grd.grd
+    output_cube_path: output_cube.cube
+    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
+    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+  properties:
+    remove_tmp: True
+    execution_type: mip
+    container_path: singularity
+    container_image: cmip.simg
+    container_volume_path: /inout
+
+cmip_docking:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    input_probe_pdb_path: file:test_data_dir/cmip/1kim_l.pdb
+    output_pdb_path: output.pdb
+    output_grd_path: output_grd.grd
+    output_rst_path: output_rst.rst
+    ref_output_cmip_docking_pdb_path: file:test_reference_dir/cmip/cmip_docking.pdb
+    ref_output_cmip_docking_grd_path: file:test_reference_dir/cmip/cmip_docking.grd
+    ref_output_cmip_docking_rst_path: file:test_reference_dir/cmip/cmip_docking.rst
+  properties:
+    remove_tmp: False
+    execution_type: docking
+
+cmip_docking_docker:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    input_probe_pdb_path: file:test_data_dir/cmip/1kim_l.pdb
+    output_pdb_path: output.pdb
+    output_grd_path: output_grd.grd
+    output_rst_path: output_rst.rst
+    ref_output_cmip_docking_pdb_path: file:test_reference_dir/cmip/cmip_docking.pdb
+    ref_output_cmip_docking_grd_path: file:test_reference_dir/cmip/cmip_docking.grd
+    ref_output_cmip_docking_rst_path: file:test_reference_dir/cmip/cmip_docking.rst
+  properties:
+    remove_tmp: False
+    execution_type: docking
+    container_path: docker
+    container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
+    container_volume_path: /inout
+
+cmip_docking_singularity:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    input_probe_pdb_path: file:test_data_dir/cmip/1kim_l.pdb
+    output_pdb_path: output.pdb
+    output_grd_path: output_grd.grd
+    output_rst_path: output_rst.rst
+    ref_output_cmip_docking_pdb_path: file:test_reference_dir/cmip/cmip_docking.pdb
+    ref_output_cmip_docking_grd_path: file:test_reference_dir/cmip/cmip_docking.grd
+    ref_output_cmip_docking_rst_path: file:test_reference_dir/cmip/cmip_docking.rst
+  properties:
+    remove_tmp: False
+    execution_type: docking
+    container_path: singularity
+    container_image: cmip.simg
+    container_volume_path: /inout
+
+cmip_energy:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_grd_path: output_grd.grd
+    output_cube_path: output_cube.cube
+    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
+    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+  properties:
+    remove_tmp: True
+    execution_type: mip
+
+cmip_energy_docker:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_grd_path: output_grd.grd
+    output_cube_path: output_cube.cube
+    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
+    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+  properties:
+    remove_tmp: True
+    execution_type: mip
+    container_path: docker
+    container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
+    container_volume_path: /inout
+
+cmip_energy_singularity:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_grd_path: output_grd.grd
+    output_cube_path: output_cube.cube
+    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
+    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+  properties:
+    remove_tmp: True
+    execution_type: mip
+    container_path: singularity
+    container_image: cmip.simg
+    container_volume_path: /inout
+
+cmip_solvation:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_grd_path: output_grd.grd
+    output_cube_path: output_cube.cube
+    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
+    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+  properties:
+    remove_tmp: True
+    execution_type: mip
+
+cmip_solvation_docker:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_grd_path: output_grd.grd
+    output_cube_path: output_cube.cube
+    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
+    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+  properties:
+    remove_tmp: True
+    execution_type: mip
+    container_path: docker
+    container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
+    container_volume_path: /inout
+
+cmip_solvation_singularity:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
+    output_grd_path: output_grd.grd
+    output_cube_path: output_cube.cube
+    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
+    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+  properties:
+    remove_tmp: True
+    execution_type: mip
+    container_path: singularity
+    container_image: cmip.simg
+    container_volume_path: /inout

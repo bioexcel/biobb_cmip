@@ -1,0 +1,8 @@
+{
+  "properties": {
+    "neutral": true,
+    "container_path": "docker",
+    "container_image": "quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0",
+    "container_volume_path": "/inout"
+  }
+}

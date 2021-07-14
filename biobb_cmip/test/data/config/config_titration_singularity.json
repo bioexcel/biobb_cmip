@@ -1,0 +1,8 @@
+{
+  "properties": {
+    "neutral": true,
+    "container_path": "singularity",
+    "container_image": "cmip.simg",
+    "container_volume_path": "/inout"
+  }
+}
