@@ -143,7 +143,7 @@ class Titration:
             self.params['titip'] = '0'
             self.params['titim'] = '0'
             if int(round(charge)) > 0:
-                self.params['titin'] = str(int(round(charge)))
+                self.params['titim'] = str(int(round(charge)))
             elif int(round(charge)) < 0:
                 self.params['titip'] = abs(int(round(charge)))
             else:
