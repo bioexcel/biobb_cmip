@@ -1,8 +1,161 @@
 """ Common functions for package biobb_cmip.cmip """
 import re
-import os
-
+from pathlib import Path
 from typing import List, Dict, Tuple, Mapping, Union, Set, Sequence
+import pytraj as pt
+
+
+def write_cmip_pdb(input_pdb_path, output_pdb_path, charges_list, elements_list):
+    with open(input_pdb_path) as inPDB, open(output_pdb_path, 'w') as outPDB:
+        for index, line in enumerate(inPDB):
+            line = line.rstrip()
+            if not re.match('^ATOM', line) and not re.match('^HETATM', line):
+                continue
+            outPDB.write("{}{:8.4f}  {}\n".format(line[:54], charges_list[index], elements_list[index]))
+
+
+def get_topology_cmip_elements_canonical(input_topology_filename: str) -> List:
+    """
+    This function also accepts pdb files
+    Args:
+        input_topology_filename:
+
+    Returns:
+
+    """
+    topology = pt.load_topology(filename=input_topology_filename)
+
+    # Set all supported elements
+    # This is required to transform element names (returned by pytraj) to element letters
+    standard_elements = {
+        'hydrogen': 'H',
+        'carbon': 'C',
+        'oxygen': 'O',
+        'nitrogen': 'N',
+        'sulfur': 'S',
+        'sodium': 'Na',
+        'chlorine': 'Cl',
+        'zinc': 'Zn',
+        'fluorine': 'F',
+        'magnesium': 'Mg',
+        'phosphorus': 'P',
+    }
+    # Iterate over each atom to save their CMIP element
+    elements = []
+    atoms = list(topology.atoms)
+    for a, atom in enumerate(atoms):
+        residue = atom.resname
+        # Skip this atom if we already found it
+        name = atom.name
+        element = standard_elements[atom.element]
+        # Adapt hydrogens element to CMIP requirements
+        if element == 'H':
+            # There should we always only 1 bond
+            # If you have the error below you may need to updated the pytraj version or reintsall pytraj
+            # ValueError: Buffer dtype mismatch, expected 'int' but got 'long'
+            bonded_heavy_atom_index = atom.bonded_indices()[0]
+            bonded_heavy_atom = atoms[bonded_heavy_atom_index]
+            bonded_heavy_atom_element = standard_elements[bonded_heavy_atom.element]
+            # Hydrogens bonded to carbons remain as 'H'
+            if bonded_heavy_atom_element == 'C':
+                pass
+            # Hydrogens bonded to oxygen are renamed as 'HO'
+            elif bonded_heavy_atom_element == 'O':
+                element = 'HO'
+            # Hydrogens bonded to nitrogen or sulfur are renamed as 'HN'
+            elif bonded_heavy_atom_element == 'N' or bonded_heavy_atom_element == 'S':
+                element = 'HN'
+            else:
+                raise SystemExit(
+                    'ERROR: Hydrogen bonded to not supported heavy atom: ' + bonded_heavy_atom_element)
+        elements.append(element)
+    return elements
+
+
+def get_topology_charges(input_topology_filename: str) -> List:
+    """ Given a topology which includes charges
+    Extract those charges and save them in a list to be returned
+    Supported formats (tested): prmtop, top, psf
+    """
+    topology = pt.load_topology(filename=input_topology_filename)
+    # WARNING: We must convert this numpy ndarray to a normal list otherwise the search by index is extremely inefficient
+    topology_charges = list(topology.charge)
+    return topology_charges
+
+
+class Residue:
+    def __init__(self, data):
+        self.id = data[0]+':'+data[1]
+        self.atType = data[2]
+        self.charg = float(data[3])
+
+
+class ResiduesDataLib:
+    def __init__(self, fname):
+        self.RData = {}
+        with open(fname) as fh:
+            for line in fh:
+                if line[0] == '#':
+                    continue
+                data = line.split()
+                r = Residue(data)
+                self.RData[r.id]=r
+            self.nres = len(self.RData)
+
+    def getParams(self, resid, atid):
+        if resid+':'+atid in self.RData:
+            return self.RData[resid+':'+atid]
+        else:
+            print("WARNING: atom not found in library (",resid+':'+atid,')')
+            return {}
+
+
+def get_pdb_charges(input_pdb_filename: str, residue_library_path: str = None) -> List:
+    if not residue_library_path:
+        residue_library_path = str(Path(__file__).parent.joinpath("dat", "aa.lib").resolve())
+
+    aaLib = ResiduesDataLib(residue_library_path)
+    print("{} residue/atom pairs loaded from {}".format(aaLib.nres, residue_library_path))
+
+    with open(input_pdb_filename) as inPDB:
+        charges_list = []
+        for line in inPDB:
+            line = line.rstrip()
+            if not re.match('^ATOM', line) and not re.match('^HETATM', line):
+                continue
+
+            nomat = line[12:16]
+            if re.match('^[1-9]', nomat):
+                nomat = nomat[1:4] + nomat[:1]
+            nomat = nomat.replace(' ', '')
+            nomr = line[17:21].replace(' ', '')
+            parms = aaLib.getParams(nomr, nomat)
+            charges_list.append(parms.charg)
+        return charges_list
+
+
+def get_pdb_cmip_elements_canonical(input_pdb_filename: str, residue_library_path: str = None) -> List:
+    if not residue_library_path:
+        residue_library_path = str(Path(__file__).parent.joinpath("dat","aa.lib").resolve())
+
+    aaLib = ResiduesDataLib(residue_library_path)
+    print("{} residue/atom pairs loaded from {}".format(aaLib.nres, residue_library_path))
+
+    with open(input_pdb_filename) as inPDB:
+        elements_list = []
+        for line in inPDB:
+            line = line.rstrip()
+            if not re.match('^ATOM', line) and not re.match('^HETATM', line):
+                continue
+
+            nomat = line[12:16]
+            if re.match('^[1-9]', nomat):
+                nomat = nomat[1:4] + nomat[:1]
+            nomat = nomat.replace(' ', '')
+            nomr = line[17:21].replace(' ', '')
+            parms = aaLib.getParams(nomr, nomat)
+            elements_list.append(parms.atType)
+        return elements_list
 
 
 def get_pdb_total_charge(pdb_file_path: str):
