@@ -200,3 +200,11 @@ cmip_solvation_singularity:
     container_path: singularity
     container_image: cmip.simg
     container_volume_path: /inout
+
+prepare_structure:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/1aki.pdb
+    output_pdb_path: output.pdb
+    ref_output_prepare_structure_pdb_path: file:test_reference_dir/cmip/1aki.pdb
+  properties:
+    remove_tmp: True

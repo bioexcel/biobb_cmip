@@ -5,6 +5,7 @@ import os
 import argparse
 import shutil
 from pathlib import Path
+from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.configuration import settings
 from biobb_common.tools import file_utils as fu
 from biobb_common.tools.file_utils import launchlogger
@@ -106,7 +107,6 @@ class PrepareStructure(BiobbObject):
 
         ###################################
         # Remove temporal files
-        self.tmp_files.append(top_dir)
         self.remove_tmp_files()
 
         return 0

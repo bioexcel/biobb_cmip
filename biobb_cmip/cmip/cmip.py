@@ -5,16 +5,16 @@ import os
 import argparse
 import shutil
 from pathlib import Path
+from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.configuration import settings
 from biobb_common.tools import file_utils as fu
 from biobb_common.tools.file_utils import launchlogger
 from biobb_common.command_wrapper import cmd_wrapper
 from biobb_cmip.cmip.common import create_params_file
 from biobb_cmip.cmip.common import params_preset
-from biobb_cmip.cmip.common import get_pdb_total_charge
 
 
-class Cmip:
+class Cmip(BiobbObject):
     """
     | biobb_cmip Titration
     | Wrapper class for the CMIP cmip module.
@@ -71,6 +71,9 @@ class Cmip:
 
         properties = properties or {}
 
+        # Call parent class constructor
+        super().__init__(properties)
+
         self.combined_params_path = properties.get('combined_params_path', 'params')
 
         # Input/Output files
@@ -91,40 +94,16 @@ class Cmip:
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
         self.io_dict['in']['combined_params_path'] = properties.get('combined_params_path', 'params')
 
-        # container Specific
-        self.container_path = properties.get('container_path')
-        self.container_image = properties.get('container_image', 'cmip/cmip:latest')
-        self.container_volume_path = properties.get('container_volume_path', '/data')
-        self.container_working_dir = properties.get('container_working_dir')
-        self.container_user_id = properties.get('container_user_id')
-        self.container_shell_path = properties.get('container_shell_path', '/bin/bash')
-
-        # Properties common in all BB
-        self.can_write_console_log = properties.get('can_write_console_log', True)
-        self.global_log = properties.get('global_log', None)
-        self.prefix = properties.get('prefix', None)
-        self.step = properties.get('step', None)
-        self.path = properties.get('path', '')
-        self.remove_tmp = properties.get('remove_tmp', True)
-        self.restart = properties.get('restart', False)
-
         # Check the properties
-        fu.check_properties(self, properties)
+        self.check_properties(properties)
 
     @launchlogger
     def launch(self) -> int:
         """Execute the :class:`Cmip <cmip.cmip.Cmip>` object."""
         tmp_files = []
 
-        # Get local loggers from launchlogger decorator
-        out_log = getattr(self, 'out_log', None)
-        err_log = getattr(self, 'err_log', None)
-
-        # Restart if needed
-        if self.restart:
-            if fu.check_complete_files(self.io_dict["out"].values()):
-                fu.log('Restart is enabled, this step: %s will the skipped' % self.step, out_log, self.global_log)
-                return 0
+        # Setup Biobb
+        if self.check_restart(): return 0
 
         # Check if output_pdb_path ends with ".pdb" and does not contain underscores
         if self.io_dict['out']['output_pdb_path']:
@@ -133,68 +112,62 @@ class Cmip:
                 raise ValueError(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) name must end in .pdb and not contain underscores")
 
         combined_params_dir = fu.create_unique_dir()
-        tmp_files.append(combined_params_dir)
         self.io_dict['in']['combined_params_path'] = create_params_file(
             output_params_path=str(Path(combined_params_dir).joinpath(self.io_dict['in']['combined_params_path'])),
-            input_params_path=self.io_dict['in']['input_params_path'],
+            input_params_path=self.io_dict['in'].get('input_params_path'),
             params_preset_dict=params_preset(execution_type=self.execution_type),
             params_properties_dict=self.params)
 
-        container_io_dict = fu.copy_to_container(self.container_path, self.container_volume_path, self.io_dict)
+        self.stage_files()
 
-        cmd = [self.cmip_path,
-               '-i', container_io_dict['in']['combined_params_path'],
-               '-vdw', container_io_dict['in']['input_vdw_params_path'],
-               '-hs', container_io_dict['in']['input_pdb_path']]
 
-        if container_io_dict["in"].get("input_probe_pdb_path") and Path(
+        self.cmd = [self.cmip_path,
+               '-i', self.stage_io_dict['in']['combined_params_path'],
+               '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
+               '-hs', self.stage_io_dict['in']['input_pdb_path']]
+
+        if self.stage_io_dict["in"].get("input_probe_pdb_path") and Path(
                 self.io_dict["in"].get("input_probe_pdb_path")).exists():
-            cmd.append('-pr')
-            cmd.append(container_io_dict["in"].get("input_probe_pdb_path"))
+            self.cmd.append('-pr')
+            self.cmd.append(self.stage_io_dict["in"].get("input_probe_pdb_path"))
 
-        if container_io_dict["out"].get("output_pdb_path"):
-            cmd.append('-outpdb')
-            cmd.append(container_io_dict['out']['output_pdb_path'])
+        if self.stage_io_dict["out"].get("output_pdb_path"):
+            self.cmd.append('-outpdb')
+            self.cmd.append(self.stage_io_dict['out']['output_pdb_path'])
 
-        if container_io_dict["out"].get("output_grd_path"):
-            cmd.append('-grdout')
-            cmd.append(container_io_dict["out"]["output_grd_path"])
+        if self.stage_io_dict["out"].get("output_grd_path"):
+            self.cmd.append('-grdout')
+            self.cmd.append(self.stage_io_dict["out"]["output_grd_path"])
 
-        if container_io_dict["out"].get("output_cube_path"):
-            cmd.append('-cube')
-            cmd.append(container_io_dict["out"]["output_cube_path"])
+        if self.stage_io_dict["out"].get("output_cube_path"):
+            self.cmd.append('-cube')
+            self.cmd.append(self.stage_io_dict["out"]["output_cube_path"])
 
-        if container_io_dict["out"].get("output_rst_path"):
-            cmd.append('-rst')
-            cmd.append(container_io_dict["out"]["output_rst_path"])
-        if container_io_dict["out"].get("output_byat_path"):
-            cmd.append('-byat')
-            cmd.append(container_io_dict["out"]["output_byat_path"])
+        if self.stage_io_dict["out"].get("output_rst_path"):
+            self.cmd.append('-rst')
+            self.cmd.append(self.stage_io_dict["out"]["output_rst_path"])
+        if self.stage_io_dict["out"].get("output_byat_path"):
+            self.cmd.append('-byat')
+            self.cmd.append(self.stage_io_dict["out"]["output_byat_path"])
 
-        cmd = fu.create_cmd_line(cmd,
-                                 container_path=self.container_path,
-                                 host_volume=container_io_dict.get("unique_dir"),
-                                 container_volume=self.container_volume_path,
-                                 container_working_dir=self.container_working_dir,
-                                 container_user_uid=self.container_user_id,
-                                 container_shell_path=self.container_shell_path,
-                                 container_image=self.container_image,
-                                 out_log=out_log, global_log=self.global_log)
 
-        returncode = cmd_wrapper.CmdWrapper(cmd, out_log, err_log, self.global_log).launch()
+        # Run Biobb block
+        self.run_biobb()
+
+        # Copy files to host
+        self.copy_to_host()
 
         # CMIP removes or adds a .pdb extension from pdb output name
         if self.io_dict['out'].get('output_pdb_path'):
+            output_pdb_path = self.io_dict['out'].get('output_pdb_path')
             if self.container_path:
-                container_pdb_path = str(Path(container_io_dict.get('unique_dir')).joinpath(Path(container_io_dict["out"].get("output_pdb_path")).name))
-            else:
-                container_pdb_path = self.io_dict['out'].get('output_pdb_path')
-            if Path(container_pdb_path[:-4]).exists():
-                shutil.move(container_pdb_path[:-4], container_pdb_path)
-            elif Path(container_pdb_path + ".pdb").exists():
-                shutil.move(container_pdb_path + ".pdb", container_pdb_path)
+                output_pdb_path = str(Path(self.stage_io_dict["unique_dir"]).joinpath(Path(self.io_dict['out'].get('output_pdb_path')).name))
 
-        fu.copy_to_host(self.container_path, container_io_dict, self.io_dict)
+            if Path(output_pdb_path[:-4]).exists():
+                shutil.move(output_pdb_path[:-4], self.io_dict['out'].get('output_pdb_path'))
+            elif Path(output_pdb_path + ".pdb").exists():
+                shutil.move(output_pdb_path + ".pdb", self.io_dict['out'].get('output_pdb_path'))
+
 
         # Replace "ATOMTM" tag for "ATOM  "
         output_pdb_path = self.io_dict['out'].get('output_pdb_path')
@@ -205,11 +178,13 @@ class Cmip:
                 for line in list_pdb_lines:
                     pdb_file.write(line.replace('ATOMTM', 'ATOM  '))
 
-        tmp_files.append(container_io_dict.get("unique_dir"))
-        if self.remove_tmp:
-            fu.rm_file_list(tmp_files, out_log=out_log)
 
-        return returncode
+
+        # Remove temporal files
+        self.tmp_files.extend([combined_params_dir])
+        self.remove_tmp_files()
+
+        return self.return_code
 
 
 def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,

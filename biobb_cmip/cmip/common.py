@@ -7,12 +7,13 @@ import pytraj as pt
 
 def write_cmip_pdb(input_pdb_path, output_pdb_path, charges_list, elements_list):
     with open(input_pdb_path) as inPDB, open(output_pdb_path, 'w') as outPDB:
-        for index, line in enumerate(inPDB):
+        index = 0
+        for line in inPDB:
             line = line.rstrip()
             if not re.match('^ATOM', line) and not re.match('^HETATM', line):
                 continue
             outPDB.write("{}{:8.4f}  {}\n".format(line[:54], charges_list[index], elements_list[index]))
-
+            index += 1
 
 def get_topology_cmip_elements_canonical(input_topology_filename: str) -> List:
     """
@@ -119,6 +120,7 @@ def get_pdb_charges(input_pdb_filename: str, residue_library_path: str = None) -
 
     with open(input_pdb_filename) as inPDB:
         charges_list = []
+        residue_num = None
         for line in inPDB:
             line = line.rstrip()
             if not re.match('^ATOM', line) and not re.match('^HETATM', line):
@@ -129,7 +131,20 @@ def get_pdb_charges(input_pdb_filename: str, residue_library_path: str = None) -
                 nomat = nomat[1:4] + nomat[:1]
             nomat = nomat.replace(' ', '')
             nomr = line[17:21].replace(' ', '')
+            # WARNING: Temporal totally uninformed assumption by PA
+            if nomr == "HIS":
+                nomr = "HID"
+                if residue_num != line[23:27]:
+                    print(f"WARNING replacing HIS:{line[23:27]} by HID")
+                    residue_num = line[23:27]
+            # Thats not correct REVIEW this should be done for all the atoms in the residue
+            # not just the oxigen
+            if nomat == "OXT":
+                nomr = nomr + "C"
+                print(f"WARNING replacing {nomr[:-1]}:{line[23:27]} by {nomr}")
+            ######################################################
             parms = aaLib.getParams(nomr, nomat)
+            print(parms.__dict__)
             charges_list.append(parms.charg)
         return charges_list
 
@@ -143,6 +158,7 @@ def get_pdb_cmip_elements_canonical(input_pdb_filename: str, residue_library_pat
 
     with open(input_pdb_filename) as inPDB:
         elements_list = []
+        residue_num = None
         for line in inPDB:
             line = line.rstrip()
             if not re.match('^ATOM', line) and not re.match('^HETATM', line):
@@ -153,6 +169,18 @@ def get_pdb_cmip_elements_canonical(input_pdb_filename: str, residue_library_pat
                 nomat = nomat[1:4] + nomat[:1]
             nomat = nomat.replace(' ', '')
             nomr = line[17:21].replace(' ', '')
+            # WARNING: Temporal totally uninformed assumption by PA
+            if nomr == "HIS":
+                nomr = "HID"
+                if residue_num != line[23:27]:
+                    print(f"WARNING replacing HIS:{line[23:27]} by HID")
+                    residue_num = line[23:27]
+            # Thats not correct REVIEW this should be done for all the atoms in the residue
+            # not just the oxigen
+            if nomat == "OXT":
+                nomr = nomr + "C"
+                print(f"WARNING replacing {nomr[:-1]}:{line[23:27]} by {nomr}")
+            ######################################################
             parms = aaLib.getParams(nomr, nomat)
             elements_list.append(parms.atType)
         return elements_list

@@ -5,6 +5,7 @@ import os
 import argparse
 import shutil
 from pathlib import Path
+from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.configuration import settings
 from biobb_common.tools import file_utils as fu
 from biobb_common.tools.file_utils import launchlogger
@@ -14,7 +15,7 @@ from biobb_cmip.cmip.common import params_preset
 from biobb_cmip.cmip.common import get_pdb_total_charge
 
 
-class Titration:
+class Titration(BiobbObject):
     """
     | biobb_cmip Titration
     | Wrapper class for the CMIP titration module.
@@ -66,8 +67,10 @@ class Titration:
     def __init__(self, input_pdb_path: str, output_pdb_path: str, output_log_path: str,
                  input_vdw_params_path: str = None, input_params_path: str = None,
                  properties: dict = None, **kwargs) -> None:
-
         properties = properties or {}
+
+        # Call parent class constructor
+        super().__init__(properties)
 
         # Input/Output files
         self.io_dict = {
@@ -87,50 +90,21 @@ class Titration:
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
         self.params = {k: str(v) for k, v in properties.get('params', dict()).items()}
 
-        # container Specific
-        self.container_path = properties.get('container_path')
-        self.container_image = properties.get('container_image', 'cmip/cmip:latest')
-        self.container_volume_path = properties.get('container_volume_path', '/data')
-        self.container_working_dir = properties.get('container_working_dir')
-        self.container_user_id = properties.get('container_user_id')
-        self.container_shell_path = properties.get('container_shell_path', '/bin/bash')
-
-        # Properties common in all BB
-        self.can_write_console_log = properties.get('can_write_console_log', True)
-        self.global_log = properties.get('global_log', None)
-        self.prefix = properties.get('prefix', None)
-        self.step = properties.get('step', None)
-        self.path = properties.get('path', '')
-        self.remove_tmp = properties.get('remove_tmp', True)
-        self.restart = properties.get('restart', False)
-
         # Check the properties
-        fu.check_properties(self, properties)
+        self.check_properties(properties)
 
     @launchlogger
     def launch(self) -> int:
         """Execute the :class:`Titration <cmip.titration.Titration>` object."""
-        tmp_files = []
+        # Setup Biobb
+        if self.check_restart(): return 0
 
-        # Get local loggers from launchlogger decorator
-        out_log = getattr(self, 'out_log', None)
-        err_log = getattr(self, 'err_log', None)
-
-        # Restart if needed
-        if self.restart:
-            if fu.check_complete_files(self.io_dict["out"].values()):
-                fu.log('Restart is enabled, this step: %s will the skipped' % self.step, out_log, self.global_log)
-                return 0
 
         # Check if output_pdb_path ends with ".pdb"
         if not self.io_dict['out']['output_pdb_path'].endswith('.pdb'):
-            fu.log('ERROR: output_pdb_path name must end in .pdb', out_log, self.global_log)
+            fu.log('ERROR: output_pdb_path name must end in .pdb', self.out_log, self.global_log)
             raise ValueError("ERROR: output_pdb_path name must end in .pdb")
 
-        container_io_dict = fu.copy_to_container(self.container_path, self.container_volume_path, self.io_dict)
-
-        params_dir = fu.create_unique_dir()
-        tmp_files.append(params_dir)
         # Adding neutral, num_negative_ions, num_positive_ions, num_wats
         if self.num_wats:
             self.params['titwat'] = str(self.num_wats)
@@ -148,48 +122,40 @@ class Titration:
                 self.params['titip'] = abs(int(round(charge)))
             else:
                 fu.log(f'Neutral flag activated however no positive or negative ions will be added because the system '
-                       f'is already neutralized. System charge: {round(charge, 3)}', out_log, self.global_log)
+                       f'is already neutralized. System charge: {round(charge, 3)}', self.out_log, self.global_log)
             fu.log(f'Neutral flag activated. Current system charge: {round(charge, 3)}, '
                    f'positive ions to be added: {self.params["titip"]}, '
                    f'negative ions to be added: {self.params["titim"]}, '
                    f'final residual charge: {round(charge + int(self.params["titip"]) - int(self.params["titim"]), 3)}',
-                   out_log, self.global_log)
+                   self.out_log, self.global_log)
 
-        self.output_params_path = create_params_file(
-            output_params_path=str(Path(params_dir).joinpath(self.output_params_path)),
+        combined_params_dir = fu.create_unique_dir()
+        self.io_dict['in']['combined_params_path'] = create_params_file(
+            output_params_path=str(Path(combined_params_dir).joinpath(self.output_params_path)),
             input_params_path=self.io_dict['in']['input_params_path'],
             params_preset_dict=params_preset(execution_type='titration'),
             params_properties_dict=self.params)
 
-        if self.container_path:
-            fu.log('Container execution enabled', out_log)
-            shutil.copy2(self.output_params_path, container_io_dict.get("unique_dir"))
-            self.output_params_path = str(Path(self.container_volume_path).joinpath(Path(self.output_params_path).name))
+        self.stage_files()
 
-        cmd = [self.titration_path,
-               '-i', self.output_params_path,
-               '-vdw', container_io_dict['in']['input_vdw_params_path'],
-               '-hs', container_io_dict['in']['input_pdb_path'],
-               '-outpdb', container_io_dict['out']['output_pdb_path'][:-4],
-               '-l', container_io_dict['out']['output_log_path']]
+        self.cmd = [self.titration_path,
+                    '-i', self.stage_io_dict['in']['combined_params_path'],
+                    '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
+                    '-hs', self.stage_io_dict['in']['input_pdb_path'],
+                    '-outpdb', self.stage_io_dict['out']['output_pdb_path'][:-4],
+                    '-l', self.stage_io_dict['out']['output_log_path']]
 
-        cmd = fu.create_cmd_line(cmd, container_path=self.container_path,
-                                 host_volume=container_io_dict.get("unique_dir"),
-                                 container_volume=self.container_volume_path,
-                                 container_working_dir=self.container_working_dir,
-                                 container_user_uid=self.container_user_id,
-                                 container_shell_path=self.container_shell_path,
-                                 container_image=self.container_image,
-                                 out_log=out_log, global_log=self.global_log)
+        # Run Biobb block
+        self.run_biobb()
 
-        returncode = cmd_wrapper.CmdWrapper(cmd, out_log, err_log, self.global_log).launch()
-        fu.copy_to_host(self.container_path, container_io_dict, self.io_dict)
+        # Copy files to host
+        self.copy_to_host()
 
-        tmp_files.append(container_io_dict.get("unique_dir"))
-        if self.remove_tmp:
-            fu.rm_file_list(tmp_files, out_log=out_log)
+        # Remove temporal files
+        self.tmp_files.extend([combined_params_dir])
+        self.remove_tmp_files()
 
-        return returncode
+        return self.return_code
 
 
 def titration(input_pdb_path: str, output_pdb_path: str, output_log_path: str,
