@@ -6,7 +6,7 @@
     "conda": "https://anaconda.org/bioconda/biobb_cmip",
     "docker": "https://quay.io/biocontainers/biobb_cmip:3.6.0--pyhdfd78af_0",
     "singularity": "https://www.singularity-hub.org/collections/",
-    "version": "3.7.0",
+    "version": "3.7.1",
     "tools" : [
         {
             "block" : "Cmip",

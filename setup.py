@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="biobb_cmip",
-    version="3.7.0",
+    version="3.7.1",
     author="Biobb developers",
     author_email="pau.andrio@bsc.es",
     description="biobb_cmip is the Biobb module collection to compute classical molecular interaction potentials.",
@@ -18,13 +18,21 @@ setuptools.setup(
         "Bioexcel": "https://bioexcel.eu/"
     },
     packages=setuptools.find_packages(exclude=['docs', 'test']),
+    include_package_data=True,
     install_requires=['biobb_common==3.7.0'],
     python_requires='==3.7.*',
-    classifiers=(
+    entry_points={
+        "console_scripts": [
+            "cmip = biobb_cmip.cmip.cmip:main",
+            "titration = biobb_cmip.cmip.titration:main",
+            "prepare_structure = biobb_cmip.cmip.prepare_structure:main"
+        ]
+    },
+    classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX",
-    ),
+    ],
 )
