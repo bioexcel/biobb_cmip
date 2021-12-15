@@ -204,7 +204,16 @@ cmip_solvation_singularity:
 prepare_structure:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1aki.pdb
-    output_pdb_path: output.pdb
-    ref_output_prepare_structure_pdb_path: file:test_reference_dir/cmip/1aki.pdb
+    output_pdb_path: prepare_structure_output.pdb
+    ref_output_prepare_structure_pdb_path: file:test_reference_dir/cmip/1aki_cmip.pdb
+  properties:
+    remove_tmp: True
+
+prepare_structure_topology:
+  paths:
+    input_pdb_path: file:test_data_dir/cmip/egfr.pdb
+    input_topology_path: file:test_data_dir/cmip/egfr_topology.zip
+    output_pdb_path: prepare_structure_topology_output.pdb
+    ref_output_prepare_structure_topology_path: file:test_reference_dir/cmip/egfr_cmip.pdb
   properties:
     remove_tmp: True

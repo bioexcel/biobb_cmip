@@ -144,7 +144,6 @@ def get_pdb_charges(input_pdb_filename: str, residue_library_path: str = None) -
                 print(f"WARNING replacing {nomr[:-1]}:{line[23:27]} by {nomr}")
             ######################################################
             parms = aaLib.getParams(nomr, nomat)
-            print(parms.__dict__)
             charges_list.append(parms.charg)
         return charges_list
 

@@ -14,3 +14,17 @@ class TestPrepareStructure():
         prepare_structure(properties=self.properties, **self.paths)
         assert fx.not_empty(self.paths['output_pdb_path'])
         assert fx.equal(self.paths['output_pdb_path'], self.paths['ref_output_prepare_structure_pdb_path'], remove_hetatm=False)
+
+
+class TestPrepareStructureTopology():
+    def setUp(self):
+        fx.test_setup(self, 'prepare_structure_topology')
+
+    def tearDown(self):
+        pass
+        #fx.test_teardown(self)
+
+    def test_cmip_docking(self):
+        prepare_structure(properties=self.properties, **self.paths)
+        assert fx.not_empty(self.paths['output_pdb_path'])
+        assert fx.equal(self.paths['output_pdb_path'], self.paths['ref_output_prepare_structure_topology_path'], remove_hetatm=False)

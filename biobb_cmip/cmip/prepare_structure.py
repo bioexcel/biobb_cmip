@@ -89,7 +89,7 @@ class PrepareStructure(BiobbObject):
             top_file = self.io_dict['in']['input_topology_path']
             if self.io_dict['in']['input_topology_path'].lower().endswith(".zip"):
                 # Unzip topology to topology_out
-                top_file = fu.unzip_top(zip_file=self.input_top_zip_path, out_log=self.out_log)
+                top_file = fu.unzip_top(zip_file=self.io_dict['in']['input_topology_path'], out_log=self.out_log)
                 top_dir = str(Path(top_file).parent)
 
             charges_list = get_topology_charges(top_file)
