@@ -6,7 +6,7 @@
     "conda": "https://anaconda.org/bioconda/biobb_cmip",
     "docker": "https://quay.io/biocontainers/biobb_cmip:3.6.0--pyhdfd78af_0",
     "singularity": "https://www.singularity-hub.org/collections/",
-    "version": "3.6.0",
+    "version": "3.7.0",
     "tools" : [
         {
             "block" : "Cmip",
@@ -18,18 +18,25 @@
         {
             "block" : "Titration",
             "tool" : "CMIP titration",
-            "desc" : "Creates a GROMACS structure file (GRO) adding the information of the solvent box to the input structure file.",
+            "desc" : "CMIP cmip module compute classical molecular interaction potentials.",
             "exec" : "titration",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-titration.titration"
+        },
+        {
+            "block" : "PrepareStructure",
+            "tool" : "Prepare Structure",
+            "desc" : "Creates a CMIP suitable PDB from an standar PDB file",
+            "exec" : "prepare_structure",
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-prepare_structure.prepare_structure"
         }
     ],
     "dep_pypi" : [
-        "install_requires=['biobb_common==3.6.0']",
+        "install_requires=['biobb_common==3.7.0']",
         "python_requires='==3.7.*'"
     ],
     "dep_conda" : [
         "python ==3.7.*",
-        "biobb_common ==3.6.0",
+        "biobb_common ==3.7.0",
         "cmip ==2.7.0"
     ],
     "keywords" : [

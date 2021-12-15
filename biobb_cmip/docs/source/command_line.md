@@ -6,6 +6,58 @@ biobb_command [-h] --config CONFIG --input_file(s) <input_file(s)> --output_file
 -----------------
 
 
+## Prepare_structure
+Generate a CMIP suitable PDB input.
+### Get help
+Command:
+```python
+prepare_structure -h
+```
+    /bin/sh: prepare_structure: command not found
+### I / O Arguments
+Syntax: input_argument (datatype) : Definition
+
+Config input / output arguments for this building block:
+* **input_pdb_path** (*string*): Path to the input PDB file. File type: input. [Sample file](TODO). Accepted formats: PDB
+* **input_topology_path** (*string*): Path to the input topology path. File type: input. [Sample file](TODO). Accepted formats: ZIP, TOP, PSF, PRMTOP
+* **output_pdb_path** (*string*): Path to the output PDB file. File type: output. [Sample file](TODO). Accepted formats: PDB
+### Config
+Syntax: input_parameter (datatype) - (default_value) Definition
+
+Config parameters for this building block:
+* **remove_tmp** (*boolean*): (True) Remove temporal files..
+* **restart** (*boolean*): (False) Do not execute if output files exist..
+* **container_path** (*string*): (None) Path to the binary executable of your container..
+* **container_image** (*string*): (cmip/cmip:latest) Container Image identifier..
+* **container_volume_path** (*string*): (/data) Path to an internal directory in the container..
+* **container_working_dir** (*string*): (None) Path to the internal CWD in the container..
+* **container_user_id** (*string*): (None) User number id to be mapped inside the container..
+* **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
+### YAML
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_prepare_structure.yml)
+```python
+properties:
+  remove_tmp: true
+
+```
+#### Command line
+```python
+prepare_structure --config config_prepare_structure.yml --input_pdb_path TODO --input_topology_path TODO --output_pdb_path TODO
+```
+### JSON
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_prepare_structure.json)
+```python
+{
+  "properties": {
+    "remove_tmp": true
+  }
+}
+```
+#### Command line
+```python
+prepare_structure --config config_prepare_structure.json --input_pdb_path TODO --input_topology_path TODO --output_pdb_path TODO
+```
+
 ## Titration
 Wrapper class for the CMIP titration module.
 ### Get help

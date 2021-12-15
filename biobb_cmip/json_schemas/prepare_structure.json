@@ -1,0 +1,145 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://bioexcel.eu/biobb_cmip/json_schemas/1.0/prepare_structure",
+    "name": "biobb_cmip PrepareStructure",
+    "title": "Generate a CMIP suitable PDB input.",
+    "description": "Generate a CMIP suitable PDB input from a common PDB file or a Topology + PDB file.",
+    "type": "object",
+    "info": {
+        "wrapped_software": {
+            "name": "CMIP cmip",
+            "version": "2.7.0",
+            "license": "Apache-2.0"
+        },
+        "ontology": {
+            "name": "EDAM",
+            "schema": "http://edamontology.org/EDAM.owl"
+        }
+    },
+    "required": [
+        "input_pdb_path",
+        "output_pdb_path"
+    ],
+    "properties": {
+        "input_pdb_path": {
+            "type": "string",
+            "description": "Path to the input PDB file",
+            "filetype": "input",
+            "sample": "TODO",
+            "enum": [
+                ".*\\.pdb$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.pdb$",
+                    "description": "Path to the input PDB file",
+                    "edam": "format_1476"
+                }
+            ]
+        },
+        "input_topology_path": {
+            "type": "string",
+            "description": "Path to the input topology path",
+            "filetype": "input",
+            "sample": "TODO",
+            "enum": [
+                ".*\\.zip$",
+                ".*\\.top$",
+                ".*\\.psf$",
+                ".*\\.prmtop$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.zip$",
+                    "description": "Path to the input topology path",
+                    "edam": "format_3987"
+                },
+                {
+                    "extension": ".*\\.top$",
+                    "description": "Path to the input topology path",
+                    "edam": "format_3880"
+                },
+                {
+                    "extension": ".*\\.psf$",
+                    "description": "Path to the input topology path",
+                    "edam": "format_3882"
+                },
+                {
+                    "extension": ".*\\.prmtop$",
+                    "description": "Path to the input topology path",
+                    "edam": "format_3881"
+                }
+            ]
+        },
+        "output_pdb_path": {
+            "type": "string",
+            "description": "Path to the output PDB file",
+            "filetype": "output",
+            "sample": "TODO",
+            "enum": [
+                ".*\\.pdb$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.pdb$",
+                    "description": "Path to the output PDB file",
+                    "edam": "format_1476"
+                }
+            ]
+        },
+        "properties": {
+            "type": "object",
+            "properties": {
+                "remove_tmp": {
+                    "type": "boolean",
+                    "default": true,
+                    "wf_prop": true,
+                    "description": "Remove temporal files."
+                },
+                "restart": {
+                    "type": "boolean",
+                    "default": false,
+                    "wf_prop": true,
+                    "description": "Do not execute if output files exist."
+                },
+                "container_path": {
+                    "type": "string",
+                    "default": null,
+                    "wf_prop": false,
+                    "description": "Path to the binary executable of your container."
+                },
+                "container_image": {
+                    "type": "string",
+                    "default": "cmip/cmip:latest",
+                    "wf_prop": false,
+                    "description": "Container Image identifier."
+                },
+                "container_volume_path": {
+                    "type": "string",
+                    "default": "/data",
+                    "wf_prop": false,
+                    "description": "Path to an internal directory in the container."
+                },
+                "container_working_dir": {
+                    "type": "string",
+                    "default": null,
+                    "wf_prop": false,
+                    "description": "Path to the internal CWD in the container."
+                },
+                "container_user_id": {
+                    "type": "string",
+                    "default": null,
+                    "wf_prop": false,
+                    "description": "User number id to be mapped inside the container."
+                },
+                "container_shell_path": {
+                    "type": "string",
+                    "default": "/bin/bash",
+                    "wf_prop": false,
+                    "description": "Path to the binary executable of the container shell."
+                }
+            }
+        }
+    },
+    "additionalProperties": false
+}
