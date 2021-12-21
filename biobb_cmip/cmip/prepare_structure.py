@@ -111,6 +111,7 @@ class PrepareStructure(BiobbObject):
 
         return 0
 
+
 def prepare_structure(input_pdb_path: str, output_pdb_path: str, input_topology_path: str = None,
                       properties: dict = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.PrepareStructure>` class and

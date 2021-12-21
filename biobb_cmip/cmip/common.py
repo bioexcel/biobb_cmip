@@ -1,8 +1,22 @@
 """ Common functions for package biobb_cmip.cmip """
 import re
 from pathlib import Path
-from typing import List, Dict, Tuple, Mapping, Union, Set, Sequence
-import pytraj as pt
+from typing import List, Dict, Mapping, Union, Set, Sequence
+import MDAnalysis as mda
+from MDAnalysis.topology.guessers import guess_atom_element
+import uuid
+
+
+def create_unique_file_path(parent_dir: Union[str, Path] = None, extension: str = None) -> str:
+    if not parent_dir:
+        parent_dir = Path.cwd
+    if not extension:
+        extension = ''
+    while True:
+        name = str(uuid.uuid4())+extension
+        file_path = Path.joinpath(Path(parent_dir).resolve(), name)
+        if not file_path.exists():
+            return str(file_path)
 
 
 def write_cmip_pdb(input_pdb_path, output_pdb_path, charges_list, elements_list):
@@ -15,6 +29,7 @@ def write_cmip_pdb(input_pdb_path, output_pdb_path, charges_list, elements_list)
             outPDB.write("{}{:8.4f}  {}\n".format(line[:54], charges_list[index], elements_list[index]))
             index += 1
 
+
 def get_topology_cmip_elements_canonical(input_topology_filename: str) -> List:
     """
     This function also accepts pdb files
@@ -24,53 +39,32 @@ def get_topology_cmip_elements_canonical(input_topology_filename: str) -> List:
     Returns:
 
     """
-    topology = pt.load_topology(filename=input_topology_filename)
-
-    # Set all supported elements
-    # This is required to transform element names (returned by pytraj) to element letters
-    standard_elements = {
-        'hydrogen': 'H',
-        'carbon': 'C',
-        'oxygen': 'O',
-        'nitrogen': 'N',
-        'sulfur': 'S',
-        'sodium': 'Na',
-        'chlorine': 'Cl',
-        'zinc': 'Zn',
-        'fluorine': 'F',
-        'magnesium': 'Mg',
-        'phosphorus': 'P',
-    }
-    # Iterate over each atom to save their CMIP element
-    elements = []
-    atoms = list(topology.atoms)
-    for a, atom in enumerate(atoms):
-        residue = atom.resname
-        # Skip this atom if we already found it
-        name = atom.name
-        element = standard_elements[atom.element]
-        # Adapt hydrogens element to CMIP requirements
-        if element == 'H':
-            # There should we always only 1 bond
-            # If you have the error below you may need to updated the pytraj version or reintsall pytraj
-            # ValueError: Buffer dtype mismatch, expected 'int' but got 'long'
-            bonded_heavy_atom_index = atom.bonded_indices()[0]
-            bonded_heavy_atom = atoms[bonded_heavy_atom_index]
-            bonded_heavy_atom_element = standard_elements[bonded_heavy_atom.element]
-            # Hydrogens bonded to carbons remain as 'H'
-            if bonded_heavy_atom_element == 'C':
-                pass
-            # Hydrogens bonded to oxygen are renamed as 'HO'
-            elif bonded_heavy_atom_element == 'O':
-                element = 'HO'
-            # Hydrogens bonded to nitrogen or sulfur are renamed as 'HN'
-            elif bonded_heavy_atom_element == 'N' or bonded_heavy_atom_element == 'S':
-                element = 'HN'
-            else:
-                raise SystemExit(
-                    'ERROR: Hydrogen bonded to not supported heavy atom: ' + bonded_heavy_atom_element)
-        elements.append(element)
-    return elements
+    # Remove forcefield itp references from top file.
+    if input_topology_filename.lower().endswith('.top'):
+        with open(input_topology_filename) as tf:
+            top_lines = tf.readlines()
+        top_file = create_unique_file_path(parent_dir=Path(input_topology_filename).parent.resolve(), extension='.top')
+        with open(top_file, 'w') as nt:
+            for line in top_lines:
+                if re.search(r"\.ff.*\.itp", line):
+                    continue
+                nt.write(line)
+        u = mda.Universe(top_file, topology_format="ITP")
+    else:
+        u = mda.Universe(input_topology_filename)
+    # mda_charges = [round(val, 4) for val in u.atoms.charges]
+    # mda_atom_types = list(guess_types(u.atoms.names))
+    mda_atom_types = []
+    for atom in u.atoms:
+        atom_element = guess_atom_element(atom.name)
+        if atom_element == 'H':
+            bonded_atom_element = guess_atom_element(atom.bonded_atoms[0].name)
+            if bonded_atom_element == 'O':
+                atom_element = 'HO'
+            elif bonded_atom_element in ['N', 'S']:
+                atom_element = 'HN'
+        mda_atom_types.append(atom_element)
+    return mda_atom_types
 
 
 def get_topology_charges(input_topology_filename: str) -> List:
@@ -78,10 +72,20 @@ def get_topology_charges(input_topology_filename: str) -> List:
     Extract those charges and save them in a list to be returned
     Supported formats (tested): prmtop, top, psf
     """
-    topology = pt.load_topology(filename=input_topology_filename)
-    # WARNING: We must convert this numpy ndarray to a normal list otherwise the search by index is extremely inefficient
-    topology_charges = list(topology.charge)
-    return topology_charges
+    # Remove forcefield itp references from top file.
+    if input_topology_filename.lower().endswith('.top'):
+        with open(input_topology_filename) as tf:
+            top_lines = tf.readlines()
+        top_file = create_unique_file_path(parent_dir=Path(input_topology_filename).parent.resolve(), extension='.top')
+        with open(top_file, 'w') as nt:
+            for line in top_lines:
+                if re.search(r"\.ff.*\.itp", line):
+                    continue
+                nt.write(line)
+        u = mda.Universe(top_file, topology_format="ITP")
+    else:
+        u = mda.Universe(input_topology_filename)
+    return [round(val, 4) for val in u.atoms.charges]
 
 
 class Residue:
