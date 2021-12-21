@@ -6,7 +6,7 @@
     "conda": "https://anaconda.org/bioconda/biobb_cmip",
     "docker": "https://quay.io/biocontainers/biobb_cmip:3.6.0--pyhdfd78af_0",
     "singularity": "https://www.singularity-hub.org/collections/",
-    "version": "3.7.2",
+    "version": "3.7.3",
     "tools" : [
         {
             "block" : "Cmip",
@@ -31,13 +31,14 @@
         }
     ],
     "dep_pypi" : [
-        "install_requires=['biobb_common==3.7.0', 'pytraj==2.0.5']",
+        "install_requires=['biobb_common==3.7.0', 'mdanalysis==2.0.0']",
         "python_requires='==3.7.*'"
     ],
     "dep_conda" : [
         "python ==3.7.*",
         "biobb_common ==3.7.0",
-        "cmip ==2.7.0"
+        "cmip ==2.7.0",
+        "mdanalysis==2.0.0"
     ],
     "keywords" : [
         "classical",

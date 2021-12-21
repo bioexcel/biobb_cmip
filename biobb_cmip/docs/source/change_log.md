@@ -1,5 +1,16 @@
 # Biobb CMIP changelog
 
+## What's new in version [3.7.3](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.3)?
+Replace pytraj dependency by mdanalysis.
+
+### New features
+
+* Replace pytraj dependency by mdanalysis.
+
+### Bug fixes
+
+### Other changes
+
 ## What's new in version [3.7.2](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.2)?
 In version 3.7.2 the modules have been adapted to use biobb_common 3.7.0
 and a new module prepare_structure has been added.
