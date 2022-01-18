@@ -111,6 +111,12 @@
                     "wf_prop": false,
                     "description": "CMIP options specification."
                 },
+                "energy_cutoff": {
+                    "type": "number",
+                    "default": 9999.9,
+                    "wf_prop": false,
+                    "description": "Energy cutoff, extremely hight value to enable the addition of all the ions and waters before reaching the cutoff."
+                },
                 "num_wats": {
                     "type": "integer",
                     "default": 10,

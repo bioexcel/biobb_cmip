@@ -169,11 +169,13 @@
             "properties": {
                 "execution_type": {
                     "type": "string",
-                    "default": "mip",
+                    "default": "mip_pos",
                     "wf_prop": false,
-                    "description": "Default options for the params file. Each one creates a different params file. ",
+                    "description": "Default options for the params file, each one creates a different params file. ",
                     "enum": [
-                        "mip",
+                        "mip_pos",
+                        "mip_neg",
+                        "mip_neu",
                         "solvation",
                         "energy",
                         "docking",
@@ -181,8 +183,16 @@
                     ],
                     "property_formats": [
                         {
-                            "name": "mip",
+                            "name": "mip_pos",
+                            "description": "MIP K+  Mehler Solmajer dielectric"
+                        },
+                        {
+                            "name": "mip_neg",
                             "description": "MIP O-  Mehler Solmajer dielectric"
+                        },
+                        {
+                            "name": "mip_neu",
+                            "description": "MIP Mehler Solmajer dielectric"
                         },
                         {
                             "name": "solvation",

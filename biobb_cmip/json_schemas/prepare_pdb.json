@@ -1,0 +1,105 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://bioexcel.eu/biobb_cmip/json_schemas/1.0/prepare_pdb",
+    "name": "biobb_cmip PreparePDB",
+    "title": "Class to add CMIP charges and atom types.",
+    "description": "Add CMIP charges and atom types to a PDB structure using biobb_structure_checking.",
+    "type": "object",
+    "info": {
+        "wrapped_software": {
+            "name": "CMIP cmip",
+            "version": "2.7.0",
+            "license": "Apache-2.0"
+        },
+        "ontology": {
+            "name": "EDAM",
+            "schema": "http://edamontology.org/EDAM.owl"
+        }
+    },
+    "required": [
+        "input_pdb_path",
+        "output_pdb_path"
+    ],
+    "properties": {
+        "input_pdb_path": {
+            "type": "string",
+            "description": "Input PDB file path",
+            "filetype": "input",
+            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/1aki.pdb",
+            "enum": [
+                ".*\\.pdb$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.pdb$",
+                    "description": "Input PDB file path",
+                    "edam": "format_1476"
+                }
+            ]
+        },
+        "output_pdb_path": {
+            "type": "string",
+            "description": "Output PDB file path",
+            "filetype": "output",
+            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/output_pdb_path.pdb",
+            "enum": [
+                ".*\\.pdb$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.pdb$",
+                    "description": "Output PDB file path",
+                    "edam": "format_1476"
+                }
+            ]
+        },
+        "properties": {
+            "type": "object",
+            "properties": {
+                "remove_water": {
+                    "type": "boolean",
+                    "default": true,
+                    "wf_prop": false,
+                    "description": "Remove Water molecules."
+                },
+                "add_hydrogen": {
+                    "type": "boolean",
+                    "default": true,
+                    "wf_prop": false,
+                    "description": "Add Hydrogen atoms to the structure."
+                },
+                "keep_hydrogen": {
+                    "type": "boolean",
+                    "default": false,
+                    "wf_prop": false,
+                    "description": "If **add_hydrogen** is True. All hydrogen atoms will be removed before adding the new ones unless this option is set True."
+                },
+                "fix_sidechains": {
+                    "type": "boolean",
+                    "default": true,
+                    "wf_prop": false,
+                    "description": "Complete side chains (heavy atoms, protein only)."
+                },
+                "fix_backbone_atoms": {
+                    "type": "boolean",
+                    "default": true,
+                    "wf_prop": false,
+                    "description": "Add missing O, OXT backbone atoms."
+                },
+                "remove_tmp": {
+                    "type": "boolean",
+                    "default": true,
+                    "wf_prop": true,
+                    "description": "Remove temporal files."
+                },
+                "restart": {
+                    "type": "boolean",
+                    "default": false,
+                    "wf_prop": true,
+                    "description": "Do not execute if output files exist."
+                }
+            }
+        }
+    },
+    "additionalProperties": false
+}

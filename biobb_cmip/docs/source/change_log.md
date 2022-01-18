@@ -1,5 +1,16 @@
 # Biobb CMIP changelog
 
+## What's new in version [3.7.4](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.4)?
+New module prepare_pdb.
+
+### New features
+
+* New module prepare_pdb.
+
+### Bug fixes
+
+### Other changes
+
 ## What's new in version [3.7.3](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.3)?
 Replace pytraj dependency by mdanalysis.
 
