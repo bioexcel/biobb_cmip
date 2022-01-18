@@ -251,20 +251,59 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'titration': 1, 'inifoc': 2, 'cutfoc': -0.5, 'focus': 1, 'ninter': 10, 'clhost': 1, 'titcut': 20.,
             'titwat': 10, 'titip': 10, 'titim': 10
         }
-    elif execution_type == 'mip':
+    elif execution_type.strip() == 'mip_pos':
         grid_dict = params_grid(grid_type='mip', readgrid= 0,
                                 grid_cen=(47.266, 83.4265, 54.174),
                                 grid_dim=(46, 30, 37),
                                 grid_int=(0.5, 0.5, 0.5))
         params_dict = {
-            'title': 'MIP O-  Mehler Solmajer dielectric',
+            'title': 'MIP positive probe',
             'tipcalc': 0,
             'calcgrid': 1,
             'irest': 0,
             'orest': 0,
             'coorfmt': 2,
             'dields':  2,
-            'cubeoutput': 1, 'carmip': -1, 'fvdw': 0.8
+            'cubeoutput': 1,
+            'fvdw': 0.8,
+            'carmip': 1,
+            'tipatmip' : 'OW'
+        }
+    elif execution_type.strip() == 'mip_neu':
+        grid_dict = params_grid(grid_type='mip', readgrid= 0,
+                                grid_cen=(47.266, 83.4265, 54.174),
+                                grid_dim=(46, 30, 37),
+                                grid_int=(0.5, 0.5, 0.5))
+        params_dict = {
+            'title': 'MIP neutral probe',
+            'tipcalc': 0,
+            'calcgrid': 1,
+            'irest': 0,
+            'orest': 0,
+            'coorfmt': 2,
+            'dields':  2,
+            'cubeoutput': 1,
+            'fvdw': 0.8,
+            'carmip': 0,
+            'tipatmip' : 'OW'
+        }
+    elif execution_type.strip() == 'mip_neg':
+        grid_dict = params_grid(grid_type='mip', readgrid= 0,
+                                grid_cen=(47.266, 83.4265, 54.174),
+                                grid_dim=(46, 30, 37),
+                                grid_int=(0.5, 0.5, 0.5))
+        params_dict = {
+            'title': 'MIP negative probe',
+            'tipcalc': 0,
+            'calcgrid': 1,
+            'irest': 0,
+            'orest': 0,
+            'coorfmt': 2,
+            'dields':  2,
+            'cubeoutput': 1,
+            'fvdw': 0.8,
+            'carmip': -1,
+            'tipatmip' : 'OW'
         }
 #TODO 'carmip': 1,
     # wat: tipcalc: 1 + titration: 'inifoc': 2, 'cutfoc': -0.5, 'focus': 1, 'ninter': 10,

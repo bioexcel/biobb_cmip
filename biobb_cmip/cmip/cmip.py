@@ -31,7 +31,7 @@ class Cmip(BiobbObject):
         input_vdw_params_path (str) (Optional): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. Accepted formats: txt (edam:format_2330).
         input_params_path (str) (Optional): Path to the CMIP input parameters file. File type: input. Accepted formats: txt (edam:format_2330).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
-            * **execution_type** (*str*) - ("mip") Default options for the params file. Each one creates a different params file. Values: mip (MIP O-  Mehler Solmajer dielectric), solvation (Solvation & MEP), energy (Docking Interaction energy calculation. PB electrostatics), docking (Docking Mehler Solmajer dielectric), docking_rst (Docking from restart file).
+            * **execution_type** (*str*) - ("mip_pos") Default options for the params file, each one creates a different params file. Values: mip_pos (MIP K+  Mehler Solmajer dielectric), mip_neg (MIP O-  Mehler Solmajer dielectric), mip_neu (MIP Mehler Solmajer dielectric), solvation (Solvation & MEP), energy (Docking Interaction energy calculation. PB electrostatics), docking (Docking Mehler Solmajer dielectric), docking_rst (Docking from restart file).
             * **params** (*dict*) - ({}) CMIP options specification.
             * **cmip_path** (*str*) - ("cmip") Path to the CMIP cmip executable binary.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
@@ -87,7 +87,7 @@ class Cmip(BiobbObject):
 
         # Properties specific for BB
         self.cmip_path = properties.get('cmip_path', 'cmip')
-        self.execution_type = properties.get('execution_type', 'mip')
+        self.execution_type = properties.get('execution_type', 'mip_pos')
         self.params = {k: str(v) for k, v in properties.get('params', dict()).items()}
 
         if not self.io_dict['in'].get('input_vdw_params_path'):

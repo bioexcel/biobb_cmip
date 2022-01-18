@@ -29,6 +29,7 @@ class Titration(BiobbObject):
         input_params_path (str) (Optional): Path to the CMIP input parameters file. File type: input. Accepted formats: txt (edam:format_2330).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **params** (*dict*) - ({}) CMIP options specification.
+            * **energy_cutoff** (*float*) - (9999.9) Energy cutoff, extremely hight value to enable the addition of all the ions and waters before reaching the cutoff.
             * **num_wats** (*int*) - (10) Number of water molecules to be added.
             * **neutral** (*bool*) - (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account.
             * **num_positive_ions** (*int*) - (10) Number of positive ions to be added (Tipatom IP=Na+).
@@ -89,6 +90,7 @@ class Titration(BiobbObject):
         if not self.io_dict['in'].get('input_vdw_params_path'):
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
         self.params = {k: str(v) for k, v in properties.get('params', dict()).items()}
+        self.energy_cutoff = properties.get('energy_cutoff')
 
         # Check the properties
         self.check_properties(properties)
@@ -105,7 +107,7 @@ class Titration(BiobbObject):
             fu.log('ERROR: output_pdb_path name must end in .pdb', self.out_log, self.global_log)
             raise ValueError("ERROR: output_pdb_path name must end in .pdb")
 
-        # Adding neutral, num_negative_ions, num_positive_ions, num_wats
+        # Adding neutral, num_negative_ions, num_positive_ions, num_wats, cutoff
         if self.num_wats:
             self.params['titwat'] = str(self.num_wats)
         if self.num_positive_ions:
@@ -128,6 +130,8 @@ class Titration(BiobbObject):
                    f'negative ions to be added: {self.params["titim"]}, '
                    f'final residual charge: {round(charge + int(self.params["titip"]) - int(self.params["titim"]), 3)}',
                    self.out_log, self.global_log)
+        if self.energy_cutoff:
+            self.params['titcut'] = str(self.energy_cutoff)
 
         combined_params_dir = fu.create_unique_dir()
         self.io_dict['in']['combined_params_path'] = create_params_file(
