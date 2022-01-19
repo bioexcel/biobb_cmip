@@ -30,3 +30,12 @@ cmip.prepare_structure module
     :undoc-members:
     :show-inheritance:
 
+
+cmip.prepare_pdb module
+------------------------------
+
+.. automodule:: cmip.prepare_pdb
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
