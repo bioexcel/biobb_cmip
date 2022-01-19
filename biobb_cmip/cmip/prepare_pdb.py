@@ -91,8 +91,9 @@ class PreparePDB(BiobbObject):
         command_list += '--add_charges CMIP'
 
         # Create command line
-        # check_structure -v -i 1aki.pdb -o 1aki_cmip.pdb --output_format cmip --non_interactive command_list --list
-        # 'water --remove yes; backbone --fix_main none --fix_atoms none --add_caps none; fixside --fix All; add_hydrogen --add_mode auto --add_charges CMIP'
+        # opció eliminar lligands
+        # opció eliminar ions
+        # check_structure -v -i 2vgb.pdb -o 2vgb_cmip2.pdb --output_format cmip --non_interactive command_list --list 'water --remove yes; backbone --fix_atoms All --add_caps breaks --fix_chain none; fixside --fix All; add_hydrogen --add_mode auto --add_charges CMIP'
         self.cmd = [self.check_structure_path,
                     '-v',
                     '-i', self.stage_io_dict["in"]["input_pdb_path"],

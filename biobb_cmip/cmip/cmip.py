@@ -28,6 +28,7 @@ class Cmip(BiobbObject):
         output_cube_path (str) (Optional): Path to the output grid file in cube format. File type: output. Accepted formats: cube (edam:format_2330).
         output_rst_path (str) (Optional): Path to the output restart file. File type: output. Accepted formats: txt (edam:format_2330).
         output_byat_path (str) (Optional): Path to the output atom by atom energy file. File type: output. Accepted formats: txt (edam:format_2330).
+        output_log_path (str): Path to the output CMIP log file LOG. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_cmip.log>`_. Accepted formats: log (edam:format_2330).
         input_vdw_params_path (str) (Optional): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. Accepted formats: txt (edam:format_2330).
         input_params_path (str) (Optional): Path to the CMIP input parameters file. File type: input. Accepted formats: txt (edam:format_2330).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
@@ -66,8 +67,8 @@ class Cmip(BiobbObject):
 
     def __init__(self, input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,
                  output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
-                 output_byat_path: str = None, input_vdw_params_path: str = None, input_params_path: str = None,
-                 properties: dict = None, **kwargs) -> None:
+                 output_byat_path: str = None, output_log_path: str = None, input_vdw_params_path: str = None,
+                 input_params_path: str = None, properties: dict = None, **kwargs) -> None:
 
         properties = properties or {}
 
@@ -82,7 +83,7 @@ class Cmip(BiobbObject):
                    "input_vdw_params_path": input_vdw_params_path, "input_params_path": input_params_path},
             "out": {"output_pdb_path": output_pdb_path, "output_grd_path": output_grd_path,
                     "output_cube_path": output_cube_path, "output_rst_path": output_rst_path,
-                    "output_byat_path": output_byat_path}
+                    "output_byat_path": output_byat_path, "output_log_path": output_log_path}
         }
 
         # Properties specific for BB
@@ -146,9 +147,14 @@ class Cmip(BiobbObject):
         if self.stage_io_dict["out"].get("output_rst_path"):
             self.cmd.append('-rst')
             self.cmd.append(self.stage_io_dict["out"]["output_rst_path"])
+
         if self.stage_io_dict["out"].get("output_byat_path"):
             self.cmd.append('-byat')
             self.cmd.append(self.stage_io_dict["out"]["output_byat_path"])
+
+        if self.stage_io_dict["out"].get("output_log_path"):
+            self.cmd.append('-o')
+            self.cmd.append(self.stage_io_dict["out"]["output_log_path"])
 
 
         # Run Biobb block
@@ -189,14 +195,16 @@ class Cmip(BiobbObject):
 
 def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,
          output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
-         output_byat_path: str = None, input_vdw_params_path: str = None, input_params_path: str = None,
+         output_byat_path: str = None, output_log_path: str = None,
+         input_vdw_params_path: str = None, input_params_path: str = None,
          properties: dict = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.Cmip>` class and
     execute the :meth:`launch() <cmip.cmip.Cmip.launch>` method."""
 
     return Cmip(input_pdb_path=input_pdb_path, input_probe_pdb_path=input_probe_pdb_path, output_pdb_path=output_pdb_path,
                 output_grd_path=output_grd_path, output_cube_path=output_cube_path, output_rst_path=output_rst_path,
-                output_byat_path=output_byat_path, input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
+                output_byat_path=output_byat_path, output_log_path=output_log_path,
+                input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
                 properties=properties, **kwargs).launch()
 
 
@@ -209,11 +217,12 @@ def main():
     required_args = parser.add_argument_group('required arguments')
     required_args.add_argument('--input_pdb_path', required=True)
     parser.add_argument('--input_probe_pdb_path', required=False)
-    parser.add_argument('--output_pdb_path', required=True)
-    parser.add_argument('--output_grd_path', required=True)
-    parser.add_argument('--output_cube_path', required=True)
-    parser.add_argument('--output_rst_path', required=True)
-    parser.add_argument('--output_byat_path', required=True)
+    parser.add_argument('--output_pdb_path', required=False)
+    parser.add_argument('--output_grd_path', required=False)
+    parser.add_argument('--output_cube_path', required=False)
+    parser.add_argument('--output_rst_path', required=False)
+    parser.add_argument('--output_byat_path', required=False)
+    parser.add_argument('--output_log_path', required=False)
     parser.add_argument('--input_vdw_params_path', required=False)
     parser.add_argument('--input_params_path', required=False)
 
@@ -224,7 +233,8 @@ def main():
     # Specific call of each building block
     cmip(input_pdb_path=args.input_pdb_path, input_probe_pdb_path=args.input_probe_pdb_path, output_pdb_path=args.output_pdb_path,
          output_grd_path=args.output_grd_path, output_cube_path=args.output_cube_path, output_rst_path=args.output_rst_path,
-         output_byat_path=args.output_byat_path, input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
+         output_byat_path=args.output_byat_path, output_log_path=output_log_path,
+         input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
          properties=properties)
 
 
