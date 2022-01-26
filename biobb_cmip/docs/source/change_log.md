@@ -1,6 +1,6 @@
 # Biobb CMIP changelog
 
-## What's new in version [3.7.4](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.4)?
+## What's new in version [3.7.5](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.5)?
 New module prepare_pdb.
 
 ### New features
