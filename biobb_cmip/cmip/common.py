@@ -252,10 +252,7 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'titwat': 10, 'titip': 10, 'titim': 10
         }
     elif execution_type.strip() == 'mip_pos':
-        grid_dict = params_grid(grid_type='mip', readgrid= 0,
-                                grid_cen=(47.266, 83.4265, 54.174),
-                                grid_dim=(46, 30, 37),
-                                grid_int=(0.5, 0.5, 0.5))
+        grid_dict = params_grid(grid_type='mip', readgrid=2)
         params_dict = {
             'title': 'MIP positive probe',
             'tipcalc': 0,
@@ -267,13 +264,10 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'cubeoutput': 1,
             'fvdw': 0.8,
             'carmip': 1,
-            'tipatmip' : 'OW'
+            'tipatmip' : "'OW'"
         }
     elif execution_type.strip() == 'mip_neu':
-        grid_dict = params_grid(grid_type='mip', readgrid= 0,
-                                grid_cen=(47.266, 83.4265, 54.174),
-                                grid_dim=(46, 30, 37),
-                                grid_int=(0.5, 0.5, 0.5))
+        grid_dict = params_grid(grid_type='mip', readgrid=2)
         params_dict = {
             'title': 'MIP neutral probe',
             'tipcalc': 0,
@@ -285,13 +279,10 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'cubeoutput': 1,
             'fvdw': 0.8,
             'carmip': 0,
-            'tipatmip' : 'OW'
+            'tipatmip' : "'OW'"
         }
     elif execution_type.strip() == 'mip_neg':
-        grid_dict = params_grid(grid_type='mip', readgrid= 0,
-                                grid_cen=(47.266, 83.4265, 54.174),
-                                grid_dim=(46, 30, 37),
-                                grid_int=(0.5, 0.5, 0.5))
+        grid_dict = params_grid(grid_type='mip', readgrid=2)
         params_dict = {
             'title': 'MIP negative probe',
             'tipcalc': 0,
@@ -303,7 +294,7 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'cubeoutput': 1,
             'fvdw': 0.8,
             'carmip': -1,
-            'tipatmip' : 'OW'
+            'tipatmip' : "'OW'"
         }
 #TODO 'carmip': 1,
     # wat: tipcalc: 1 + titration: 'inifoc': 2, 'cutfoc': -0.5, 'focus': 1, 'ninter': 10,
@@ -322,10 +313,7 @@ def params_preset(execution_type: str) -> Dict[str, str]:
         }
 
     elif execution_type == 'energy':
-        grid_dict = params_grid(grid_type='energy', readgrid= 0,
-                                grid_cen=(47.266, 83.4265, 54.174),
-                                grid_dim=(46, 30, 37),
-                                grid_int=(0.5, 0.5, 0.5))
+        grid_dict = params_grid(grid_type='energy', readgrid= 2)
         probe_grid_dict = probe_params_grid(probe_id= 0, readgrid= 2, pbfocus= 1, perfill= 0.6,
                                             grid_int=(1.5, 1.5, 1.5))
         params_dict = {
@@ -339,10 +327,7 @@ def params_preset(execution_type: str) -> Dict[str, str]:
         }
 
     elif execution_type == 'docking':
-        grid_dict = params_grid(grid_type='docking', readgrid= 0,
-                                grid_cen=(47.266, 83.4265, 54.174),
-                                grid_dim=(46, 30, 37),
-                                grid_int=(0.5, 0.5, 0.5))
+        grid_dict = params_grid(grid_type='docking', readgrid= 2)
 
         params_dict = {
             'title': 'Docking Mehler Solmajer dielectric',

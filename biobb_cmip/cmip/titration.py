@@ -90,7 +90,7 @@ class Titration(BiobbObject):
         if not self.io_dict['in'].get('input_vdw_params_path'):
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
         self.params = {k: str(v) for k, v in properties.get('params', dict()).items()}
-        self.energy_cutoff = properties.get('energy_cutoff')
+        self.energy_cutoff = properties.get('energy_cutoff', 9999.9)
 
         # Check the properties
         self.check_properties(properties)
