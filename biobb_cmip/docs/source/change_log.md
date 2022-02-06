@@ -1,5 +1,14 @@
 # Biobb CMIP changelog
 
+## What's new in version [3.7.6](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.6)?
+Bug fixes in Titration and MIP.
+
+### Bug fixes
+
+* Adding default for energy_cutoff option.
+* Removing hardcoded Box from configuration.
+* Adding quotes to OW probe names.
+
 ## What's new in version [3.7.5](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.5)?
 New module prepare_pdb.
 

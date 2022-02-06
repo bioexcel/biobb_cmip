@@ -14,7 +14,7 @@ The latest documentation of this package can be found in our readthedocs site:
 [latest API documentation](http://biobb-cmip.readthedocs.io/en/latest/).
 
 ### Version
-v3.7.5 2021.4
+v3.7.6 2021.4
 
 ### Installation
 Using PIP:
@@ -24,7 +24,7 @@ Using PIP:
 * Installation:
 
 
-        pip install "biobb_cmip>=3.7.5"
+        pip install "biobb_cmip>=3.7.6"
 
 
 * Usage: [Python API documentation](https://biobb-cmip.readthedocs.io/en/latest/modules.html)
@@ -34,7 +34,7 @@ Using ANACONDA:
 * Installation:
 
 
-        conda install -c bioconda "biobb_cmip>=3.7.5"
+        conda install -c bioconda "biobb_cmip>=3.7.6"
 
 
 * Usage: With conda installation BioBBs can be used with the [Python API documentation](https://biobb-cmip.readthedocs.io/en/latest/modules.html) and the [Command Line documentation](https://biobb-cmip.readthedocs.io/en/latest/command_line.html)
@@ -44,13 +44,13 @@ Using DOCKER:
 * Installation:
 
 
-        docker pull quay.io/biocontainers/biobb_cmip:3.7.5--pyhdfd78af_0
+        docker pull quay.io/biocontainers/biobb_cmip:3.7.6--pyhdfd78af_0
 
 
 * Usage:
 
 
-        docker run quay.io/biocontainers/biobb_cmip:3.7.5--pyhdfd78af_0 <command>
+        docker run quay.io/biocontainers/biobb_cmip:3.7.6--pyhdfd78af_0 <command>
 
 
 Using SINGULARITY:
