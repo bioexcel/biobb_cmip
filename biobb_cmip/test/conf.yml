@@ -6,7 +6,6 @@ titration:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_pdb_path: output_pdb.pdb
-    output_log_path: output_log.log
     ref_output_pdb_path: file:test_reference_dir/cmip/1kim_neutral.pdb
   properties:
     remove_tmp: False
@@ -16,7 +15,6 @@ titration_docker:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_pdb_path: output_pdb.pdb
-    output_log_path: output_log.log
     ref_output_pdb_path: file:test_reference_dir/cmip/1kim_neutral.pdb
   properties:
     neutral: True
@@ -28,7 +26,6 @@ titration_singularity:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_pdb_path: output_pdb.pdb
-    output_log_path: output_log.log
     ref_output_pdb_path: file:test_reference_dir/cmip/1kim_neutral.pdb
   properties:
     neutral: True

@@ -24,7 +24,6 @@ class Titration(BiobbObject):
     Args:
         input_pdb_path (str): Path to the input PDB file. File type: input. `Sample file <https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/1kim_h.pdb>`_. Accepted formats: pdb (edam:format_1476).
         output_pdb_path (str): Path to the output PDB file. File type: output. `Sample file <https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/1kim_neutral.pdb>`_. Accepted formats: pdb (edam:format_1476).
-        output_log_path (str): Path to the output Tritration log file LOG. File type: output. Accepted formats: log (edam:format_2330).
         input_vdw_params_path (str) (Optional): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. Accepted formats: txt (edam:format_2330).
         input_params_path (str) (Optional): Path to the CMIP input parameters file. File type: input. Accepted formats: txt (edam:format_2330).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
@@ -52,7 +51,6 @@ class Titration(BiobbObject):
             prop = { 'titration_path': 'titration' }
             titration(input_pdb_path='/path/to/myStructure.pdb',
                       output_pdb_path='/path/to/newStructure.pdb',
-                      output_log_path='/path/to/newStructureLog.log',
                       properties=prop)
 
     Info:
@@ -65,7 +63,7 @@ class Titration(BiobbObject):
             * schema: http://edamontology.org/EDAM.owl
     """
 
-    def __init__(self, input_pdb_path: str, output_pdb_path: str, output_log_path: str,
+    def __init__(self, input_pdb_path: str, output_pdb_path: str,
                  input_vdw_params_path: str = None, input_params_path: str = None,
                  properties: dict = None, **kwargs) -> None:
         properties = properties or {}
@@ -77,7 +75,7 @@ class Titration(BiobbObject):
         self.io_dict = {
             "in": {"input_pdb_path": input_pdb_path, "input_vdw_params_path": input_vdw_params_path,
                    "input_params_path": input_params_path},
-            "out": {"output_pdb_path": output_pdb_path, "output_log_path": output_log_path}
+            "out": {"output_pdb_path": output_pdb_path}
         }
 
         # Properties specific for BB
@@ -146,8 +144,7 @@ class Titration(BiobbObject):
                     '-i', self.stage_io_dict['in']['combined_params_path'],
                     '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
                     '-hs', self.stage_io_dict['in']['input_pdb_path'],
-                    '-outpdb', self.stage_io_dict['out']['output_pdb_path'][:-4],
-                    '-l', self.stage_io_dict['out']['output_log_path']]
+                    '-outpdb', self.stage_io_dict['out']['output_pdb_path'][:-4]]
 
         # Run Biobb block
         self.run_biobb()
@@ -162,13 +159,13 @@ class Titration(BiobbObject):
         return self.return_code
 
 
-def titration(input_pdb_path: str, output_pdb_path: str, output_log_path: str,
+def titration(input_pdb_path: str, output_pdb_path: str,
               input_vdw_params_path: str = None, input_params_path: str = None,
               properties: dict = None, **kwargs) -> int:
     """Create :class:`Titration <cmip.titration.Titration>` class and
     execute the :meth:`launch() <cmip.titration.Titration.launch>` method."""
 
-    return Titration(input_pdb_path=input_pdb_path, output_pdb_path=output_pdb_path, output_log_path=output_log_path,
+    return Titration(input_pdb_path=input_pdb_path, output_pdb_path=output_pdb_path,
                      input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
                      properties=properties, **kwargs).launch()
 
@@ -182,7 +179,6 @@ def main():
     required_args = parser.add_argument_group('required arguments')
     required_args.add_argument('--input_pdb_path', required=True)
     required_args.add_argument('--output_pdb_path', required=True)
-    required_args.add_argument('--output_log_path', required=True)
     parser.add_argument('--input_vdw_params_path', required=False)
     parser.add_argument('--input_params_path', required=False)
 
@@ -192,7 +188,6 @@ def main():
 
     # Specific call of each building block
     titration(input_pdb_path=args.input_pdb_path, output_pdb_path=args.output_pdb_path,
-              output_log_path=args.output_log_path,
               input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
               properties=properties)
 
