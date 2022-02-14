@@ -3,6 +3,7 @@
 """Module containing the PrepareStructure class and the command line interface."""
 import os
 import argparse
+import warnings
 import shutil
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
@@ -92,8 +93,12 @@ class PrepareStructure(BiobbObject):
                 top_file = fu.unzip_top(zip_file=self.io_dict['in']['input_topology_path'], out_log=self.out_log)
                 top_dir = str(Path(top_file).parent)
 
-            charges_list = get_topology_charges(top_file)
-            elements_list = get_topology_cmip_elements_canonical(top_file)
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=UserWarning)
+                fu.log(f'Reading: {top_file} to extract charges', self.out_log, self.global_log)
+                charges_list = get_topology_charges(top_file)
+                fu.log(f'Reading: {top_file} to extract elements', self.out_log, self.global_log)
+                elements_list = get_topology_cmip_elements_canonical(top_file)
 
         # JLG's method
         else:

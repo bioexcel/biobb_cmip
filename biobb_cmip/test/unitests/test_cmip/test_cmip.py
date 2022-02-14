@@ -23,8 +23,8 @@ class TestCmipDocking():
         fx.test_setup(self, 'cmip_docking')
 
     def tearDown(self):
-        pass
-        #fx.test_teardown(self)
+        #pass
+        fx.test_teardown(self)
 
     def test_cmip_docking(self):
         cmip(properties=self.properties, **self.paths)
