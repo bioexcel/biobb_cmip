@@ -18,8 +18,7 @@
     },
     "required": [
         "input_pdb_path",
-        "output_pdb_path",
-        "output_log_path"
+        "output_pdb_path"
     ],
     "properties": {
         "input_pdb_path": {
@@ -51,22 +50,6 @@
                     "extension": ".*\\.pdb$",
                     "description": "Path to the output PDB file",
                     "edam": "format_1476"
-                }
-            ]
-        },
-        "output_log_path": {
-            "type": "string",
-            "description": "Path to the output Tritration log file LOG",
-            "filetype": "output",
-            "sample": null,
-            "enum": [
-                ".*\\.log$"
-            ],
-            "file_formats": [
-                {
-                    "extension": ".*\\.log$",
-                    "description": "Path to the output Tritration log file LOG",
-                    "edam": "format_2330"
                 }
             ]
         },

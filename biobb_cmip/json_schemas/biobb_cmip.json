@@ -35,6 +35,13 @@
             "desc" : "Creates a CMIP suitable PDB from an standar PDB file",
             "exec" : "prepare_pdb",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-prepare_pdb.prepare_pdb"
+        },
+        {
+            "block" : "IgnoreResidues",
+            "tool" : "Ignore Residues",
+            "desc" : "Mark residues which charges will be ignored in the CMIP potential calculations.",
+            "exec" : "ignore_residues",
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-ignore_residues.ignore_residues"
         }
     ],
     "dep_pypi" : [

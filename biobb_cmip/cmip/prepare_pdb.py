@@ -15,7 +15,7 @@ class PreparePDB(BiobbObject):
 
     Args:
         input_pdb_path (str): Input PDB file path. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/1aki.pdb>`_. Accepted formats: pdb (edam:format_1476).
-        output_pdb_path (str): Output PDB file path. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/output_pdb_path.pdb>`_. Accepted formats: pdb (edam:format_1476).
+        output_cmip_pdb_path (str): Output PDB file path. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/egfr_cmip.pdb>`_. Accepted formats: pdb (edam:format_1476).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **remove_water** (*bool*) - (True) Remove Water molecules.
             * **add_hydrogen** (*bool*) - (True) Add Hydrogen atoms to the structure.
@@ -32,7 +32,7 @@ class PreparePDB(BiobbObject):
             from biobb_cmip.cmip.prepare_pdb import prepare_pdb
             prop = { 'restart': False }
             prepare_pdb(input_pdb_path='/path/to/myStructure.pdb',
-                        output_pdb_path='/path/to/newStructure.pdb',
+                        output_cmip_pdb_path='/path/to/newStructure.pdb',
                         properties=prop)
 
     Info:
@@ -45,7 +45,7 @@ class PreparePDB(BiobbObject):
             * schema: http://edamontology.org/EDAM.owl
     """
 
-    def __init__(self, input_pdb_path: str, output_pdb_path: str, properties: dict = None, **kwargs) -> None:
+    def __init__(self, input_pdb_path: str, output_cmip_pdb_path: str, properties: dict = None, **kwargs) -> None:
         properties = properties or {}
 
         # Call parent class constructor
@@ -54,7 +54,7 @@ class PreparePDB(BiobbObject):
         # Input/Output files
         self.io_dict = {
             "in": {"input_pdb_path": input_pdb_path},
-            "out": {"output_pdb_path": output_pdb_path}
+            "out": {"output_cmip_pdb_path": output_cmip_pdb_path}
         }
 
         # Properties specific for BB
@@ -97,7 +97,7 @@ class PreparePDB(BiobbObject):
         self.cmd = [self.check_structure_path,
                     '-v',
                     '-i', self.stage_io_dict["in"]["input_pdb_path"],
-                    '-o', self.stage_io_dict["out"]["output_pdb_path"],
+                    '-o', self.stage_io_dict["out"]["output_cmip_pdb_path"],
                     '--output_format', 'cmip',
                     '--non_interactive',
                     'command_list',
@@ -115,11 +115,11 @@ class PreparePDB(BiobbObject):
         return self.return_code
 
 
-def prepare_pdb(input_pdb_path: str, output_pdb_path: str, properties: dict = None, **kwargs) -> int:
+def prepare_pdb(input_pdb_path: str, output_cmip_pdb_path: str, properties: dict = None, **kwargs) -> int:
     """Create :class:`PreparePDB <cmip.prepare_pdb.PreparePDB>` class and
     execute the :meth:`launch() <cmip.prepare_pdb.PreparePDB.launch>` method."""
     return PreparePDB(input_pdb_path=input_pdb_path,
-                      output_pdb_path=output_pdb_path,
+                      output_cmip_pdb_path=output_cmip_pdb_path,
                       properties=properties, **kwargs).launch()
 
 
@@ -131,7 +131,7 @@ def main():
     # Specific args of each building block
     required_args = parser.add_argument_group('required arguments')
     required_args.add_argument('-i', '--input_pdb_path', required=True, help="Input PDB file name")
-    required_args.add_argument('-o', '--output_pdb_path', required=True, help="Output PDB file name")
+    required_args.add_argument('-o', '--output_cmip_pdb_path', required=True, help="Output PDB file name")
 
     args = parser.parse_args()
     config = args.config if args.config else None
@@ -139,7 +139,7 @@ def main():
 
     # Specific call of each building block
     prepare_pdb(input_pdb_path=args.input_pdb_path,
-                output_pdb_path=args.output_pdb_path,
+                output_cmip_pdb_path=args.output_cmip_pdb_path,
                 properties=properties)
 
 

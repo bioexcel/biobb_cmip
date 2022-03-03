@@ -28,9 +28,9 @@ class PrepareStructure(BiobbObject):
     | Generate a CMIP suitable PDB input from a common PDB file or a Topology + PDB file.
 
     Args:
-        input_pdb_path (str): Path to the input PDB file. File type: input. `Sample file <TODO>`_. Accepted formats: pdb (edam:format_1476).
-        input_topology_path (str) (Optional): Path to the input topology path. File type: input. `Sample file <TODO>`_. Accepted formats: zip (edam:format_3987), top (edam:format_3880), psf (edam:format_3882), prmtop (edam:format_3881).
-        output_pdb_path (str): Path to the output PDB file. File type: output. `Sample file <TODO>`_. Accepted formats: pdb (edam:format_1476).
+        input_pdb_path (str): Path to the input PDB file. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr.pdb>`_. Accepted formats: pdb (edam:format_1476).
+        input_topology_path (str) (Optional): Path to the input topology path. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr_topology.zip>`_. Accepted formats: zip (edam:format_3987), top (edam:format_3880), psf (edam:format_3882), prmtop (edam:format_3881).
+        output_cmip_pdb_path (str): Path to the output PDB file. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/egfr_cmip.pdb>`_. Accepted formats: pdb (edam:format_1476).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
             * **restart** (*bool*) - (False) [WF property] Do not execute if output files exist.
@@ -48,7 +48,7 @@ class PrepareStructure(BiobbObject):
             from biobb_cmip.cmip.prepare_structure import prepare_structure
             prop = { }
             prepare_structure(input_pdb_path='/path/to/myStructure.pdb',
-                              output_pdb_path='/path/to/newStructure.pdb',
+                              output_cmip_pdb_path='/path/to/newStructure.pdb',
                               properties=prop)
 
     Info:
@@ -61,7 +61,7 @@ class PrepareStructure(BiobbObject):
             * schema: http://edamontology.org/EDAM.owl
     """
 
-    def __init__(self, input_pdb_path: str, output_pdb_path: str, input_topology_path: str = None, properties: dict = None, **kwargs) -> None:
+    def __init__(self, input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: str = None, properties: dict = None, **kwargs) -> None:
         properties = properties or {}
 
         # Call parent class constructor
@@ -70,7 +70,7 @@ class PrepareStructure(BiobbObject):
         # Input/Output files
         self.io_dict = {
             "in": {"input_pdb_path": input_pdb_path, "input_topology_path": input_topology_path},
-            "out": {"output_pdb_path": output_pdb_path}
+            "out": {"output_cmip_pdb_path": output_cmip_pdb_path}
         }
 
 
@@ -106,7 +106,7 @@ class PrepareStructure(BiobbObject):
             elements_list = get_pdb_cmip_elements_canonical(self.io_dict['in']['input_pdb_path'])
 
         write_cmip_pdb(self.io_dict['in']['input_pdb_path'],
-                       self.io_dict['out']['output_pdb_path'],
+                       self.io_dict['out']['output_cmip_pdb_path'],
                        charges_list,
                        elements_list)
 
@@ -117,12 +117,12 @@ class PrepareStructure(BiobbObject):
         return 0
 
 
-def prepare_structure(input_pdb_path: str, output_pdb_path: str, input_topology_path: str = None,
+def prepare_structure(input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: str = None,
                       properties: dict = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.PrepareStructure>` class and
     execute the :meth:`launch() <cmip.cmip.PrepareStructure.launch>` method."""
 
-    return PrepareStructure(input_pdb_path=input_pdb_path, output_pdb_path=output_pdb_path,
+    return PrepareStructure(input_pdb_path=input_pdb_path, output_cmip_pdb_path=output_cmip_pdb_path,
                             input_topology_path=input_topology_path, properties=properties,
                             **kwargs).launch()
 
@@ -135,7 +135,7 @@ def main():
     # Specific args of each building block
     required_args = parser.add_argument_group('required arguments')
     required_args.add_argument('--input_pdb_path', required=True)
-    required_args.add_argument('--output_pdb_path', required=True)
+    required_args.add_argument('--output_cmip_pdb_path', required=True)
     parser.add_argument('--input_topology_path', required=False)
 
     args = parser.parse_args()
@@ -143,7 +143,7 @@ def main():
     properties = settings.ConfReader(config=config).get_prop_dic()
 
     # Specific call of each building block
-    prepare_structure(input_pdb_path=args.input_pdb_path, output_pdb_path=args.output_pdb_path,
+    prepare_structure(input_pdb_path=args.input_pdb_path, output_cmip_pdb_path=args.output_cmip_pdb_path,
                       input_topology_path=args.input_topology_path, properties=properties)
 
 

@@ -5,6 +5,8 @@ from typing import List, Dict, Mapping, Union, Set, Sequence
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
 import uuid
+import logging
+import biobb_common.tools.file_utils as fu
 
 
 def create_unique_file_path(parent_dir: Union[str, Path] = None, extension: str = None) -> str:
@@ -428,3 +430,70 @@ def create_params_file(output_params_path: str, input_params_path: str = None,
             params_dict[k] = v
 
     return write_params_file(output_params_path, params_dict)
+
+def mark_residues(residue_list: Sequence[str], input_cmip_pdb_path: str, output_cmip_pdb_path: str, out_log: logging.Logger = None, global_log: logging.Logger = None) -> None:
+    """Marks using an "X" before the atom type all the residues in *residue_list* and writes the result in *output_cmip_pdb_path*.
+
+        Args:
+            residue_list (list): Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. If empty or none all residues will be marked.
+            local_log (:obj:`logging.Logger`): local log object.
+            global_log (:obj:`logging.Logger`): global log object.
+        """
+    if not residue_list:
+        fu.log(f"Empty residue_list all residues will be marked", out_log, global_log)
+    else:
+        fu.log(f"Residue list: {residue_list}", out_log, global_log)
+
+    with open(input_cmip_pdb_path) as pdb_file_in, open(output_cmip_pdb_path, 'w') as pdb_file_out:
+        residue_set_used = set()
+
+        res_counter = 0
+        for line in pdb_file_in:
+            if _is_atom(line):
+                residue_code = _get_residue_code(line)
+                used_residue = _get_residue_code_in_list(residue_code, residue_list)
+                if not residue_list or used_residue:
+                    res_counter += 1
+                    residue_set_used.add(used_residue)
+                    line = _mark_pdb_atom(line)
+            pdb_file_out.write(line)
+        fu.log(f"{len(residue_set_used)} residues have been marked", out_log, global_log)
+
+        if residue_list:
+            unused_residues = set(residue_list) - residue_set_used
+            if unused_residues:
+                fu.log(f"The following residues where present in the residue_list and have not been marked: {unused_residues}", out_log, global_log)
+
+def _mark_pdb_atom(line: str) -> str:
+    line = list(line)
+    line.insert(64, 'X')
+    return ''.join(line)
+
+def _get_residue_code_in_list(input_residue, residue_list):
+    if not residue_list:
+        return None
+    for res_code in residue_list:
+        if input_residue == res_code:
+            return res_code
+        chain_rescode, resnum_rescode = res_code.split(":")
+        chain_input, resnum_input = input_residue.split(":")
+        if not chain_rescode:
+            if resnum_rescode == resnum_input:
+                return res_code
+        if not resnum_rescode:
+            if chain_rescode == chain_input:
+                return res_code
+    return None
+
+
+def _get_residue_code(line: str) -> str:
+    return _get_chain(line)+":"+_get_resnum(line)
+
+def _get_chain(line: str) -> str:
+    return line[21].upper()
+
+def _get_resnum(line: str) -> str:
+    return line[23:27].strip()
+
+def _is_atom(line: str) -> str:
+    return line[0:6].strip().upper() in ["ATOM", "HETATM"]

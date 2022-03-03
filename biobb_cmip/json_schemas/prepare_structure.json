@@ -18,14 +18,14 @@
     },
     "required": [
         "input_pdb_path",
-        "output_pdb_path"
+        "output_cmip_pdb_path"
     ],
     "properties": {
         "input_pdb_path": {
             "type": "string",
             "description": "Path to the input PDB file",
             "filetype": "input",
-            "sample": "TODO",
+            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr.pdb",
             "enum": [
                 ".*\\.pdb$"
             ],
@@ -41,7 +41,7 @@
             "type": "string",
             "description": "Path to the input topology path",
             "filetype": "input",
-            "sample": "TODO",
+            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr_topology.zip",
             "enum": [
                 ".*\\.zip$",
                 ".*\\.top$",
@@ -71,11 +71,11 @@
                 }
             ]
         },
-        "output_pdb_path": {
+        "output_cmip_pdb_path": {
             "type": "string",
             "description": "Path to the output PDB file",
             "filetype": "output",
-            "sample": "TODO",
+            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/egfr_cmip.pdb",
             "enum": [
                 ".*\\.pdb$"
             ],

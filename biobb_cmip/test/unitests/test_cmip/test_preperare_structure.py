@@ -26,5 +26,5 @@ class TestPrepareStructureTopology():
 
     def test_prepare_structureTopology(self):
         prepare_structure(properties=self.properties, **self.paths)
-        assert fx.not_empty(self.paths['output_pdb_path'])
-        assert fx.equal(self.paths['output_pdb_path'], self.paths['ref_output_prepare_structure_topology_path'], remove_hetatm=False)
+        assert fx.not_empty(self.paths['output_cmip_pdb_path'])
+        assert fx.equal(self.paths['output_cmip_pdb_path'], self.paths['ref_output_prepare_structure_topology_path'], remove_hetatm=False)

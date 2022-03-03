@@ -39,3 +39,12 @@ cmip.prepare_pdb module
     :undoc-members:
     :show-inheritance:
 
+
+cmip.ignore_residues module
+------------------------------
+
+.. automodule:: cmip.ignore_residues
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
