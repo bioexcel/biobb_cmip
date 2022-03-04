@@ -493,7 +493,7 @@ def _get_chain(line: str) -> str:
     return line[21].upper()
 
 def _get_resnum(line: str) -> str:
-    return line[23:27].strip()
+    return line[22:27].strip()
 
 def _is_atom(line: str) -> str:
     return line[0:6].strip().upper() in ["ATOM", "HETATM"]

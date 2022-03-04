@@ -99,6 +99,8 @@ class PrepareStructure(BiobbObject):
                 charges_list = get_topology_charges(top_file)
                 fu.log(f'Reading: {top_file} to extract elements', self.out_log, self.global_log)
                 elements_list = get_topology_cmip_elements_canonical(top_file)
+                two_letter_elements = {"CL": "Cl", "NA": "Na", "ZN": "Zn", "MG": "Mg"}
+                elements_list = [two_letter_elements.get(element, element) for element in elements_list]
 
         # JLG's method
         else:
