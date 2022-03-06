@@ -212,6 +212,7 @@ def probe_params_grid(probe_id: int = 0, readgrid: int = 2, pbfocus: int = 1, pe
 
     return grid_dict
 
+
 def params_grid(grid_type: str = 'cmip', readgrid: int = 0, perfill: float = 0.8,
                 grid_int: Sequence[float] = (0.5, 0.5, 0.5),
                 grid_dim: Sequence[float] = (64, 64, 64),
@@ -355,6 +356,18 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'fvdw': 0.8, 'dields': 2, 'focus': 1, 'cutfoc': 100,
             'tiprot': 5, 'inifoc': 5, 'ninter': 20,
             'clhost': 1, 'minout': 50, 'splitpdb': 0, 'cutelec': 10.0
+        }
+    elif execution_type == 'check_only':
+        params_dict = {
+            'title': 'Check_only dry run of CMIP',
+            'CHECKONLY': 1,
+            'readgrid': 2,
+            'calcgrid': 1,
+            'tipcalc': 3,
+            'irest': 0,
+            'ebyatom': 1,
+            'coorfmt': 2,
+            'fvdw': 0.8
         }
 
     return {**params_dict, **grid_dict, **probe_grid_dict}

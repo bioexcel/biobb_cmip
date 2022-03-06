@@ -2,6 +2,7 @@
 
 """Module containing the Cmip class and the command line interface."""
 import os
+import json
 import argparse
 import shutil
 from pathlib import Path
@@ -12,6 +13,7 @@ from biobb_common.tools.file_utils import launchlogger
 from biobb_common.command_wrapper import cmd_wrapper
 from biobb_cmip.cmip.common import create_params_file
 from biobb_cmip.cmip.common import params_preset
+from biobb_cmip.utils.representation import get_grid
 
 
 class Cmip(BiobbObject):
@@ -31,8 +33,10 @@ class Cmip(BiobbObject):
         output_log_path (str): Path to the output CMIP log file LOG. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_cmip.log>`_. Accepted formats: log (edam:format_2330).
         input_vdw_params_path (str) (Optional): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. Accepted formats: txt (edam:format_2330).
         input_params_path (str) (Optional): Path to the CMIP input parameters file. File type: input. Accepted formats: txt (edam:format_2330).
+        output_json_box_path (str): Path to the output CMIP box in JSON format. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json>`_. Accepted formats: json (edam:format_3464).
+        input_json_box_path (str): Path to the input CMIP box in JSON format. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json>`_. Accepted formats: json (edam:format_3464).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
-            * **execution_type** (*str*) - ("mip_pos") Default options for the params file, each one creates a different params file. Values: mip_pos (MIP O+  Mehler Solmajer dielectric), mip_neg (MIP O-  Mehler Solmajer dielectric), mip_neu (MIP Oxygen Mehler Solmajer dielectric), solvation (Solvation & MEP), energy (Docking Interaction energy calculation. PB electrostatics), docking (Docking Mehler Solmajer dielectric), docking_rst (Docking from restart file).
+            * **execution_type** (*str*) - ("mip_pos") Default options for the params file, each one creates a different params file. Values: check_only (Dry Run of CMIP), mip_pos (MIP O+  Mehler Solmajer dielectric), mip_neg (MIP O-  Mehler Solmajer dielectric), mip_neu (MIP Oxygen Mehler Solmajer dielectric), solvation (Solvation & MEP), energy (Docking Interaction energy calculation. PB electrostatics), docking (Docking Mehler Solmajer dielectric), docking_rst (Docking from restart file).
             * **params** (*dict*) - ({}) CMIP options specification.
             * **cmip_path** (*str*) - ("cmip") Path to the CMIP cmip executable binary.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
@@ -68,7 +72,8 @@ class Cmip(BiobbObject):
     def __init__(self, input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,
                  output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
                  output_byat_path: str = None, output_log_path: str = None, input_vdw_params_path: str = None,
-                 input_params_path: str = None, properties: dict = None, **kwargs) -> None:
+                 input_params_path: str = None, output_json_box_path: str = None, input_json_box_path: str = None,
+                 properties: dict = None, **kwargs) -> None:
 
         properties = properties or {}
 
@@ -80,10 +85,12 @@ class Cmip(BiobbObject):
         # Input/Output files
         self.io_dict = {
             "in": {"input_pdb_path": input_pdb_path, "input_probe_pdb_path": input_probe_pdb_path,
-                   "input_vdw_params_path": input_vdw_params_path, "input_params_path": input_params_path},
+                   "input_vdw_params_path": input_vdw_params_path, "input_params_path": input_params_path,
+                   "input_json_box_path": input_json_box_path},
             "out": {"output_pdb_path": output_pdb_path, "output_grd_path": output_grd_path,
                     "output_cube_path": output_cube_path, "output_rst_path": output_rst_path,
-                    "output_byat_path": output_byat_path, "output_log_path": output_log_path}
+                    "output_byat_path": output_byat_path, "output_log_path": output_log_path,
+                    "output_json_box_path": output_json_box_path}
         }
 
         # Properties specific for BB
@@ -109,23 +116,35 @@ class Cmip(BiobbObject):
         # Check if output_pdb_path ends with ".pdb" and does not contain underscores
         if self.io_dict['out']['output_pdb_path']:
             if (not self.io_dict['out']['output_pdb_path'].endswith('.pdb')) or ("_" in str(Path(self.io_dict['out']['output_pdb_path']).name)):
-                fu.log(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) name must end in .pdb and not contain underscores", out_log, self.global_log)
+                fu.log(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) name must end in .pdb and not contain underscores", self.out_log, self.global_log)
                 raise ValueError(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) name must end in .pdb and not contain underscores")
+
+        params_preset_dict = params_preset(execution_type=self.execution_type)
+        if self.io_dict['input']["input_json_box_path"]:
+            params_preset_dict["readgrid"] = 0
+            with open(self.io_dict['input']["input_json_box_path"]) as json_file:
+                grid_dict = json.loads(json_file)
+            origin = grid_dict['origin']
+            size = grid_dict['size']
+            params_preset_dict['grid_cen'] = f"CENX={origin[0]},CENY={origin[1]},CENZ={origin[2]}"
+            params_preset_dict['grid_dim'] = f"DIMX={size[0]},DIMY={size[1]},DIMZ={size[2]}"
+
+
 
         combined_params_dir = fu.create_unique_dir()
         self.io_dict['in']['combined_params_path'] = create_params_file(
             output_params_path=str(Path(combined_params_dir).joinpath(self.io_dict['in']['combined_params_path'])),
             input_params_path=self.io_dict['in'].get('input_params_path'),
-            params_preset_dict=params_preset(execution_type=self.execution_type),
+            params_preset_dict=params_preset_dict,
             params_properties_dict=self.params)
 
         self.stage_files()
 
 
         self.cmd = [self.cmip_path,
-               '-i', self.stage_io_dict['in']['combined_params_path'],
-               '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
-               '-hs', self.stage_io_dict['in']['input_pdb_path']]
+                    '-i', self.stage_io_dict['in']['combined_params_path'],
+                    '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
+                    '-hs', self.stage_io_dict['in']['input_pdb_path']]
 
         if self.stage_io_dict["in"].get("input_probe_pdb_path") and Path(
                 self.io_dict["in"].get("input_probe_pdb_path")).exists():
@@ -184,6 +203,12 @@ class Cmip(BiobbObject):
                 for line in list_pdb_lines:
                     pdb_file.write(line.replace('ATOMTM', 'ATOM  '))
 
+        if self.io_dict['out'].get('output_json_box_path'):
+            origin, size = get_grid(self.stage_io_dict["out"]["output_log_path"])
+            grid_dict = {'origin': {'x': origin[0], 'y': origin[1], 'z': origin[2]},
+                         'size':   {'x': size[0],   'y': size[1],   'z': size[2]}}
+            with open(self.io_dict['out'].get('output_json_box_path'), 'w') as json_file:
+                json_file.write(json.dumps(grid_dict, indent=4))
 
 
         # Remove temporal files
@@ -196,7 +221,7 @@ class Cmip(BiobbObject):
 def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,
          output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
          output_byat_path: str = None, output_log_path: str = None,
-         input_vdw_params_path: str = None, input_params_path: str = None,
+         input_vdw_params_path: str = None, input_params_path: str = None, output_json_box_path: str = None,
          properties: dict = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.Cmip>` class and
     execute the :meth:`launch() <cmip.cmip.Cmip.launch>` method."""
@@ -205,6 +230,7 @@ def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path:
                 output_grd_path=output_grd_path, output_cube_path=output_cube_path, output_rst_path=output_rst_path,
                 output_byat_path=output_byat_path, output_log_path=output_log_path,
                 input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
+                output_json_box_path=output_json_box_path,
                 properties=properties, **kwargs).launch()
 
 
@@ -225,6 +251,7 @@ def main():
     parser.add_argument('--output_log_path', required=False)
     parser.add_argument('--input_vdw_params_path', required=False)
     parser.add_argument('--input_params_path', required=False)
+    parser.add_argument('--output_json_box_path', required=False)
 
     args = parser.parse_args()
     config = args.config if args.config else None
@@ -233,8 +260,9 @@ def main():
     # Specific call of each building block
     cmip(input_pdb_path=args.input_pdb_path, input_probe_pdb_path=args.input_probe_pdb_path, output_pdb_path=args.output_pdb_path,
          output_grd_path=args.output_grd_path, output_cube_path=args.output_cube_path, output_rst_path=args.output_rst_path,
-         output_byat_path=args.output_byat_path, output_log_path=output_log_path,
+         output_byat_path=args.output_byat_path, output_log_path=args.output_log_path,
          input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
+         output_json_box_path=args.output_json_box_path,
          properties=properties)
 
 

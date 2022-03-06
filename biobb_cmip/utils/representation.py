@@ -5,7 +5,7 @@ from typing import List, Dict, Mapping, Union, Set, Sequence, Tuple, List
 import logging
 import biobb_common.tools.file_utils as fu
 
-def get_energies_byat(cmip_energies_byat_out: Union[str, Path]) -> Tuple[List[str], Dict[str, List[float]]]:
+def get_energies_byat(cmip_energies_byat_out: Union[str, Path],  cutoff: float) -> Tuple[List[str], Dict[str, List[float]]]:
 
     with open(cmip_energies_byat_out, 'r') as energies_file:
         atom_list = []
@@ -78,8 +78,9 @@ def _create_box_representation_file(cmip_log_path: Union[str, Path], cmip_pdb_pa
         boxed_pdb_file.write("END")
     return str(boxed_pdb_path)
 
+
 def _get_vertex_list(cmip_log_path: Union[str, Path]) -> List[str]:
-    origin, size = _get_grid(cmip_log_path)
+    origin, size = get_grid(cmip_log_path)
     vertex = []
     vertex.append(_pdb_coord_formatter(origin[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2]))
     vertex.append(_pdb_coord_formatter(origin[0] + size[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2]))
@@ -92,7 +93,7 @@ def _get_vertex_list(cmip_log_path: Union[str, Path]) -> List[str]:
     return vertex
 
 
-def _get_grid(cmip_log_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float]]:
+def get_grid(cmip_log_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float]]:
     origin = None
     size = None
     with open(cmip_log_path) as log_file:

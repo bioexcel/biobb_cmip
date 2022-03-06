@@ -12,8 +12,8 @@ from biobb_common.tools.file_utils import launchlogger
 class IgnoreResidues(BiobbObject):
     """
     | biobb_cmip IgnoreResidues
-    | Class to ignore residue charges in CMIP potential calculations.
-    | Mark residues which charges will be ignored in the CMIP potential calculations.
+    | Class to ignore residues in CMIP potential calculations.
+    | Mark residues which will be ignored in the CMIP potential calculations except for dielectric definition.
 
     Args:
         input_cmip_pdb_path (str): Input PDB file path. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/input_ignore_res.pdb>`_. Accepted formats: pdb (edam:format_1476).
