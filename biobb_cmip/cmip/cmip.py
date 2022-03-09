@@ -10,10 +10,9 @@ from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.configuration import settings
 from biobb_common.tools import file_utils as fu
 from biobb_common.tools.file_utils import launchlogger
-from biobb_common.command_wrapper import cmd_wrapper
 from biobb_cmip.cmip.common import create_params_file
 from biobb_cmip.cmip.common import params_preset
-from biobb_cmip.utils.representation import get_grid
+from biobb_cmip.cmip.common import get_grid
 
 
 class Cmip(BiobbObject):
@@ -37,6 +36,7 @@ class Cmip(BiobbObject):
         input_json_box_path (str): Path to the input CMIP box in JSON format. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json>`_. Accepted formats: json (edam:format_3464).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **execution_type** (*str*) - ("mip_pos") Default options for the params file, each one creates a different params file. Values: check_only (Dry Run of CMIP), mip_pos (MIP O+  Mehler Solmajer dielectric), mip_neg (MIP O-  Mehler Solmajer dielectric), mip_neu (MIP Oxygen Mehler Solmajer dielectric), solvation (Solvation & MEP), energy (Docking Interaction energy calculation. PB electrostatics), docking (Docking Mehler Solmajer dielectric), docking_rst (Docking from restart file).
+            * **box_size_factor** (*float*) - (1.0) If optional output **output_json_box_path** is used the box size will be multiplied by this factor.
             * **params** (*dict*) - ({}) CMIP options specification.
             * **cmip_path** (*str*) - ("cmip") Path to the CMIP cmip executable binary.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
@@ -96,6 +96,7 @@ class Cmip(BiobbObject):
         # Properties specific for BB
         self.cmip_path = properties.get('cmip_path', 'cmip')
         self.execution_type = properties.get('execution_type', 'mip_pos')
+        self.box_size_factor = float(properties.get('box_size_factor', 1.0))
         self.params = {k: str(v) for k, v in properties.get('params', dict()).items()}
 
         if not self.io_dict['in'].get('input_vdw_params_path'):
@@ -120,16 +121,18 @@ class Cmip(BiobbObject):
                 raise ValueError(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) name must end in .pdb and not contain underscores")
 
         params_preset_dict = params_preset(execution_type=self.execution_type)
-        if self.io_dict['input']["input_json_box_path"]:
+        if self.io_dict['in']["input_json_box_path"]:
             params_preset_dict["readgrid"] = 0
-            with open(self.io_dict['input']["input_json_box_path"]) as json_file:
-                grid_dict = json.loads(json_file)
-            origin = grid_dict['origin']
-            size = grid_dict['size']
-            params_preset_dict['grid_cen'] = f"CENX={origin[0]},CENY={origin[1]},CENZ={origin[2]}"
-            params_preset_dict['grid_dim'] = f"DIMX={size[0]},DIMY={size[1]},DIMZ={size[2]}"
+            origin, size, grid_params = get_grid(self.io_dict['in']["input_json_box_path"])
+            params_preset_dict['grid_int'] = f"INTX={grid_params['INT'][0]},INTY={grid_params['INT'][1]},INTZ={grid_params['INT'][2]}"
+            params_preset_dict['grid_cen'] = f"CENX={grid_params['CEN'][0]},CENY={grid_params['CEN'][1]},CENZ={grid_params['CEN'][2]}"
+            params_preset_dict['grid_dim'] = f"DIMX={grid_params['DIM'][0]},DIMY={grid_params['DIM'][1]},DIMZ={grid_params['DIM'][2]}"
 
-
+        if self.io_dict['out']['output_json_box_path']:
+            params_preset_dict['WRITELOG'] = 1
+            key_value_log_dir = fu.create_unique_dir()
+            self.io_dict['out']['key_value_log_path'] = str(Path(key_value_log_dir).joinpath("key_value_cmip_log.log"))
+            self.tmp_files.append(key_value_log_dir)
 
         combined_params_dir = fu.create_unique_dir()
         self.io_dict['in']['combined_params_path'] = create_params_file(
@@ -139,7 +142,6 @@ class Cmip(BiobbObject):
             params_properties_dict=self.params)
 
         self.stage_files()
-
 
         self.cmd = [self.cmip_path,
                     '-i', self.stage_io_dict['in']['combined_params_path'],
@@ -175,6 +177,10 @@ class Cmip(BiobbObject):
             self.cmd.append('-o')
             self.cmd.append(self.stage_io_dict["out"]["output_log_path"])
 
+        if self.stage_io_dict['out'].get('output_json_box_path'):
+            self.cmd.append('-l')
+            self.cmd.append(self.stage_io_dict["out"]["key_value_log_path"])
+
 
         # Run Biobb block
         self.run_biobb()
@@ -204,9 +210,21 @@ class Cmip(BiobbObject):
                     pdb_file.write(line.replace('ATOMTM', 'ATOM  '))
 
         if self.io_dict['out'].get('output_json_box_path'):
-            origin, size = get_grid(self.stage_io_dict["out"]["output_log_path"])
-            grid_dict = {'origin': {'x': origin[0], 'y': origin[1], 'z': origin[2]},
-                         'size':   {'x': size[0],   'y': size[1],   'z': size[2]}}
+            origin, size, grid_params = get_grid(self.stage_io_dict["out"]["output_log_path"])
+            # Incorrecte també és incorrecte com passem els params al common
+
+            grid_params['DIM'] = (int(grid_params['DIM'][0]*self.box_size_factor),
+                                  int(grid_params['DIM'][1]*self.box_size_factor),
+                                  int(grid_params['DIM'][2]*self.box_size_factor))
+            size_dict = {'x': round(grid_params['DIM'][0]*grid_params['INT'][0], 3),
+                         'y': round(grid_params['DIM'][1]*grid_params['INT'][1], 3),
+                         'z': round(grid_params['DIM'][2]*grid_params['INT'][2], 3)}
+            origin_dict = {'x': round(grid_params['CEN'][0]-size_dict['x']/2, 3),
+                           'y': round(grid_params['CEN'][1]-size_dict['y']/2, 3),
+                           'z': round(grid_params['CEN'][0]-size_dict['z']/2, 3)}
+            grid_dict = {'origin': origin_dict,
+                         'size': size_dict,
+                         'params': grid_params}
             with open(self.io_dict['out'].get('output_json_box_path'), 'w') as json_file:
                 json_file.write(json.dumps(grid_dict, indent=4))
 
@@ -222,7 +240,7 @@ def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path:
          output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
          output_byat_path: str = None, output_log_path: str = None,
          input_vdw_params_path: str = None, input_params_path: str = None, output_json_box_path: str = None,
-         properties: dict = None, **kwargs) -> int:
+         input_json_box_path: str = None, properties: dict = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.Cmip>` class and
     execute the :meth:`launch() <cmip.cmip.Cmip.launch>` method."""
 
@@ -230,7 +248,7 @@ def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path:
                 output_grd_path=output_grd_path, output_cube_path=output_cube_path, output_rst_path=output_rst_path,
                 output_byat_path=output_byat_path, output_log_path=output_log_path,
                 input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
-                output_json_box_path=output_json_box_path,
+                output_json_box_path=output_json_box_path, input_json_box_path=input_json_box_path,
                 properties=properties, **kwargs).launch()
 
 
@@ -252,6 +270,8 @@ def main():
     parser.add_argument('--input_vdw_params_path', required=False)
     parser.add_argument('--input_params_path', required=False)
     parser.add_argument('--output_json_box_path', required=False)
+    parser.add_argument('--input_json_box_path', required=False)
+
 
     args = parser.parse_args()
     config = args.config if args.config else None
@@ -262,7 +282,7 @@ def main():
          output_grd_path=args.output_grd_path, output_cube_path=args.output_cube_path, output_rst_path=args.output_rst_path,
          output_byat_path=args.output_byat_path, output_log_path=args.output_log_path,
          input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
-         output_json_box_path=args.output_json_box_path,
+         output_json_box_path=args.output_json_box_path, input_json_box_path=args.input_json_box_path,
          properties=properties)
 
 

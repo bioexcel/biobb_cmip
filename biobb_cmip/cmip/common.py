@@ -1,12 +1,94 @@
 """ Common functions for package biobb_cmip.cmip """
 import re
+import json
 from pathlib import Path
-from typing import List, Dict, Mapping, Union, Set, Sequence
+from typing import List, Dict, Mapping, Union, Tuple, Sequence
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
 import uuid
 import logging
 import biobb_common.tools.file_utils as fu
+
+
+def get_grid(cmip_log_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+    with open(cmip_log_path) as log_file:
+        first_line = log_file.readline().strip()
+    if first_line.startswith("titleParam"):
+        return _get_grid_from_key_value(cmip_log_path)
+    elif first_line.startswith("{"):
+        return _get_grid_from_box_file(cmip_log_path)
+    return _get_grid_from_text(cmip_log_path)
+
+
+def _get_grid_from_box_file(cmip_box_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+    with open(cmip_box_path) as json_file:
+        grid_dict = json.load(json_file)
+    origin = grid_dict['origin']['x'], grid_dict['origin']['y'], grid_dict['origin']['z']
+    size = grid_dict['size']['x'], grid_dict['size']['y'], grid_dict['size']['z']
+    return origin, size, grid_dict['params']
+
+
+def _get_grid_from_text(cmip_log_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+    origin = None
+    size = None
+    grid_params = {"CEN": None, "DIM": None, "INT": None}
+
+    with open(cmip_log_path) as log_file:
+        inside_automatic_grid = False
+        for line in log_file:
+            if line.strip() in ["AUTOMATIC GRID", "MANUAL GRID"]:
+                inside_automatic_grid = True
+            if inside_automatic_grid:
+                origin_match = re.match(r"Grid origin:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))", line.strip())
+                if origin_match:
+                    origin = float(origin_match.group(1)), float(origin_match.group(2)), float(origin_match.group(3))
+                size_match = re.match(r"Grid Size:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))", line.strip())
+                if size_match:
+                    size = float(size_match.group(1)), float(size_match.group(2)), float(size_match.group(3))
+                int_match = re.match(r"Grid units:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))", line.strip())
+                if int_match:
+                    grid_params['INT'] = float(int_match.group(1)), float(int_match.group(2)), float(int_match.group(3))
+                cen_match = re.match(r"Grid center:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))",line.strip())
+                if cen_match:
+                    grid_params['CEN'] = float(cen_match.group(1)), float(cen_match.group(2)), float(cen_match.group(3))
+                dim_match = re.match(r"Grid density:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))", line.strip())
+                if dim_match:
+                    grid_params['DIM'] = int(dim_match.group(1)), int(dim_match.group(2)), int(dim_match.group(3))
+                if origin and size and grid_params['INT'] and grid_params['CEN'] and grid_params['DIM']:
+                    break
+    return origin, size, grid_params
+
+
+def _get_grid_from_key_value(cmip_log_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+    origin = None
+    size = None
+    grid_params = {"CEN": None, "DIM": None, "INT": None}
+
+    with open(cmip_log_path) as log_file:
+        inside_automatic_grid = False
+        for line in log_file:
+            if line.strip() in ["AUTOMATIC GRID", "MANUAL GRID"]:
+                inside_automatic_grid = True
+            if inside_automatic_grid:
+                origin_match = re.match(r"origin=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))", line.strip())
+                if origin_match:
+                    origin = float(origin_match.group(1)), float(origin_match.group(2)), float(origin_match.group(3))
+                size_match = re.match(r"size=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))", line.strip())
+                if size_match:
+                    size = float(size_match.group(1)), float(size_match.group(2)), float(size_match.group(3))
+                int_match = re.match(r"spacing=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))", line.strip())
+                if int_match:
+                    grid_params['INT'] = float(int_match.group(1)), float(int_match.group(2)), float(int_match.group(3))
+                cen_match = re.match(r"center=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))",line.strip())
+                if cen_match:
+                    grid_params['CEN'] = float(cen_match.group(1)), float(cen_match.group(2)), float(cen_match.group(3))
+                dim_match = re.match(r"dim=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))", line.strip())
+                if dim_match:
+                    grid_params['DIM'] = int(dim_match.group(1)), int(dim_match.group(2)), int(dim_match.group(3))
+                if origin and size and grid_params['INT'] and grid_params['CEN'] and grid_params['DIM']:
+                    break
+    return origin, size, grid_params
+
 
 
 def create_unique_file_path(parent_dir: Union[str, Path] = None, extension: str = None) -> str:
@@ -363,7 +445,7 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'CHECKONLY': 1,
             'readgrid': 2,
             'calcgrid': 1,
-            'tipcalc': 3,
+            'tipcalc': 0,
             'irest': 0,
             'ebyatom': 1,
             'coorfmt': 2,

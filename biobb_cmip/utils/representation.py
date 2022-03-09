@@ -1,24 +1,20 @@
 """ Representation functions for package biobb_cmip.cmip """
-import re
+from biobb_cmip.cmip.common import get_grid
 from pathlib import Path
+from MDAnalysis.lib.util import inverse_aa_codes
 from typing import List, Dict, Mapping, Union, Set, Sequence, Tuple, List
-import logging
-import biobb_common.tools.file_utils as fu
 
-def get_energies_byat(cmip_energies_byat_out: Union[str, Path],  cutoff: float) -> Tuple[List[str], Dict[str, List[float]]]:
+
+def get_energies_byat(cmip_energies_byat_out: Union[str, Path], cutoff: float = 100.0) -> Tuple[List[str], Dict[str, List[float]]]:
 
     with open(cmip_energies_byat_out, 'r') as energies_file:
         atom_list = []
         energy_dict = {"ES": [], "VDW": [], "ES&VDW": []}
         for line in energies_file:
             atom_list.append(line[6:12].strip())
-            vdw = float(line[42:53])
-            es = float(line[57:68])
-            both = float(line[72:83])
-            if both > 100:
-                vdw = 0.0
-                es = 0.0
-                both = 0.0
+            vdw = float(line[42:53]) if float(line[42:53]) < cutoff else 0.0
+            es = float(line[57:68]) if float(line[57:68]) < cutoff else 0.0
+            both = float(line[72:83]) if float(line[72:83]) < cutoff else 0.0
 
             energy_dict["ES"].append(es)
             energy_dict["VDW"].append(vdw)
@@ -26,26 +22,22 @@ def get_energies_byat(cmip_energies_byat_out: Union[str, Path],  cutoff: float) 
 
     return atom_list, energy_dict
 
-def get_energies_byres(cmip_energies_byat_out: Union[str, Path]) -> Tuple[List[str], Dict[str, List[float]]]:
+
+def get_energies_byres(cmip_energies_byat_out: Union[str, Path], cutoff: float = 100.0) -> Tuple[List[str], Dict[str, List[float]]]:
     residues = []
     energy_dict = {"ES": [], "VDW": [], "ES&VDW": []}
     with open(cmip_energies_byat_out, 'r') as energies_file:
         for line in energies_file:
             chain = line[21:22].strip()
             residue_id = line[22:28].strip()
-            residue = chain+':'+residue_id
-            vdw = float(line[42:53])
-            es = float(line[57:68])
-            both = float(line[72:83])
-            if both > 100:
-                vdw = 0.0
-                es = 0.0
-                both = 0.0
-            # Values greater than 100 are represented as 0
-            # This step is performed to filter 'infinity' values
-            energies = (vdw, es, both) if both < 100 else (0, 0, 0)
+            resname = inverse_aa_codes.get(line[17:21].strip().upper(), "X")
+            residue = chain+':'+resname+':'+residue_id
+            vdw = float(line[42:53]) if float(line[42:53]) < cutoff else 0.0
+            es = float(line[57:68]) if float(line[57:68]) < cutoff else 0.0
+            both = float(line[72:83]) if float(line[72:83]) < cutoff else 0.0
+
             if residue in residues:
-                index =  residues.index(residue)
+                index = residues.index(residue)
                 energy_dict["ES"][index] += es
                 energy_dict["VDW"][index] += vdw
                 energy_dict["ES&VDW"][index] += both
@@ -60,6 +52,7 @@ def get_energies_byres(cmip_energies_byat_out: Union[str, Path]) -> Tuple[List[s
 
 def create_box_representation(cmip_log_path: Union[str, Path], cmip_pdb_path: Union[str, Path]) -> Tuple[str, List[List[str]]]:
     return _create_box_representation_file(cmip_log_path, cmip_pdb_path), _get_atom_pair()
+
 
 def _create_box_representation_file(cmip_log_path: Union[str, Path], cmip_pdb_path: Union[str, Path]) -> str:
     vertex_list = _get_vertex_list(cmip_log_path)
@@ -80,34 +73,21 @@ def _create_box_representation_file(cmip_log_path: Union[str, Path], cmip_pdb_pa
 
 
 def _get_vertex_list(cmip_log_path: Union[str, Path]) -> List[str]:
-    origin, size = get_grid(cmip_log_path)
-    vertex = []
-    vertex.append(_pdb_coord_formatter(origin[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2]))
-    vertex.append(_pdb_coord_formatter(origin[0] + size[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2]))
-    vertex.append(_pdb_coord_formatter(origin[0]) + _pdb_coord_formatter(origin[1] + size[1]) + _pdb_coord_formatter(origin[2]))
-    vertex.append(_pdb_coord_formatter(origin[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2] + size[2]))
-    vertex.append(_pdb_coord_formatter(origin[0] + size[0]) + _pdb_coord_formatter(origin[1] + size[1]) + _pdb_coord_formatter(origin[2]))
-    vertex.append(_pdb_coord_formatter(origin[0] + size[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2] + size[2]))
-    vertex.append(_pdb_coord_formatter(origin[0]) + _pdb_coord_formatter(origin[1] + size[1]) + _pdb_coord_formatter(origin[2] + size[2]))
-    vertex.append(_pdb_coord_formatter(origin[0] + size[0]) + _pdb_coord_formatter(origin[1] + size[1]) + _pdb_coord_formatter(origin[2] + size[2]))
-    return vertex
-
-
-def get_grid(cmip_log_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float]]:
-    origin = None
-    size = None
-    with open(cmip_log_path) as log_file:
-        for line in log_file:
-            origin_match = re.match(r"Grid origin:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))", line.strip())
-            if origin_match and not origin:
-                origin = float(origin_match.group(1)), float(origin_match.group(2)), float(origin_match.group(3))
-            size_match = re.match(r"Grid Size:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))", line.strip())
-            if size_match and not size:
-                size = float(size_match.group(1)), float(size_match.group(2)), float(size_match.group(3))
-    return origin, size
+    origin, size, _ = get_grid(cmip_log_path)
+    return [
+        _pdb_coord_formatter(origin[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2]),
+        _pdb_coord_formatter(origin[0] + size[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2]),
+        _pdb_coord_formatter(origin[0]) + _pdb_coord_formatter(origin[1] + size[1]) + _pdb_coord_formatter(origin[2]),
+        _pdb_coord_formatter(origin[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2] + size[2]),
+        _pdb_coord_formatter(origin[0] + size[0]) + _pdb_coord_formatter(origin[1] + size[1]) + _pdb_coord_formatter(origin[2]),
+        _pdb_coord_formatter(origin[0] + size[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2] + size[2]),
+        _pdb_coord_formatter(origin[0]) + _pdb_coord_formatter(origin[1] + size[1]) + _pdb_coord_formatter(origin[2] + size[2]),
+        _pdb_coord_formatter(origin[0] + size[0]) + _pdb_coord_formatter(origin[1] + size[1]) + _pdb_coord_formatter(origin[2] + size[2]),
+    ]
 
 def _pdb_coord_formatter(coordinate: float) -> str:
     return str(round(coordinate, 3)).rjust(8)
+
 
 def _get_atom_pair() -> List[List[str]]:
     return [[ "9999:Z.ZN0", "9999:Z.ZN1" ],
@@ -125,3 +105,29 @@ def _get_atom_pair() -> List[List[str]]:
             [ "9999:Z.ZN4", "9999:Z.ZN7" ],
             [ "9999:Z.ZN5", "9999:Z.ZN7" ],
             [ "9999:Z.ZN6", "9999:Z.ZN7" ]]
+
+# AUTOMATIC OUTER GRID / titleGrid0=Automatic Outer Grid
+#
+# INT:
+#     spacing=   1.50000000     ,   1.50000000     ,   1.50000000
+#     Grid units:      1.500   1.500   1.500
+# CEN:
+#     center=   71.6100006     ,   67.7550049     ,   56.3150024
+#     Grid center:    71.610  67.755  56.315
+# DIM:
+#     dim=          64 ,          92 ,          72
+#     Grid density:    64   92   72
+#
+# To create graphic representations:
+# Size:
+#     Grid Size:      96.000 138.000 108.000  90.000  90.000  90.000
+#     size=   96.0000000     ,   138.000000     ,   108.000000
+#
+# Origin:
+#     Grid origin:    23.610  -1.245   2.315
+#     origin=   23.6100006     ,  -1.24499512     ,   2.31500244
+
+
+
+
+
