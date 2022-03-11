@@ -7,6 +7,7 @@ from biobb_cmip.cmip.common import mark_residues
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.configuration import settings
 from biobb_common.tools.file_utils import launchlogger
+import biobb_common.tools.file_utils as fu
 
 
 class IgnoreResidues(BiobbObject):
