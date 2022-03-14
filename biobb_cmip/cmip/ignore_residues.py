@@ -80,7 +80,6 @@ class IgnoreResidues(BiobbObject):
             self.residue_list = None
 
         if self.residue_list:
-            aux_residue_list = []
             if not isinstance(self.residue_list, list):
                 self.residue_list = str(self.residue_list).split(",")
             for i in range(len(self.residue_list)):

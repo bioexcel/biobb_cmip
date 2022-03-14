@@ -552,7 +552,7 @@ def mark_residues(residue_list: Sequence[str], input_cmip_pdb_path: str, output_
                     residue_set_used.add(used_residue)
                     line = _mark_pdb_atom(line)
             pdb_file_out.write(line)
-        fu.log(f"{len(residue_set_used)} residues have been marked", out_log, global_log)
+        fu.log(f"{res_counter} residues have been marked", out_log, global_log)
 
         if residue_list:
             unused_residues = set(residue_list) - residue_set_used
