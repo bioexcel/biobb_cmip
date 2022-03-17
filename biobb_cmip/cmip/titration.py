@@ -33,7 +33,7 @@ class Titration(BiobbObject):
             * **neutral** (*bool*) - (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account.
             * **num_positive_ions** (*int*) - (10) Number of positive ions to be added (Tipatom IP=Na+).
             * **num_negative_ions** (*int*) - (10) Number of negative ions to be added (Tipatom IM=Cl-).
-            * **titration_path** (*str*) - ("titration") Path to the CMIP Titration executable binary.
+            * **binary_path** (*str*) - ("titration") Path to the CMIP Titration executable binary.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
             * **restart** (*bool*) - (False) [WF property] Do not execute if output files exist.
             * **container_path** (*str*) - (None)  Path to the binary executable of your container.
@@ -48,7 +48,7 @@ class Titration(BiobbObject):
         This is a use example of how to use the building block from Python::
 
             from biobb_cmip.cmip.titration import titration
-            prop = { 'titration_path': 'titration' }
+            prop = { 'binary_path': 'titration' }
             titration(input_pdb_path='/path/to/myStructure.pdb',
                       output_pdb_path='/path/to/newStructure.pdb',
                       properties=prop)
@@ -83,7 +83,7 @@ class Titration(BiobbObject):
         self.num_wats = properties.get('num_wats')
         self.num_positive_ions = properties.get('num_positive_ions')
         self.num_negative_ions = properties.get('num_negative_ions')
-        self.titration_path = properties.get('titration_path', 'titration')
+        self.binary_path = properties.get('binary_path', 'titration')
         self.output_params_path = properties.get('output_params_path', 'params')
         if not self.io_dict['in'].get('input_vdw_params_path'):
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
@@ -140,7 +140,7 @@ class Titration(BiobbObject):
 
         self.stage_files()
 
-        self.cmd = [self.titration_path,
+        self.cmd = [self.binary_path,
                     '-i', self.stage_io_dict['in']['combined_params_path'],
                     '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
                     '-hs', self.stage_io_dict['in']['input_pdb_path'],

@@ -38,7 +38,7 @@ class Cmip(BiobbObject):
             * **execution_type** (*str*) - ("mip_pos") Default options for the params file, each one creates a different params file. Values: check_only (Dry Run of CMIP), mip_pos (MIP O+  Mehler Solmajer dielectric), mip_neg (MIP O-  Mehler Solmajer dielectric), mip_neu (MIP Oxygen Mehler Solmajer dielectric), solvation (Solvation & MEP), energy (Docking Interaction energy calculation. PB electrostatics), docking (Docking Mehler Solmajer dielectric), docking_rst (Docking from restart file).
             * **box_size_factor** (*float*) - (1.0) If optional output **output_json_box_path** is used the box size will be multiplied by this factor.
             * **params** (*dict*) - ({}) CMIP options specification.
-            * **cmip_path** (*str*) - ("cmip") Path to the CMIP cmip executable binary.
+            * **binary_path** (*str*) - ("cmip") Path to the CMIP cmip executable binary.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
             * **restart** (*bool*) - (False) [WF property] Do not execute if output files exist.
             * **container_path** (*str*) - (None)  Path to the binary executable of your container.
@@ -53,7 +53,7 @@ class Cmip(BiobbObject):
         This is a use example of how to use the building block from Python::
 
             from biobb_cmip.cmip.cmip import cmip
-            prop = { 'cmip_path': 'cmip' }
+            prop = { 'binary_path': 'cmip' }
             cmip(input_pdb_path='/path/to/myStructure.pdb',
                       output_pdb_path='/path/to/newStructure.pdb',
                       output_log_path='/path/to/newStructureLog.log',
@@ -94,7 +94,7 @@ class Cmip(BiobbObject):
         }
 
         # Properties specific for BB
-        self.cmip_path = properties.get('cmip_path', 'cmip')
+        self.binary_path = properties.get('binary_path', 'cmip')
         self.execution_type = properties.get('execution_type', 'mip_pos')
         self.box_size_factor = float(properties.get('box_size_factor', 1.0))
         self.params = {k: str(v) for k, v in properties.get('params', dict()).items()}
@@ -143,7 +143,7 @@ class Cmip(BiobbObject):
 
         self.stage_files()
 
-        self.cmd = [self.cmip_path,
+        self.cmd = [self.binary_path,
                     '-i', self.stage_io_dict['in']['combined_params_path'],
                     '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
                     '-hs', self.stage_io_dict['in']['input_pdb_path']]

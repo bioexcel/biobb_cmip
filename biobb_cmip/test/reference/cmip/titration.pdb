@@ -1,0 +1,59 @@
+REMARK interaction energy    3.078 kcal/mol
+ATOM      1  OW  WAT     1      52.055  78.226  51.681 -0.8340  OW  
+ATOM      2  HW  WAT     1      51.654  79.030  51.341  0.4170  HW  
+ATOM      3  HW  WAT     1      52.010  77.546  51.017  0.4170  HW  
+TER
+REMARK interaction energy    3.121 kcal/mol
+ATOM      4  OW  WAT     2      25.055  60.726  62.681 -0.8340  OW  
+ATOM      5  HW  WAT     2      24.099  60.632  62.706  0.4170  HW  
+ATOM      6  HW  WAT     2      25.300  61.566  63.057  0.4170  HW  
+TER
+REMARK interaction energy    3.438 kcal/mol
+ATOM      7  OW  WAT     3      43.055  64.726  39.181 -0.8340  OW  
+ATOM      8  HW  WAT     3      42.587  64.188  38.537  0.4170  HW  
+ATOM      9  HW  WAT     3      43.527  64.159  39.783  0.4170  HW  
+TER
+REMARK interaction energy    3.590 kcal/mol
+ATOM     10  OW  WAT     4      37.555  71.226  43.181 -0.8340  OW  
+ATOM     11  HW  WAT     4      37.941  71.833  42.544  0.4170  HW  
+ATOM     12  HW  WAT     4      36.608  71.314  43.168  0.4170  HW  
+TER
+REMARK interaction energy    3.692 kcal/mol
+ATOM     13  OW  WAT     5      53.555  82.226  57.681 -0.8340  OW  
+ATOM     14  HW  WAT     5      52.626  82.216  57.927  0.4170  HW  
+ATOM     15  HW  WAT     5      53.816  83.117  57.472  0.4170  HW  
+TER
+REMARK interaction energy    4.257 kcal/mol
+ATOM     16  OW  WAT     6      47.555  90.726  64.682 -0.8340  OW  
+ATOM     17  HW  WAT     6      47.140  91.040  65.489  0.4170  HW  
+ATOM     18  HW  WAT     6      47.259  89.840  64.498  0.4170  HW  
+TER
+REMARK interaction energy    4.316 kcal/mol
+ATOM     19  OW  WAT     7      51.555  91.726  51.181 -0.8340  OW  
+ATOM     20  HW  WAT     7      52.212  91.447  51.826  0.4170  HW  
+ATOM     21  HW  WAT     7      51.963  92.307  50.547  0.4170  HW  
+TER
+REMARK interaction energy    4.329 kcal/mol
+ATOM     22  OW  WAT     8      30.555  68.226  46.181 -0.8340  OW  
+ATOM     23  HW  WAT     8      30.872  67.791  46.978  0.4170  HW  
+ATOM     24  HW  WAT     8      30.867  67.751  45.418  0.4170  HW  
+TER
+REMARK interaction energy    4.373 kcal/mol
+ATOM     25  OW  WAT     9      48.055  76.726  44.181 -0.8340  OW  
+ATOM     26  HW  WAT     9      48.030  76.773  45.141  0.4170  HW  
+ATOM     27  HW  WAT     9      48.866  77.115  43.868  0.4170  HW  
+TER
+REMARK interaction energy    4.480 kcal/mol
+ATOM     28  OW  WAT    10      51.055  81.726  53.181 -0.8340  OW  
+ATOM     29  HW  WAT    10      51.375  82.613  52.994  0.4170  HW  
+ATOM     30  HW  WAT    10      51.093  81.202  52.387  0.4170  HW  
+TER
+REMARK interaction energy   73.913 kcal/mol
+ATOM     31  Na  CIO    11      60.055  75.726  70.682  1.0000  Na  
+TER
+REMARK interaction energy   74.325 kcal/mol
+ATOM     32  Na  CIO    12      59.555  79.226  43.681  1.0000  Na  
+TER
+REMARK interaction energy   75.482 kcal/mol
+ATOM     33  Na  CIO    13      46.555  89.226  67.682  1.0000  Na  
+TER

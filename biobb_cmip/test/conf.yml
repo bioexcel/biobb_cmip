@@ -6,7 +6,7 @@ titration:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_pdb_path: output_pdb.pdb
-    ref_output_pdb_path: file:test_reference_dir/cmip/1kim_neutral.pdb
+    ref_output_pdb_path: file:test_reference_dir/cmip/titration.pdb
   properties:
     remove_tmp: False
     neutral: True
@@ -15,7 +15,7 @@ titration_docker:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_pdb_path: output_pdb.pdb
-    ref_output_pdb_path: file:test_reference_dir/cmip/1kim_neutral.pdb
+    ref_output_pdb_path: file:test_reference_dir/cmip/titration.pdb
   properties:
     neutral: True
     container_path: docker
@@ -122,25 +122,23 @@ cmip_docking_singularity:
 
 cmip_energy:
   paths:
-    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
-    output_grd_path: output_grd.grd
-    output_cube_path: output_cube.cube
-    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
-    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+    input_pdb_path: file:test_data_dir/cmip/RBD-hACE2.hACE2.cmip.pdb
+    input_probe_pdb_path: file:test_data_dir/cmip/RBD-hACE2.RBD.cmip.pdb
+    output_byat_path: output_byat.out
+    ref_output_byat_path: file:test_reference_dir/cmip/RBD.energies.byat.out
   properties:
     remove_tmp: True
-    execution_type: mip
+    execution_type: energy
 
 cmip_energy_docker:
   paths:
-    input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
-    output_grd_path: output_grd.grd
-    output_cube_path: output_cube.cube
-    ref_output_cmip_mip_cube_path: file:test_reference_dir/cmip/cmip_mip.cube
-    ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
+    input_pdb_path: file:test_data_dir/cmip/RBD-hACE2.hACE2.cmip.pdb
+    input_probe_pdb_path: file:test_data_dir/cmip/RBD-hACE2.RBD.cmip.pdb
+    output_byat_path: output_byat.out
+    ref_output_byat_path: file:test_reference_dir/cmip/RBD.energies.byat.out
   properties:
     remove_tmp: True
-    execution_type: mip
+    execution_type: energy
     container_path: docker
     container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
