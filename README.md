@@ -14,7 +14,7 @@ The latest documentation of this package can be found in our readthedocs site:
 [latest API documentation](http://biobb-cmip.readthedocs.io/en/latest/).
 
 ### Version
-v3.7.6 2021.4
+v3.7.7 2021.4
 
 ### Installation
 Using PIP:

@@ -2,8 +2,8 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "http://bioexcel.eu/biobb_cmip/json_schemas/1.0/ignore_residues",
     "name": "biobb_cmip IgnoreResidues",
-    "title": "Class to ignore residue charges in CMIP potential calculations.",
-    "description": "Mark residues which charges will be ignored in the CMIP potential calculations.",
+    "title": "Class to ignore residues in CMIP potential calculations.",
+    "description": "Mark residues which will be ignored in the CMIP potential calculations except for dielectric definition.",
     "type": "object",
     "info": {
         "wrapped_software": {

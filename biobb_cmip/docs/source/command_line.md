@@ -134,7 +134,7 @@ Config parameters for this building block:
 * **neutral** (*boolean*): (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account..
 * **num_positive_ions** (*integer*): (10) Number of positive ions to be added (Tipatom IP=Na+)..
 * **num_negative_ions** (*integer*): (10) Number of negative ions to be added (Tipatom IM=Cl-)..
-* **titration_path** (*string*): (titration) Path to the CMIP Titration executable binary..
+* **binary_path** (*string*): (titration) Path to the CMIP Titration executable binary..
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
 * **container_path** (*string*): (None) Path to the binary executable of your container..
@@ -232,13 +232,16 @@ Config input / output arguments for this building block:
 * **output_log_path** (*string*): Path to the output CMIP log file LOG. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_cmip.log). Accepted formats: LOG
 * **input_vdw_params_path** (*string*): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. [Sample file](None). Accepted formats: TXT
 * **input_params_path** (*string*): Path to the CMIP input parameters file. File type: input. [Sample file](None). Accepted formats: TXT
+* **output_json_box_path** (*string*): Path to the output CMIP box in JSON format. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json). Accepted formats: JSON
+* **input_json_box_path** (*string*): Path to the input CMIP box in JSON format. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json). Accepted formats: JSON
 ### Config
 Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
 * **execution_type** (*string*): (mip_pos) Default options for the params file, each one creates a different params file. .
+* **box_size_factor** (*number*): (1.0) If optional output **output_json_box_path** is used the box size will be multiplied by this factor..
 * **params** (*object*): ({}) CMIP options specification..
-* **cmip_path** (*string*): (cmip) Path to the CMIP cmip executable binary..
+* **binary_path** (*string*): (cmip) Path to the CMIP cmip executable binary..
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
 * **container_path** (*string*): (None) Path to the binary executable of your container..
@@ -257,7 +260,7 @@ properties:
 ```
 #### Command line
 ```python
-cmip --config config_cmip_mip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt
+cmip --config config_cmip_mip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --input_json_box_path ref_box.json
 ```
 ### JSON
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_mip.json)
@@ -271,11 +274,11 @@ cmip --config config_cmip_mip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_
 ```
 #### Command line
 ```python
-cmip --config config_cmip_mip.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt
+cmip --config config_cmip_mip.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --input_json_box_path ref_box.json
 ```
 
 ## Ignore_residues
-Class to ignore residue charges in CMIP potential calculations.
+Class to ignore residues in CMIP potential calculations.
 ### Get help
 Command:
 ```python

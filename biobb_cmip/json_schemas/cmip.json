@@ -18,7 +18,9 @@
     },
     "required": [
         "input_pdb_path",
-        "output_log_path"
+        "output_log_path",
+        "output_json_box_path",
+        "input_json_box_path"
     ],
     "properties": {
         "input_pdb_path": {
@@ -181,6 +183,38 @@
                 }
             ]
         },
+        "output_json_box_path": {
+            "type": "string",
+            "description": "Path to the output CMIP box in JSON format",
+            "filetype": "output",
+            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json",
+            "enum": [
+                ".*\\.json$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.json$",
+                    "description": "Path to the output CMIP box in JSON format",
+                    "edam": "format_3464"
+                }
+            ]
+        },
+        "input_json_box_path": {
+            "type": "string",
+            "description": "Path to the input CMIP box in JSON format",
+            "filetype": "input",
+            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json",
+            "enum": [
+                ".*\\.json$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.json$",
+                    "description": "Path to the input CMIP box in JSON format",
+                    "edam": "format_3464"
+                }
+            ]
+        },
         "properties": {
             "type": "object",
             "properties": {
@@ -190,6 +224,7 @@
                     "wf_prop": false,
                     "description": "Default options for the params file, each one creates a different params file. ",
                     "enum": [
+                        "check_only",
                         "mip_pos",
                         "mip_neg",
                         "mip_neu",
@@ -199,6 +234,10 @@
                         "docking_rst"
                     ],
                     "property_formats": [
+                        {
+                            "name": "check_only",
+                            "description": "Dry Run of CMIP"
+                        },
                         {
                             "name": "mip_pos",
                             "description": "MIP O+  Mehler Solmajer dielectric"
@@ -229,13 +268,19 @@
                         }
                     ]
                 },
+                "box_size_factor": {
+                    "type": "number",
+                    "default": 1.0,
+                    "wf_prop": false,
+                    "description": "If optional output **output_json_box_path** is used the box size will be multiplied by this factor."
+                },
                 "params": {
                     "type": "object",
                     "default": {},
                     "wf_prop": false,
                     "description": "CMIP options specification."
                 },
-                "cmip_path": {
+                "binary_path": {
                     "type": "string",
                     "default": "cmip",
                     "wf_prop": false,

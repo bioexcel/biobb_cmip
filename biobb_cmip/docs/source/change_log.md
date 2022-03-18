@@ -1,5 +1,11 @@
 # Biobb CMIP changelog
 
+## What's new in version [3.7.7](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.7)?
+Adding compatibility with json box.
+
+### New features
+* Adding json box.
+
 ## What's new in version [3.7.6](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.6)?
 Bug fixes in Titration and MIP.
 

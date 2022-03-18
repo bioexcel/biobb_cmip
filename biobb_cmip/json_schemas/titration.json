@@ -124,7 +124,7 @@
                     "wf_prop": false,
                     "description": "Number of negative ions to be added (Tipatom IM=Cl-)."
                 },
-                "titration_path": {
+                "binary_path": {
                     "type": "string",
                     "default": "titration",
                     "wf_prop": false,

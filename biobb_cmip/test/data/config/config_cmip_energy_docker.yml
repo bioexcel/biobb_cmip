@@ -2,5 +2,5 @@ properties:
   container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
   container_path: docker
   container_volume_path: /inout
-  execution_type: mip
+  execution_type: energy
   remove_tmp: true
