@@ -17,10 +17,7 @@
         }
     },
     "required": [
-        "input_pdb_path",
-        "output_log_path",
-        "output_json_box_path",
-        "input_json_box_path"
+        "input_pdb_path"
     ],
     "properties": {
         "input_pdb_path": {
