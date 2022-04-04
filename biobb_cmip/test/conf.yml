@@ -120,7 +120,7 @@ cmip_docking_singularity:
     container_image: cmip.simg
     container_volume_path: /inout
 
-cmip_energy:
+cmip:
   paths:
     input_pdb_path: file:test_data_dir/cmip/RBD-hACE2.hACE2.cmip.pdb
     input_probe_pdb_path: file:test_data_dir/cmip/RBD-hACE2.RBD.cmip.pdb
@@ -130,7 +130,7 @@ cmip_energy:
     remove_tmp: True
     execution_type: energy
 
-cmip_energy_docker:
+cmip_docker:
   paths:
     input_pdb_path: file:test_data_dir/cmip/RBD-hACE2.hACE2.cmip.pdb
     input_probe_pdb_path: file:test_data_dir/cmip/RBD-hACE2.RBD.cmip.pdb
@@ -143,7 +143,7 @@ cmip_energy_docker:
     container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
 
-cmip_energy_singularity:
+cmip_singularity:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_grd_path: output_grd.grd

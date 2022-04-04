@@ -40,7 +40,7 @@ from biobb_cmip.cmip.cmip import cmip
 
 class TestCmipEnergyDocker():
     def setUp(self):
-        fx.test_setup(self, 'cmip_energy_docker')
+        fx.test_setup(self, 'cmip_docker')
 
     def tearDown(self):
         # pass

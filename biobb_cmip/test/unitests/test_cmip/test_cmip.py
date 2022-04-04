@@ -38,7 +38,7 @@ from biobb_cmip.cmip.cmip import cmip
 
 class TestCmipEnergy():
     def setUp(self):
-        fx.test_setup(self, 'cmip_energy')
+        fx.test_setup(self, 'cmip')
 
     def tearDown(self):
         #pass
