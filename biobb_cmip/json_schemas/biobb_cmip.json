@@ -20,28 +20,28 @@
             "tool" : "CMIP titration",
             "desc" : "CMIP cmip module compute classical molecular interaction potentials.",
             "exec" : "titration",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-titration.titration"
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.titration"
         },
         {
             "block" : "PrepareStructure",
             "tool" : "Prepare Structure",
             "desc" : "Creates a CMIP suitable PDB from an standar structure file",
             "exec" : "prepare_structure",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-prepare_structure.prepare_structure"
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.prepare_structure"
         },
         {
             "block" : "PreparePDB",
             "tool" : "Prepare PDB",
             "desc" : "Creates a CMIP suitable PDB from an standar PDB file",
             "exec" : "prepare_pdb",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-prepare_pdb.prepare_pdb"
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.prepare_pdb"
         },
         {
             "block" : "IgnoreResidues",
             "tool" : "Ignore Residues",
             "desc" : "Mark residues which charges will be ignored in the CMIP potential calculations.",
             "exec" : "ignore_residues",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-ignore_residues.ignore_residues"
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.ignore_residues"
         }
     ],
     "dep_pypi" : [
