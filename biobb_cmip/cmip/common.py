@@ -397,10 +397,12 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'novdwgrid': 1, 'solvenergy': 1, 'dielc': 1, 'dielsol': 80
         }
 
-    elif execution_type == 'energy':
+    elif execution_type == 'pb_interaction_energy':
         grid_dict = params_grid(grid_type='energy', readgrid= 2)
         probe_grid_dict = probe_params_grid(probe_id= 0, readgrid= 2, pbfocus= 1, perfill= 0.6,
                                             grid_int=(1.5, 1.5, 1.5))
+
+        # TODO Check for external box file or parameters
         params_dict = {
             'title': 'Docking Interaction energy calculation. PB electrostatics',
             'tipcalc': 3,

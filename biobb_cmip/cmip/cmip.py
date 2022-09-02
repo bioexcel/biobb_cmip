@@ -34,6 +34,7 @@ class Cmip(BiobbObject):
         input_params_path (str) (Optional): Path to the CMIP input parameters file. File type: input. Accepted formats: txt (edam:format_2330).
         output_json_box_path (str) (Optional): Path to the output CMIP box in JSON format. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json>`_. Accepted formats: json (edam:format_3464).
         input_json_box_path (str) (Optional): Path to the input CMIP box in JSON format. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json>`_. Accepted formats: json (edam:format_3464).
+        input_json_external_box_path (str) (Optional): Path to the input CMIP box in JSON format. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json>`_. Accepted formats: json (edam:format_3464).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **execution_type** (*str*) - ("mip_pos") Default options for the params file, each one creates a different params file. Values: check_only (Dry Run of CMIP), mip_pos (MIP O+  Mehler Solmajer dielectric), mip_neg (MIP O-  Mehler Solmajer dielectric), mip_neu (MIP Oxygen Mehler Solmajer dielectric), solvation (Solvation & MEP), energy (Docking Interaction energy calculation. PB electrostatics), docking (Docking Mehler Solmajer dielectric), docking_rst (Docking from restart file).
             * **box_size_factor** (*float*) - (1.0) If optional output **output_json_box_path** is used the box size will be multiplied by this factor.
@@ -121,6 +122,13 @@ class Cmip(BiobbObject):
                 raise ValueError(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) name must end in .pdb and not contain underscores")
 
         params_preset_dict = params_preset(execution_type=self.execution_type)
+        if self.io_dict['in']["input_json_external_box_path"]:
+            params_preset_dict["readgrid0"] = 0
+            origin, size, grid_params = get_grid(self.io_dict['in']["input_json_external_box_path"])
+            params_preset_dict['grid_int'] = f"INTX0={grid_params['INT'][0]},INTY0={grid_params['INT'][1]},INTZ0={grid_params['INT'][2]}"
+            params_preset_dict['grid_cen'] = f"CENX0={grid_params['CEN'][0]},CENY0={grid_params['CEN'][1]},CENZ0={grid_params['CEN'][2]}"
+            params_preset_dict['grid_dim'] = f"DIMX0={grid_params['DIM'][0]},DIMY0={grid_params['DIM'][1]},DIMZ0={grid_params['DIM'][2]}"
+
         if self.io_dict['in']["input_json_box_path"]:
             params_preset_dict["readgrid"] = 0
             origin, size, grid_params = get_grid(self.io_dict['in']["input_json_box_path"])
