@@ -74,7 +74,7 @@ class Cmip(BiobbObject):
                  output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
                  output_byat_path: str = None, output_log_path: str = None, input_vdw_params_path: str = None,
                  input_params_path: str = None, output_json_box_path: str = None, input_json_box_path: str = None,
-                 properties: dict = None, **kwargs) -> None:
+                 input_json_external_box_path: str = None, properties: dict = None, **kwargs) -> None:
 
         properties = properties or {}
 
@@ -87,7 +87,8 @@ class Cmip(BiobbObject):
         self.io_dict = {
             "in": {"input_pdb_path": input_pdb_path, "input_probe_pdb_path": input_probe_pdb_path,
                    "input_vdw_params_path": input_vdw_params_path, "input_params_path": input_params_path,
-                   "input_json_box_path": input_json_box_path},
+                   "input_json_box_path": input_json_box_path,
+                   "input_json_external_box_path": input_json_external_box_path},
             "out": {"output_pdb_path": output_pdb_path, "output_grd_path": output_grd_path,
                     "output_cube_path": output_cube_path, "output_rst_path": output_rst_path,
                     "output_byat_path": output_byat_path, "output_log_path": output_log_path,
@@ -248,7 +249,7 @@ def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path:
          output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
          output_byat_path: str = None, output_log_path: str = None,
          input_vdw_params_path: str = None, input_params_path: str = None, output_json_box_path: str = None,
-         input_json_box_path: str = None, properties: dict = None, **kwargs) -> int:
+         input_json_box_path: str = None, input_json_external_box_path: str = None, properties: dict = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.Cmip>` class and
     execute the :meth:`launch() <cmip.cmip.Cmip.launch>` method."""
 
@@ -257,7 +258,7 @@ def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path:
                 output_byat_path=output_byat_path, output_log_path=output_log_path,
                 input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
                 output_json_box_path=output_json_box_path, input_json_box_path=input_json_box_path,
-                properties=properties, **kwargs).launch()
+                input_json_external_box_path=input_json_external_box_path, properties=properties, **kwargs).launch()
 
 
 def main():
@@ -279,6 +280,7 @@ def main():
     parser.add_argument('--input_params_path', required=False)
     parser.add_argument('--output_json_box_path', required=False)
     parser.add_argument('--input_json_box_path', required=False)
+    parser.add_argument('--input_json_external_box_path', required=False)
 
 
     args = parser.parse_args()
@@ -291,7 +293,7 @@ def main():
          output_byat_path=args.output_byat_path, output_log_path=args.output_log_path,
          input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
          output_json_box_path=args.output_json_box_path, input_json_box_path=args.input_json_box_path,
-         properties=properties)
+         input_json_external_box_path=args.input_json_external_box_path, properties=properties)
 
 
 if __name__ == '__main__':
