@@ -234,6 +234,7 @@ Config input / output arguments for this building block:
 * **input_params_path** (*string*): Path to the CMIP input parameters file. File type: input. [Sample file](None). Accepted formats: TXT
 * **output_json_box_path** (*string*): Path to the output CMIP box in JSON format. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json). Accepted formats: JSON
 * **input_json_box_path** (*string*): Path to the input CMIP box in JSON format. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json). Accepted formats: JSON
+* **input_json_external_box_path** (*string*): Path to the input CMIP box in JSON format. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json). Accepted formats: JSON
 ### Config
 Syntax: input_parameter (datatype) - (default_value) Definition
 
@@ -251,30 +252,74 @@ Config parameters for this building block:
 * **container_user_id** (*string*): (None) User number id to be mapped inside the container..
 * **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
 ### YAML
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_mip.yml)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip.yml)
 ```python
 properties:
+  execution_type: energy
+  remove_tmp: true
+
+```
+#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_docker.yml)
+```python
+properties:
+  container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
+  container_path: docker
+  container_volume_path: /inout
+  execution_type: energy
+  remove_tmp: true
+
+```
+#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_singularity.yml)
+```python
+properties:
+  container_image: cmip.simg
+  container_path: singularity
+  container_volume_path: /inout
   execution_type: mip
   remove_tmp: true
 
 ```
 #### Command line
 ```python
-cmip --config config_cmip_mip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --input_json_box_path ref_box.json
+cmip --config config_cmip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
 ```
 ### JSON
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_mip.json)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip.json)
 ```python
 {
   "properties": {
     "remove_tmp": true,
-    "execution_type": "mip"
+    "execution_type": "energy"
+  }
+}
+```
+#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_docker.json)
+```python
+{
+  "properties": {
+    "remove_tmp": true,
+    "execution_type": "energy",
+    "container_path": "docker",
+    "container_image": "quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0",
+    "container_volume_path": "/inout"
+  }
+}
+```
+#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_singularity.json)
+```python
+{
+  "properties": {
+    "remove_tmp": true,
+    "execution_type": "mip",
+    "container_path": "singularity",
+    "container_image": "cmip.simg",
+    "container_volume_path": "/inout"
   }
 }
 ```
 #### Command line
 ```python
-cmip --config config_cmip_mip.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --input_json_box_path ref_box.json
+cmip --config config_cmip.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
 ```
 
 ## Ignore_residues

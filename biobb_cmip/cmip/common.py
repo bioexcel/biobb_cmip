@@ -495,7 +495,7 @@ def write_params_file(output_params_path: str, params_dict: Mapping[str, str]) -
         output_params_file.write(f"{params_dict.pop('title', 'Untitled')}\n")
         output_params_file.write(f"&cntrl\n")
         for params_key, params_value in params_dict.items():
-            if params_key in ['grid_int', 'grid_cen', 'grid_dim']:
+            if params_key in ['grid_int', 'grid_cen', 'grid_dim', 'grid_int0', 'grid_cen0', 'grid_dim0']:
                 output_params_file.write(f" {params_value}\n")
             else:
                 output_params_file.write(f" {params_key} = {params_value}\n")

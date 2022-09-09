@@ -126,9 +126,9 @@ class Cmip(BiobbObject):
         if self.io_dict['in']["input_json_external_box_path"]:
             params_preset_dict["readgrid0"] = 0
             origin, size, grid_params = get_grid(self.io_dict['in']["input_json_external_box_path"])
-            params_preset_dict['grid_int'] = f"INTX0={grid_params['INT'][0]},INTY0={grid_params['INT'][1]},INTZ0={grid_params['INT'][2]}"
-            params_preset_dict['grid_cen'] = f"CENX0={grid_params['CEN'][0]},CENY0={grid_params['CEN'][1]},CENZ0={grid_params['CEN'][2]}"
-            params_preset_dict['grid_dim'] = f"DIMX0={grid_params['DIM'][0]},DIMY0={grid_params['DIM'][1]},DIMZ0={grid_params['DIM'][2]}"
+            params_preset_dict['grid_int0'] = f"INTX0={grid_params['INT'][0]},INTY0={grid_params['INT'][1]},INTZ0={grid_params['INT'][2]}"
+            params_preset_dict['grid_cen0'] = f"CENX0={grid_params['CEN'][0]},CENY0={grid_params['CEN'][1]},CENZ0={grid_params['CEN'][2]}"
+            params_preset_dict['grid_dim0'] = f"DIMX0={grid_params['DIM'][0]},DIMY0={grid_params['DIM'][1]},DIMZ0={grid_params['DIM'][2]}"
 
         if self.io_dict['in']["input_json_box_path"]:
             params_preset_dict["readgrid"] = 0
