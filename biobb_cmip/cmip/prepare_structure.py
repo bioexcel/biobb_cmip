@@ -92,6 +92,7 @@ class PrepareStructure(BiobbObject):
                 # Unzip topology to topology_out
                 top_file = fu.unzip_top(zip_file=self.io_dict['in']['input_topology_path'], out_log=self.out_log)
                 top_dir = str(Path(top_file).parent)
+                self.tmp_files(top_dir)
 
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=UserWarning)

@@ -1,4 +1,5 @@
 """ Common functions for package biobb_cmip.cmip """
+import os
 import re
 import json
 from pathlib import Path
@@ -140,6 +141,7 @@ def get_topology_cmip_elements_canonical(input_topology_filename: str) -> List:
                     continue
                 nt.write(line)
         u = mda.Universe(top_file, topology_format="ITP")
+        os.unlink(top_file)
     else:
         u = mda.Universe(input_topology_filename)
     # mda_charges = [round(val, 4) for val in u.atoms.charges]
@@ -167,12 +169,14 @@ def get_topology_charges(input_topology_filename: str) -> List:
         with open(input_topology_filename) as tf:
             top_lines = tf.readlines()
         top_file = create_unique_file_path(parent_dir=Path(input_topology_filename).parent.resolve(), extension='.top')
+
         with open(top_file, 'w') as nt:
             for line in top_lines:
                 if re.search(r"\.ff.*\.itp", line):
                     continue
                 nt.write(line)
         u = mda.Universe(top_file, topology_format="ITP")
+        os.unlink(top_file)
     else:
         u = mda.Universe(input_topology_filename)
     return [round(val, 4) for val in u.atoms.charges]
