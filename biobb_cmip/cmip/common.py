@@ -16,11 +16,11 @@ def get_grid(cmip_log_path: Union[str, Path], external: bool = False) -> Tuple[T
     if first_line.startswith("titleParam"):
         return _get_grid_from_key_value(cmip_log_path, external)
     elif first_line.startswith("{"):
-        return _get_grid_from_box_file(cmip_log_path, external)
+        return _get_grid_from_box_file(cmip_log_path)
     return _get_grid_from_text(cmip_log_path, external)
 
 
-def _get_grid_from_box_file(cmip_box_path: Union[str, Path], external: bool = False) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+def _get_grid_from_box_file(cmip_box_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
     with open(cmip_box_path) as json_file:
         grid_dict = json.load(json_file)
     origin = grid_dict['origin']['x'], grid_dict['origin']['y'], grid_dict['origin']['z']
@@ -32,11 +32,14 @@ def _get_grid_from_text(cmip_log_path: Union[str, Path], external: bool = False)
     origin = None
     size = None
     grid_params = {"CEN": None, "DIM": None, "INT": None}
+    grid_locators_list = ["AUTOMATIC GRID", "MANUAL GRID"]
+    if external:
+        grid_locators_list = ["AUTOMATIC OUTER GRID", "MANUAL OUTER GRID"]
 
     with open(cmip_log_path) as log_file:
         inside_automatic_grid = False
         for line in log_file:
-            if line.strip() in ["AUTOMATIC GRID", "MANUAL GRID"]:
+            if line.strip() in grid_locators_list:
                 inside_automatic_grid = True
             if inside_automatic_grid:
                 origin_match = re.match(r"Grid origin:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))", line.strip())
@@ -70,7 +73,7 @@ def _get_grid_from_key_value(cmip_log_path: Union[str, Path], external: bool = F
     with open(cmip_log_path) as log_file:
         inside_automatic_grid = False
         for line in log_file:
-            if line.strip() in locators:
+            if line.strip() in grid_locators_list:
                 inside_automatic_grid = True
             if inside_automatic_grid:
                 origin_match = re.match(r"origin=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))", line.strip())
