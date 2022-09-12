@@ -10,17 +10,17 @@ import logging
 import biobb_common.tools.file_utils as fu
 
 
-def get_grid(cmip_log_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+def get_grid(cmip_log_path: Union[str, Path], external: bool = False) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
     with open(cmip_log_path) as log_file:
         first_line = log_file.readline().strip()
     if first_line.startswith("titleParam"):
-        return _get_grid_from_key_value(cmip_log_path)
+        return _get_grid_from_key_value(cmip_log_path, external)
     elif first_line.startswith("{"):
-        return _get_grid_from_box_file(cmip_log_path)
-    return _get_grid_from_text(cmip_log_path)
+        return _get_grid_from_box_file(cmip_log_path, external)
+    return _get_grid_from_text(cmip_log_path, external)
 
 
-def _get_grid_from_box_file(cmip_box_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+def _get_grid_from_box_file(cmip_box_path: Union[str, Path], external: bool = False) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
     with open(cmip_box_path) as json_file:
         grid_dict = json.load(json_file)
     origin = grid_dict['origin']['x'], grid_dict['origin']['y'], grid_dict['origin']['z']
@@ -28,7 +28,7 @@ def _get_grid_from_box_file(cmip_box_path: Union[str, Path]) -> Tuple[Tuple[floa
     return origin, size, grid_dict['params']
 
 
-def _get_grid_from_text(cmip_log_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+def _get_grid_from_text(cmip_log_path: Union[str, Path], external: bool = False) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
     origin = None
     size = None
     grid_params = {"CEN": None, "DIM": None, "INT": None}
@@ -59,7 +59,7 @@ def _get_grid_from_text(cmip_log_path: Union[str, Path]) -> Tuple[Tuple[float, f
     return origin, size, grid_params
 
 
-def _get_grid_from_key_value(cmip_log_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+def _get_grid_from_key_value(cmip_log_path: Union[str, Path], external: bool = False) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
     origin = None
     size = None
     grid_params = {"CEN": None, "DIM": None, "INT": None}
@@ -295,7 +295,7 @@ def probe_params_grid(probe_id: int = 0, readgrid: int = 2, pbfocus: int = 1, pe
     return grid_dict
 
 
-def params_grid(grid_type: str = 'cmip', readgrid: int = 0, perfill: float = 0.8,
+def params_grid(grid_type: str, readgrid: int = 0, perfill: float = 0.8,
                 grid_int: Sequence[float] = (0.5, 0.5, 0.5),
                 grid_dim: Sequence[float] = (64, 64, 64),
                 grid_cen: Sequence[float] = (0.0, 0.0, 0.0)) -> Dict[str, str]:
@@ -308,7 +308,7 @@ def params_grid(grid_type: str = 'cmip', readgrid: int = 0, perfill: float = 0.8
     grid_dict = {}
     grid_dict[f"readgrid"] = f"{readgrid}"
 
-    if grid_type in ['interaction', 'mip', 'energy', 'docking']:
+    if grid_type in ['pb_interaction_energy', 'mip_pos', 'mip_neu', 'mip_neg', 'docking']:
         grid_dict['grid_cen'] = f"CENX={grid_cen[0]},CENY={grid_cen[1]},CENZ={grid_cen[2]}"
         grid_dict['grid_dim'] = f"DIMX={grid_dim[0]},DIMY={grid_dim[1]},DIMZ={grid_dim[2]}"
         grid_dict['grid_int'] = f"INTX={grid_int[0]},INTY={grid_int[1]},INTZ={grid_int[2]}"
@@ -323,8 +323,9 @@ def params_preset(execution_type: str) -> Dict[str, str]:
     params_dict = {}
     grid_dict = {}
     probe_grid_dict = {}
+    execution_type = execution_type.strip()
     if execution_type == 'titration':
-        grid_dict = params_grid(grid_type='titration', readgrid=2, perfill=0.8, grid_int=(0.5, 0.5, 0.5) )
+        grid_dict = params_grid(grid_type=execution_type, readgrid=2, perfill=0.8, grid_int=(0.5, 0.5, 0.5) )
         params_dict = {
             'title': 'Titration',
             'tipcalc': 1,
@@ -336,8 +337,8 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'titration': 1, 'inifoc': 2, 'cutfoc': -0.5, 'focus': 1, 'ninter': 10, 'clhost': 1, 'titcut': 20.,
             'titwat': 10, 'titip': 10, 'titim': 10
         }
-    elif execution_type.strip() == 'mip_pos':
-        grid_dict = params_grid(grid_type='mip', readgrid=2)
+    elif execution_type == 'mip_pos':
+        grid_dict = params_grid(grid_type=execution_type, readgrid=2)
         params_dict = {
             'title': 'MIP positive probe',
             'tipcalc': 0,
@@ -351,8 +352,8 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'carmip': 1,
             'tipatmip' : "'OW'"
         }
-    elif execution_type.strip() == 'mip_neu':
-        grid_dict = params_grid(grid_type='mip', readgrid=2)
+    elif execution_type == 'mip_neu':
+        grid_dict = params_grid(grid_type=execution_type, readgrid=2)
         params_dict = {
             'title': 'MIP neutral probe',
             'tipcalc': 0,
@@ -366,8 +367,8 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'carmip': 0,
             'tipatmip' : "'OW'"
         }
-    elif execution_type.strip() == 'mip_neg':
-        grid_dict = params_grid(grid_type='mip', readgrid=2)
+    elif execution_type == 'mip_neg':
+        grid_dict = params_grid(grid_type=execution_type, readgrid=2)
         params_dict = {
             'title': 'MIP negative probe',
             'tipcalc': 0,
@@ -384,7 +385,7 @@ def params_preset(execution_type: str) -> Dict[str, str]:
 #TODO 'carmip': 1,
     # wat: tipcalc: 1 + titration: 'inifoc': 2, 'cutfoc': -0.5, 'focus': 1, 'ninter': 10,
     elif execution_type == 'solvation':
-        grid_dict = params_grid(grid_type='solvation', readgrid=2, perfill=0.2,
+        grid_dict = params_grid(grid_type=execution_type, readgrid=2, perfill=0.2,
                                 grid_int=(0.5, 0.5, 0.5))
         params_dict = {
             'title': 'Solvation & MEP',
@@ -398,7 +399,7 @@ def params_preset(execution_type: str) -> Dict[str, str]:
         }
 
     elif execution_type == 'pb_interaction_energy':
-        grid_dict = params_grid(grid_type='energy', readgrid= 2)
+        grid_dict = params_grid(grid_type=execution_type, readgrid= 2)
         probe_grid_dict = probe_params_grid(probe_id= 0, readgrid= 2, pbfocus= 1, perfill= 0.6,
                                             grid_int=(1.5, 1.5, 1.5))
 
@@ -414,7 +415,7 @@ def params_preset(execution_type: str) -> Dict[str, str]:
         }
 
     elif execution_type == 'docking':
-        grid_dict = params_grid(grid_type='docking', readgrid= 2)
+        grid_dict = params_grid(grid_type=execution_type, readgrid= 2)
 
         params_dict = {
             'title': 'Docking Mehler Solmajer dielectric',
