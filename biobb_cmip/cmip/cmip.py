@@ -91,7 +91,7 @@ class Cmip(BiobbObject):
                    "input_vdw_params_path": input_vdw_params_path, "input_params_path": input_params_path,
                    "input_json_box_path": input_json_box_path,
                    "input_json_external_box_path": input_json_external_box_path,
-                   "intput_rst_path": intput_rst_path},
+                   "input_rst_path": input_rst_path},
             "out": {"output_pdb_path": output_pdb_path, "output_grd_path": output_grd_path,
                     "output_cube_path": output_cube_path, "output_rst_path": output_rst_path,
                     "output_byat_path": output_byat_path, "output_log_path": output_log_path,
