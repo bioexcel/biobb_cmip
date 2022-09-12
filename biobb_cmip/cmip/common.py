@@ -63,11 +63,14 @@ def _get_grid_from_key_value(cmip_log_path: Union[str, Path], external: bool = F
     origin = None
     size = None
     grid_params = {"CEN": None, "DIM": None, "INT": None}
+    grid_locators_list = ["AUTOMATIC GRID", "MANUAL GRID"]
+    if external:
+        grid_locators_list = ["AUTOMATIC OUTER GRID", "MANUAL OUTER GRID"]
 
     with open(cmip_log_path) as log_file:
         inside_automatic_grid = False
         for line in log_file:
-            if line.strip() in ["AUTOMATIC GRID", "MANUAL GRID"]:
+            if line.strip() in locators:
                 inside_automatic_grid = True
             if inside_automatic_grid:
                 origin_match = re.match(r"origin=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))", line.strip())

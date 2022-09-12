@@ -264,15 +264,15 @@ class Cmip(BiobbObject):
             origin, size, grid_params = get_grid(self.stage_io_dict["out"]["output_log_path"], True)
             # Incorrecte també és incorrecte com passem els params al common
 
-            grid_params['DIM0'] = (int(grid_params['DIM0'][0]),
-                                  int(grid_params['DIM0'][1]),
-                                  int(grid_params['DIM0'][2]))
-            size_dict = {'x': round(grid_params['DIM0'][0]*grid_params['INT0'][0], 3),
-                         'y': round(grid_params['DIM0'][1]*grid_params['INT0'][1], 3),
-                         'z': round(grid_params['DIM0'][2]*grid_params['INT0'][2], 3)}
-            origin_dict = {'x': round(grid_params['CEN0'][0]-size_dict['x']/2, 3),
-                           'y': round(grid_params['CEN0'][1]-size_dict['y']/2, 3),
-                           'z': round(grid_params['CEN0'][0]-size_dict['z']/2, 3)}
+            grid_params['DIM'] = (int(grid_params['DIM'][0]),
+                                  int(grid_params['DIM'][1]),
+                                  int(grid_params['DIM'][2]))
+            size_dict = {'x': round(grid_params['DIM'][0]*grid_params['INT'][0], 3),
+                         'y': round(grid_params['DIM'][1]*grid_params['INT'][1], 3),
+                         'z': round(grid_params['DIM'][2]*grid_params['INT'][2], 3)}
+            origin_dict = {'x': round(grid_params['CEN'][0]-size_dict['x']/2, 3),
+                           'y': round(grid_params['CEN'][1]-size_dict['y']/2, 3),
+                           'z': round(grid_params['CEN'][0]-size_dict['z']/2, 3)}
             grid_dict = {'origin': origin_dict,
                          'size': size_dict,
                          'params': grid_params}
