@@ -5,7 +5,7 @@
     "readthedocs": "https://biobb-cmip.readthedocs.io/en/latest/",
     "conda": "https://anaconda.org/bioconda/biobb_cmip",
     "docker": "https://quay.io/biocontainers/biobb_cmip:3.7.8--pyhdfd78af_0",
-    "singularity": "https://www.singularity-hub.org/collections/",
+    "singularity": "https://depot.galaxyproject.org/singularity/biobb_cmip:3.7.8--pyhdfd78af_0",
     "version": "3.7.8",
     "tools" : [
         {

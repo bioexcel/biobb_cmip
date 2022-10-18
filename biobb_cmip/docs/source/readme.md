@@ -1,6 +1,7 @@
 [![](https://readthedocs.org/projects/biobb-cmip/badge/?version=latest)](https://biobb-cmip.readthedocs.io/en/latest/?badge=latest)
 [![](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://anaconda.org/bioconda/biobb_cmip)
 [![](https://img.shields.io/badge/docker-Quay.io-blue)](https://quay.io/repository/biocontainers/biobb_cmip)
+[![](https://img.shields.io/badge/singularity-GalaxyProject-blue)](https://depot.galaxyproject.org/singularity/biobb_cmip:3.7.8--pyhdfd78af_0)
 [![](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # biobb_cmip
@@ -24,7 +25,7 @@ Using PIP:
 * Installation:
 
 
-        pip install "biobb_cmip>=3.7.6"
+        pip install "biobb_cmip>=3.7.8"
 
 
 * Usage: [Python API documentation](https://biobb-cmip.readthedocs.io/en/latest/modules.html)
@@ -34,7 +35,7 @@ Using ANACONDA:
 * Installation:
 
 
-        conda install -c bioconda "biobb_cmip>=3.7.6"
+        conda install -c bioconda "biobb_cmip>=3.7.8"
 
 
 * Usage: With conda installation BioBBs can be used with the [Python API documentation](https://biobb-cmip.readthedocs.io/en/latest/modules.html) and the [Command Line documentation](https://biobb-cmip.readthedocs.io/en/latest/command_line.html)
@@ -44,13 +45,13 @@ Using DOCKER:
 * Installation:
 
 
-        docker pull quay.io/biocontainers/biobb_cmip:3.7.6--pyhdfd78af_0
+        docker pull quay.io/biocontainers/biobb_cmip:3.7.8--pyhdfd78af_0
 
 
 * Usage:
 
 
-        docker run quay.io/biocontainers/biobb_cmip:3.7.6--pyhdfd78af_0 <command>
+        docker run quay.io/biocontainers/biobb_cmip:3.7.8--pyhdfd78af_0 <command>
 
 
 Using SINGULARITY:
@@ -60,7 +61,7 @@ Using SINGULARITY:
 * Installation:
 
 
-        singularity pull --name biobb_cmip.sif shub://bioexcel/biobb_cmip
+        singularity pull --name biobb_cmip.sif https://depot.galaxyproject.org/singularity/biobb_cmip:3.7.8--pyhdfd78af_0
 
 
 * Usage:
