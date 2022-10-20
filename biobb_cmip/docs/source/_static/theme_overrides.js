@@ -4,6 +4,6 @@ $(document).ready(function() {
 	if($('.icon.icon-home').attr('href') == '../index.html') path = '../';
 	else if($('.icon.icon-home').attr('href') == '../../index.html') path = '../../';
 		
-	//$('.icon.icon-home').html('<img src="' + path + '_static/logo.png" class="logo" alt="Logo">');
-	$('.icon.icon-home').html('Docs');
+	$('.wy-side-nav-search .icon.icon-home').html('<img src="' + path + '_static/logo.png" class="logo" alt="Logo">');
+	$('ul.wy-breadcrumbs li .icon.icon-home').html('Docs');
 });
