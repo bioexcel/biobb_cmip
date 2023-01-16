@@ -30,6 +30,17 @@ def get_energies_byres(cmip_energies_byat_out: Union[str, Path], cutoff: float =
         for line in energies_file:
             chain = line[21:22].strip()
             residue_id = line[22:28].strip()
+#            residue_id = str(int(residue_id) + 697)
+#            if (int(residue_id) > 746):
+#                residue_id = str(int(residue_id) + 9)
+#            if (int(residue_id) > 749):
+#                residue_id = str(int(residue_id) + 4)
+#            if (int(residue_id) > 867):
+#                residue_id = str(int(residue_id) + 8)
+#            if (int(residue_id) > 987):
+#                residue_id = str(int(residue_id) + 7)
+#            if (int(residue_id) > 1004):
+#                residue_id = str(int(residue_id) + 5)
             resname = inverse_aa_codes.get(line[17:21].strip().upper(), "X")
             residue = resname+' '+chain+residue_id
             vdw = float(line[42:53]) if float(line[42:53]) < cutoff else 0.0
@@ -43,6 +54,7 @@ def get_energies_byres(cmip_energies_byat_out: Union[str, Path], cutoff: float =
                 energy_dict["ES&VDW"][index] += both
             else:
                 residues.append(residue)
+                #residues.append(int(residue_id)+696)
                 energy_dict["ES"].append(es)
                 energy_dict["VDW"].append(vdw)
                 energy_dict["ES&VDW"].append(both)

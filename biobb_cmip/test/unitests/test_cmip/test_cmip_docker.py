@@ -3,10 +3,10 @@ from biobb_cmip.cmip.cmip import cmip
 
 
 # class TestCmipMipDocker():
-#     def setUp(self):
+#     def setup_class(self):
 #         fx.test_setup(self, 'cmip_mip_docker')
 #
-#     def tearDown(self):
+#     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #
@@ -19,10 +19,10 @@ from biobb_cmip.cmip.cmip import cmip
 
 
 # class TestCmipDockingDocker():
-#     def setUp(self):
+#     def setup_class(self):
 #         fx.test_setup(self, 'cmip_docking_docker')
 #
-#     def tearDown(self):
+#     def teardown_class(self):
 #         pass
 #         #fx.test_teardown(self)
 #
@@ -39,10 +39,10 @@ from biobb_cmip.cmip.cmip import cmip
 #         #assert fx.equal(self.paths['output_rst_path'], self.paths['ref_output_cmip_docking_rst_path'])
 
 class TestCmipEnergyDocker():
-    def setUp(self):
+    def setup_class(self):
         fx.test_setup(self, 'cmip_docker')
 
-    def tearDown(self):
+    def teardown_class(self):
         # pass
         fx.test_teardown(self)
 
@@ -52,10 +52,10 @@ class TestCmipEnergyDocker():
         # assert fx.equal(self.paths['output_byat_path'], self.paths['ref_output_byat_path'])
 
 # class TestCmipSolvationDocker():
-#     def setUp(self):
+#     def setup_class(self):
 #         fx.test_setup(self, 'cmip_solvation_docker')
 #
-#     def tearDown(self):
+#     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #

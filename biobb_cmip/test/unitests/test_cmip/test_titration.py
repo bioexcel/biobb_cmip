@@ -3,12 +3,12 @@ from biobb_cmip.cmip.titration import titration
 
 
 class TestTitration():
-    def setUp(self):
+    def setup_class(self):
         fx.test_setup(self, 'titration')
 
-    def tearDown(self):
-        #pass
+    def teardown_class(self):
         fx.test_teardown(self)
+        #pass
 
     def test_titration(self):
         titration(properties=self.properties, **self.paths)

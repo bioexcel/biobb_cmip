@@ -3,12 +3,12 @@ from biobb_cmip.cmip.ignore_residues import ignore_residues
 
 
 class TestIgnoreResidues():
-    def setUp(self):
+    def setup_class(self):
         fx.test_setup(self, 'ignore_residues')
 
-    def tearDown(self):
-        pass
+    def teardown_class(self):
         #fx.test_teardown(self)
+        pass
 
     def test_ignore_residues(self):
         ignore_residues(properties=self.properties, **self.paths)

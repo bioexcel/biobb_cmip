@@ -127,7 +127,7 @@ cmip:
     output_byat_path: output_byat.out
     ref_output_byat_path: file:test_reference_dir/cmip/RBD.energies.byat.out
   properties:
-    remove_tmp: True
+    #remove_tmp: True
     execution_type: energy
 
 cmip_docker:

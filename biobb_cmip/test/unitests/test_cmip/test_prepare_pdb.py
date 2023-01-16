@@ -3,12 +3,12 @@ from biobb_cmip.cmip.prepare_pdb import prepare_pdb
 
 
 class TestPreparePDB():
-    def setUp(self):
+    def setup_class(self):
         fx.test_setup(self, 'prepare_pdb')
 
-    def tearDown(self):
-        # pass
+    def teardown_class(self):
         fx.test_teardown(self)
+        # pass
 
     def test_prepare_pdb(self):
         prepare_pdb(properties=self.properties, **self.paths)
