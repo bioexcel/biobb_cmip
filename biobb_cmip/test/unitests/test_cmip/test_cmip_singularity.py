@@ -1,5 +1,7 @@
 from biobb_common.tools import test_fixtures as fx
 from biobb_cmip.cmip.cmip import cmip
+import pytest
+
 
 
 # class TestCmipMipSingularity():
@@ -48,6 +50,7 @@ class TestCmipEnergySingularity():
         #pass
         fx.test_teardown(self)
 
+    @pytest.mark.skip(reason="singularity currently not available")
     def test_cmip_mip_singularity(self):
         cmip(properties=self.properties, **self.paths)
         assert fx.not_empty(self.paths['output_cube_path'])
