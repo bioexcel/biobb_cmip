@@ -229,7 +229,7 @@ Config input / output arguments for this building block:
 * **output_cube_path** (*string*): Path to the output grid file in cube format. File type: output. [Sample file](None). Accepted formats: CUBE
 * **output_rst_path** (*string*): Path to the output restart file. File type: output. [Sample file](None). Accepted formats: TXT
 * **input_rst_path** (*string*): Path to the input restart file. File type: output. [Sample file](None). Accepted formats: TXT
-* **output_byat_path** (*string*): Path to the output atom by atom energy file. File type: output. [Sample file](None). Accepted formats: TXT
+* **output_byat_path** (*string*): Path to the output atom by atom energy file. File type: output. [Sample file](None). Accepted formats: TXT, OUT
 * **output_log_path** (*string*): Path to the output CMIP log file LOG. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_cmip.log). Accepted formats: LOG
 * **input_vdw_params_path** (*string*): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. [Sample file](None). Accepted formats: TXT
 * **input_params_path** (*string*): Path to the CMIP input parameters file. File type: input. [Sample file](None). Accepted formats: TXT
@@ -257,7 +257,6 @@ Config parameters for this building block:
 ```python
 properties:
   execution_type: energy
-  remove_tmp: true
 
 ```
 #### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_docker.yml)
@@ -289,7 +288,6 @@ cmip --config config_cmip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path
 ```python
 {
   "properties": {
-    "remove_tmp": true,
     "execution_type": "energy"
   }
 }

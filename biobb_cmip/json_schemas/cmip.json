@@ -138,11 +138,17 @@
             "filetype": "output",
             "sample": null,
             "enum": [
-                ".*\\.txt$"
+                ".*\\.txt$",
+                ".*\\.out$"
             ],
             "file_formats": [
                 {
                     "extension": ".*\\.txt$",
+                    "description": "Path to the output atom by atom energy file",
+                    "edam": "format_2330"
+                },
+                {
+                    "extension": ".*\\.out$",
                     "description": "Path to the output atom by atom energy file",
                     "edam": "format_2330"
                 }

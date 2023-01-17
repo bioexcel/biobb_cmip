@@ -214,7 +214,6 @@ class Cmip(BiobbObject):
             self.cmd.append('-o')
             self.cmd.append(self.stage_io_dict["out"]["output_log_path"])
 
-
         if self.stage_io_dict['out'].get('output_json_box_path') or self.stage_io_dict['out'].get('output_json_external_box_path'):
             self.cmd.append('-l')
             self.cmd.append(self.stage_io_dict["out"]["key_value_log_path"])
@@ -223,12 +222,9 @@ class Cmip(BiobbObject):
         self.run_biobb()
 
         # CMIP removes or adds a .pdb extension from pdb output name
+        # manual copy_to_host or unstage
         if self.io_dict['out'].get('output_pdb_path'):
-            output_pdb_path = self.io_dict['out'].get('output_pdb_path')
-            if self.container_path:
-                output_pdb_path = str(Path(self.stage_io_dict["unique_dir"]).joinpath(
-                    Path(self.io_dict['out'].get('output_pdb_path')).name))
-
+            output_pdb_path = str(Path(self.stage_io_dict["unique_dir"]).joinpath(Path(self.io_dict['out'].get('output_pdb_path')).name))
             if Path(output_pdb_path[:-4]).exists():
                 shutil.move(output_pdb_path[:-4], self.io_dict['out'].get('output_pdb_path'))
             elif Path(output_pdb_path + ".pdb").exists():
@@ -243,6 +239,7 @@ class Cmip(BiobbObject):
                 for line in list_pdb_lines:
                     pdb_file.write(line.replace('ATOMTM', 'ATOM  '))
 
+        # Create json_box_path file from CMIP log file
         if self.io_dict['out'].get('output_json_box_path'):
             origin, size, grid_params = get_grid(self.stage_io_dict["out"]["output_log_path"])
             grid_params['DIM'] = (int(grid_params['DIM'][0]),
@@ -260,6 +257,7 @@ class Cmip(BiobbObject):
             with open(self.io_dict['out'].get('output_json_box_path'), 'w') as json_file:
                 json_file.write(json.dumps(grid_dict, indent=4))
 
+        # Create external_json_box_path file from CMIP log file
         if self.io_dict['out'].get('output_json_external_box_path'):
             origin, size, grid_params = get_grid(self.stage_io_dict["out"]["output_log_path"], True)
             grid_params['DIM'] = (int(grid_params['DIM'][0]),
@@ -277,20 +275,17 @@ class Cmip(BiobbObject):
             with open(self.io_dict['out'].get('output_json_external_box_path'), 'w') as json_file:
                 json_file.write(json.dumps(grid_dict, indent=4))
 
-
         # Copy files to host
         self.copy_to_host()
 
         # remove temporary folder(s)
-        self.tmp_files.extend([
-            self.stage_io_dict.get("unique_dir"),
-            combined_params_dir
-        ])
+        self.tmp_files.extend([self.stage_io_dict.get("unique_dir"), combined_params_dir])
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)
 
         return self.return_code
+
 
 def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,
          output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
