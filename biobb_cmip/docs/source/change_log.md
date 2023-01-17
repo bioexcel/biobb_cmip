@@ -1,5 +1,8 @@
 # Biobb CMIP changelog
 
+## What's new in version [3.9.0](https://github.com/bioexcel/biobb_cmip/releases/tag/3.9.0)?
+All operations are now sandboxed
+
 ## What's new in version [3.7.8](https://github.com/bioexcel/biobb_cmip/releases/tag/3.7.8)?
 Adding compatibility with json box.
 

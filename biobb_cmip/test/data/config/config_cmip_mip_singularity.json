@@ -1,7 +1,7 @@
 {
   "properties": {
     "remove_tmp": true,
-    "execution_type": "mip",
+    "execution_type": "mip_pos",
     "container_path": "singularity",
     "container_image": "cmip.simg",
     "container_volume_path": "/inout"

@@ -256,7 +256,7 @@ Config parameters for this building block:
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip.yml)
 ```python
 properties:
-  execution_type: energy
+  execution_type: pb_interaction_energy
 
 ```
 #### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_docker.yml)
@@ -265,7 +265,7 @@ properties:
   container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
   container_path: docker
   container_volume_path: /inout
-  execution_type: energy
+  execution_type: pb_interaction_energy
   remove_tmp: true
 
 ```
@@ -275,7 +275,7 @@ properties:
   container_image: cmip.simg
   container_path: singularity
   container_volume_path: /inout
-  execution_type: mip
+  execution_type: mip_pos
   remove_tmp: true
 
 ```
@@ -288,7 +288,7 @@ cmip --config config_cmip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path
 ```python
 {
   "properties": {
-    "execution_type": "energy"
+    "execution_type": "pb_interaction_energy"
   }
 }
 ```
@@ -297,7 +297,7 @@ cmip --config config_cmip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path
 {
   "properties": {
     "remove_tmp": true,
-    "execution_type": "energy",
+    "execution_type": "pb_interaction_energy",
     "container_path": "docker",
     "container_image": "quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0",
     "container_volume_path": "/inout"
@@ -309,7 +309,7 @@ cmip --config config_cmip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path
 {
   "properties": {
     "remove_tmp": true,
-    "execution_type": "mip",
+    "execution_type": "mip_pos",
     "container_path": "singularity",
     "container_image": "cmip.simg",
     "container_volume_path": "/inout"
