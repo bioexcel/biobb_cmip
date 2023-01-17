@@ -42,7 +42,7 @@ cmip_mip:
     ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
   properties:
     remove_tmp: True
-    execution_type: mip
+    execution_type: mip_pos
 
 cmip_mip_docker:
   paths:
@@ -53,7 +53,7 @@ cmip_mip_docker:
     ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
   properties:
     remove_tmp: True
-    execution_type: mip
+    execution_type: mip_pos
     container_path: docker
     container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
@@ -67,7 +67,7 @@ cmip_mip_singularity:
     ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
   properties:
     remove_tmp: True
-    execution_type: mip
+    execution_type: mip_pos
     container_path: singularity
     container_image: cmip.simg
     container_volume_path: /inout
@@ -128,7 +128,7 @@ cmip:
     ref_output_byat_path: file:test_reference_dir/cmip/RBD.energies.byat.out
   properties:
     #remove_tmp: True
-    execution_type: energy
+    execution_type: pb_interaction_energy
 
 cmip_docker:
   paths:
@@ -138,7 +138,7 @@ cmip_docker:
     ref_output_byat_path: file:test_reference_dir/cmip/RBD.energies.byat.out
   properties:
     remove_tmp: True
-    execution_type: energy
+    execution_type: pb_interaction_energy
     container_path: docker
     container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
@@ -152,7 +152,7 @@ cmip_singularity:
     ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
   properties:
     remove_tmp: True
-    execution_type: mip
+    execution_type: mip_pos
     container_path: singularity
     container_image: cmip.simg
     container_volume_path: /inout
@@ -166,7 +166,7 @@ cmip_solvation:
     ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
   properties:
     remove_tmp: True
-    execution_type: mip
+    execution_type: mip_pos
 
 cmip_solvation_docker:
   paths:
@@ -177,7 +177,7 @@ cmip_solvation_docker:
     ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
   properties:
     remove_tmp: True
-    execution_type: mip
+    execution_type: mip_pos
     container_path: docker
     container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
@@ -191,7 +191,7 @@ cmip_solvation_singularity:
     ref_output_cmip_mip_grd_path: file:test_reference_dir/cmip/cmip_mip.grd
   properties:
     remove_tmp: True
-    execution_type: mip
+    execution_type: mip_pos
     container_path: singularity
     container_image: cmip.simg
     container_volume_path: /inout
