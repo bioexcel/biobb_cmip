@@ -3,10 +3,10 @@ from biobb_cmip.cmip.cmip import cmip
 
 
 # class TestCmipMip():
-#     def setUp(self):
+#         def setup_class(self):
 #         fx.test_setup(self, 'cmip_mip')
 #
-#     def tearDown(self):
+#     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #
@@ -19,10 +19,10 @@ from biobb_cmip.cmip.cmip import cmip
 
 
 # class TestCmipDocking():
-#     def setUp(self):
+#         def setup_class(self):
 #         fx.test_setup(self, 'cmip_docking')
 #
-#     def tearDown(self):
+#     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #
@@ -37,10 +37,10 @@ from biobb_cmip.cmip.cmip import cmip
 
 
 class TestCmipEnergy():
-    def setUp(self):
+    def setup_class(self):
         fx.test_setup(self, 'cmip')
 
-    def tearDown(self):
+    def teardown_class(self):
         #pass
         fx.test_teardown(self)
 
@@ -50,10 +50,10 @@ class TestCmipEnergy():
         #assert fx.equal(self.paths['output_byat_path'], self.paths['ref_output_byat_path'])
 
 # class TestCmipSolvation():
-#     def setUp(self):
+#         def setup_class(self):
 #         fx.test_setup(self, 'cmip_solvation')
 #
-#     def tearDown(self):
+#     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #

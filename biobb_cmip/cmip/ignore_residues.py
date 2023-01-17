@@ -88,7 +88,7 @@ class IgnoreResidues(BiobbObject):
                     resnum = residue_code_list[0]
                     chain = ''
                 else:
-                    chain, resnum = str(self.residue_list[i]).split(":")
+                    chain, resnum = residue_code_list
                 self.residue_list[i] = chain.strip().upper()+":"+str(resnum).strip()
 
         mark_residues(residue_list=self.residue_list, input_cmip_pdb_path=self.io_dict["in"]["input_cmip_pdb_path"], output_cmip_pdb_path=self.io_dict["out"]["output_cmip_pdb_path"], out_log=self.out_log, global_log=self.global_log)

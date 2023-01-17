@@ -3,10 +3,10 @@ from biobb_cmip.cmip.prepare_structure import prepare_structure
 
 
 # class TestPrepareStructure():
-#     def setUp(self):
+#         def setup_class(self):
 #         fx.test_setup(self, 'prepare_structure')
 #
-#     def tearDown(self):
+#     def teardown_class(self):
 #         pass
 #         #fx.test_teardown(self)
 #
@@ -17,10 +17,10 @@ from biobb_cmip.cmip.prepare_structure import prepare_structure
 
 
 class TestPrepareStructureTopology():
-    def setUp(self):
+    def setup_class(self):
         fx.test_setup(self, 'prepare_structure_topology')
 
-    def tearDown(self):
+    def teardown_class(self):
         #pass
         fx.test_teardown(self)
 

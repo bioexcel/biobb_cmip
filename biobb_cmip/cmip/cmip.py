@@ -83,8 +83,6 @@ class Cmip(BiobbObject):
         # Call parent class constructor
         super().__init__(properties)
 
-        self.combined_params_path = properties.get('combined_params_path', 'params')
-
         # Input/Output files
         self.io_dict = {
             "in": {"input_pdb_path": input_pdb_path, "input_probe_pdb_path": input_probe_pdb_path,
@@ -117,28 +115,38 @@ class Cmip(BiobbObject):
         tmp_files = []
 
         # Setup Biobb
-        if self.check_restart(): return 0
+        if self.check_restart():
+            return 0
 
         # Check if output_pdb_path ends with ".pdb" and does not contain underscores
         if self.io_dict['out']['output_pdb_path']:
-            if (not self.io_dict['out']['output_pdb_path'].endswith('.pdb')) or ("_" in str(Path(self.io_dict['out']['output_pdb_path']).name)):
-                fu.log(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) name must end in .pdb and not contain underscores", self.out_log, self.global_log)
-                raise ValueError(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) name must end in .pdb and not contain underscores")
+            if (not self.io_dict['out']['output_pdb_path'].endswith('.pdb')) or \
+               ("_" in str(Path(self.io_dict['out']['output_pdb_path']).name)):
+                fu.log(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) "
+                       f"name must end in .pdb and not contain underscores", self.out_log, self.global_log)
+                raise ValueError(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']})"
+                                 f"name must end in .pdb and not contain underscores")
 
         params_preset_dict = params_preset(execution_type=self.execution_type)
         if self.io_dict['in']["input_json_external_box_path"]:
             params_preset_dict["readgrid0"] = 0
             origin, size, grid_params = get_grid(self.io_dict['in']["input_json_external_box_path"])
-            params_preset_dict['grid_int0'] = f"INTX0={grid_params['INT'][0]},INTY0={grid_params['INT'][1]},INTZ0={grid_params['INT'][2]}"
-            params_preset_dict['grid_cen0'] = f"CENX0={grid_params['CEN'][0]},CENY0={grid_params['CEN'][1]},CENZ0={grid_params['CEN'][2]}"
-            params_preset_dict['grid_dim0'] = f"DIMX0={grid_params['DIM'][0]},DIMY0={grid_params['DIM'][1]},DIMZ0={grid_params['DIM'][2]}"
+            params_preset_dict['grid_int0'] = \
+                f"INTX0={grid_params['INT'][0]},INTY0={grid_params['INT'][1]},INTZ0={grid_params['INT'][2]}"
+            params_preset_dict['grid_cen0'] = \
+                f"CENX0={grid_params['CEN'][0]},CENY0={grid_params['CEN'][1]},CENZ0={grid_params['CEN'][2]}"
+            params_preset_dict['grid_dim0'] = \
+                f"DIMX0={grid_params['DIM'][0]},DIMY0={grid_params['DIM'][1]},DIMZ0={grid_params['DIM'][2]}"
 
         if self.io_dict['in']["input_json_box_path"]:
             params_preset_dict["readgrid"] = 0
             origin, size, grid_params = get_grid(self.io_dict['in']["input_json_box_path"])
-            params_preset_dict['grid_int'] = f"INTX={grid_params['INT'][0]},INTY={grid_params['INT'][1]},INTZ={grid_params['INT'][2]}"
-            params_preset_dict['grid_cen'] = f"CENX={grid_params['CEN'][0]},CENY={grid_params['CEN'][1]},CENZ={grid_params['CEN'][2]}"
-            params_preset_dict['grid_dim'] = f"DIMX={grid_params['DIM'][0]},DIMY={grid_params['DIM'][1]},DIMZ={grid_params['DIM'][2]}"
+            params_preset_dict['grid_int'] = \
+                f"INTX={grid_params['INT'][0]},INTY={grid_params['INT'][1]},INTZ={grid_params['INT'][2]}"
+            params_preset_dict['grid_cen'] = \
+                f"CENX={grid_params['CEN'][0]},CENY={grid_params['CEN'][1]},CENZ={grid_params['CEN'][2]}"
+            params_preset_dict['grid_dim'] = \
+                f"DIMX={grid_params['DIM'][0]},DIMY={grid_params['DIM'][1]},DIMZ={grid_params['DIM'][2]}"
 
         if self.io_dict['out']['output_json_box_path'] or self.io_dict['out']['output_json_external_box_path']:
             params_preset_dict['WRITELOG'] = 1
@@ -160,11 +168,6 @@ class Cmip(BiobbObject):
 
         else:
             params_preset_dict['IREST'] = 0
-
-
-
-
-
 
         combined_params_dir = fu.create_unique_dir()
         self.io_dict['in']['combined_params_path'] = create_params_file(
@@ -209,10 +212,10 @@ class Cmip(BiobbObject):
             self.cmd.append('-o')
             self.cmd.append(self.stage_io_dict["out"]["output_log_path"])
 
-        if self.stage_io_dict['out'].get('output_json_box_path') or self.stage_io_dict['out']['output_json_external_box_path']:
+        if self.stage_io_dict['out'].get('output_json_box_path') or \
+                self.stage_io_dict['out']['output_json_external_box_path']:
             self.cmd.append('-l')
             self.cmd.append(self.stage_io_dict["out"]["key_value_log_path"])
-
 
         # Run Biobb block
         self.run_biobb()
@@ -224,13 +227,13 @@ class Cmip(BiobbObject):
         if self.io_dict['out'].get('output_pdb_path'):
             output_pdb_path = self.io_dict['out'].get('output_pdb_path')
             if self.container_path:
-                output_pdb_path = str(Path(self.stage_io_dict["unique_dir"]).joinpath(Path(self.io_dict['out'].get('output_pdb_path')).name))
+                output_pdb_path = str(Path(self.stage_io_dict["unique_dir"]).joinpath(
+                    Path(self.io_dict['out'].get('output_pdb_path')).name))
 
             if Path(output_pdb_path[:-4]).exists():
                 shutil.move(output_pdb_path[:-4], self.io_dict['out'].get('output_pdb_path'))
             elif Path(output_pdb_path + ".pdb").exists():
                 shutil.move(output_pdb_path + ".pdb", self.io_dict['out'].get('output_pdb_path'))
-
 
         # Replace "ATOMTM" tag for "ATOM  "
         output_pdb_path = self.io_dict['out'].get('output_pdb_path')
@@ -243,17 +246,15 @@ class Cmip(BiobbObject):
 
         if self.io_dict['out'].get('output_json_box_path'):
             origin, size, grid_params = get_grid(self.stage_io_dict["out"]["output_log_path"])
-            # Incorrecte també és incorrecte com passem els params al common
-
             grid_params['DIM'] = (int(grid_params['DIM'][0]),
                                   int(grid_params['DIM'][1]),
                                   int(grid_params['DIM'][2]))
-            size_dict = {'x': round(grid_params['DIM'][0]*grid_params['INT'][0], 3),
-                         'y': round(grid_params['DIM'][1]*grid_params['INT'][1], 3),
-                         'z': round(grid_params['DIM'][2]*grid_params['INT'][2], 3)}
-            origin_dict = {'x': round(grid_params['CEN'][0]-size_dict['x']/2, 3),
-                           'y': round(grid_params['CEN'][1]-size_dict['y']/2, 3),
-                           'z': round(grid_params['CEN'][0]-size_dict['z']/2, 3)}
+            size_dict = {'x': round(grid_params['DIM'][0] * grid_params['INT'][0], 3),
+                         'y': round(grid_params['DIM'][1] * grid_params['INT'][1], 3),
+                         'z': round(grid_params['DIM'][2] * grid_params['INT'][2], 3)}
+            origin_dict = {'x': round(grid_params['CEN'][0] - size_dict['x'] / 2, 3),
+                           'y': round(grid_params['CEN'][1] - size_dict['y'] / 2, 3),
+                           'z': round(grid_params['CEN'][0] - size_dict['z'] / 2, 3)}
             grid_dict = {'origin': origin_dict,
                          'size': size_dict,
                          'params': grid_params}
@@ -262,23 +263,20 @@ class Cmip(BiobbObject):
 
         if self.io_dict['out'].get('output_json_external_box_path'):
             origin, size, grid_params = get_grid(self.stage_io_dict["out"]["output_log_path"], True)
-            # Incorrecte també és incorrecte com passem els params al common
-
             grid_params['DIM'] = (int(grid_params['DIM'][0]),
                                   int(grid_params['DIM'][1]),
                                   int(grid_params['DIM'][2]))
-            size_dict = {'x': round(grid_params['DIM'][0]*grid_params['INT'][0], 3),
-                         'y': round(grid_params['DIM'][1]*grid_params['INT'][1], 3),
-                         'z': round(grid_params['DIM'][2]*grid_params['INT'][2], 3)}
-            origin_dict = {'x': round(grid_params['CEN'][0]-size_dict['x']/2, 3),
-                           'y': round(grid_params['CEN'][1]-size_dict['y']/2, 3),
-                           'z': round(grid_params['CEN'][0]-size_dict['z']/2, 3)}
+            size_dict = {'x': round(grid_params['DIM'][0] * grid_params['INT'][0], 3),
+                         'y': round(grid_params['DIM'][1] * grid_params['INT'][1], 3),
+                         'z': round(grid_params['DIM'][2] * grid_params['INT'][2], 3)}
+            origin_dict = {'x': round(grid_params['CEN'][0] - size_dict['x'] / 2, 3),
+                           'y': round(grid_params['CEN'][1] - size_dict['y'] / 2, 3),
+                           'z': round(grid_params['CEN'][0] - size_dict['z'] / 2, 3)}
             grid_dict = {'origin': origin_dict,
                          'size': size_dict,
                          'params': grid_params}
             with open(self.io_dict['out'].get('output_json_external_box_path'), 'w') as json_file:
                 json_file.write(json.dumps(grid_dict, indent=4))
-
 
         # Remove temporal files
         self.tmp_files.extend([combined_params_dir])
@@ -291,16 +289,18 @@ def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path:
          output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
          output_byat_path: str = None, output_log_path: str = None,
          input_vdw_params_path: str = None, input_params_path: str = None, output_json_box_path: str = None,
-         input_json_box_path: str = None, input_json_external_box_path: str = None, properties: dict = None, **kwargs) -> int:
+         output_json_external_box_path: str = None, input_json_box_path: str = None,
+         input_json_external_box_path: str = None, properties: dict = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.Cmip>` class and
     execute the :meth:`launch() <cmip.cmip.Cmip.launch>` method."""
 
-    return Cmip(input_pdb_path=input_pdb_path, input_probe_pdb_path=input_probe_pdb_path, output_pdb_path=output_pdb_path,
-                output_grd_path=output_grd_path, output_cube_path=output_cube_path, output_rst_path=output_rst_path,
-                output_byat_path=output_byat_path, output_log_path=output_log_path,
+    return Cmip(input_pdb_path=input_pdb_path, input_probe_pdb_path=input_probe_pdb_path,
+                output_pdb_path=output_pdb_path, output_grd_path=output_grd_path, output_cube_path=output_cube_path,
+                output_rst_path=output_rst_path, output_byat_path=output_byat_path, output_log_path=output_log_path,
                 input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
-                output_json_box_path=output_json_box_path, input_json_box_path=input_json_box_path,
-                input_json_external_box_path=input_json_external_box_path, properties=properties, **kwargs).launch()
+                output_json_box_path=output_json_box_path, output_json_external_box_path=output_json_external_box_path,
+                input_json_box_path=input_json_box_path, input_json_external_box_path=input_json_external_box_path,
+                properties=properties, **kwargs).launch()
 
 
 def main():
@@ -321,20 +321,22 @@ def main():
     parser.add_argument('--input_vdw_params_path', required=False)
     parser.add_argument('--input_params_path', required=False)
     parser.add_argument('--output_json_box_path', required=False)
+    parser.add_argument('--output_json_external_box_path', required=False)
     parser.add_argument('--input_json_box_path', required=False)
     parser.add_argument('--input_json_external_box_path', required=False)
-
 
     args = parser.parse_args()
     config = args.config if args.config else None
     properties = settings.ConfReader(config=config).get_prop_dic()
 
     # Specific call of each building block
-    cmip(input_pdb_path=args.input_pdb_path, input_probe_pdb_path=args.input_probe_pdb_path, output_pdb_path=args.output_pdb_path,
-         output_grd_path=args.output_grd_path, output_cube_path=args.output_cube_path, output_rst_path=args.output_rst_path,
+    cmip(input_pdb_path=args.input_pdb_path, input_probe_pdb_path=args.input_probe_pdb_path,
+         output_pdb_path=args.output_pdb_path, output_grd_path=args.output_grd_path,
+         output_cube_path=args.output_cube_path, output_rst_path=args.output_rst_path,
          output_byat_path=args.output_byat_path, output_log_path=args.output_log_path,
          input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
-         output_json_box_path=args.output_json_box_path, input_json_box_path=args.input_json_box_path,
+         output_json_box_path=args.output_json_box_path,
+         output_json_external_box_path=args.output_json_external_box_path, input_json_box_path=args.input_json_box_path,
          input_json_external_box_path=args.input_json_external_box_path, properties=properties)
 
 

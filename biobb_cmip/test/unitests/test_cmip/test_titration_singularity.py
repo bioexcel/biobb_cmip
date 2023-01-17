@@ -2,10 +2,10 @@ from biobb_common.tools import test_fixtures as fx
 from biobb_cmip.cmip.titration import titration
 
 class TestTitrationSingularity():
-    def setUp(self):
+    def setup_class(self):
         fx.test_setup(self, 'titration_singularity')
 
-    def tearDown(self):
+    def teardown_class(self):
         #pass
         fx.test_teardown(self)
 

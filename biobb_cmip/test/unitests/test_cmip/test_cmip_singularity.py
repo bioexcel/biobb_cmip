@@ -3,10 +3,10 @@ from biobb_cmip.cmip.cmip import cmip
 
 
 # class TestCmipMipSingularity():
-#     def setUp(self):
+#         def setup_class(self):
 #         fx.test_setup(self, 'cmip_mip_singularity')
 #
-#     def tearDown(self):
+#     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #
@@ -19,10 +19,10 @@ from biobb_cmip.cmip.cmip import cmip
 #
 #
 # class TestCmipDockingSingularity():
-#     def setUp(self):
+#         def setup_class(self):
 #         fx.test_setup(self, 'cmip_docking_singularity')
 #
-#     def tearDown(self):
+#     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #
@@ -39,10 +39,10 @@ from biobb_cmip.cmip.cmip import cmip
 #         #assert fx.equal(self.paths['output_rst_path'], self.paths['ref_output_cmip_docking_rst_path'])
 
 class TestCmipEnergySingularity():
-    def setUp(self):
+    def setup_class(self):
         fx.test_setup(self, 'cmip_singularity')
 
-    def tearDown(self):
+    def teardown_class(self):
         #pass
         fx.test_teardown(self)
 
@@ -54,10 +54,10 @@ class TestCmipEnergySingularity():
         assert fx.equal(self.paths['output_cube_path'], self.paths['ref_output_cmip_mip_cube_path'])
 
 # class TestCmipSolvationSingularity():
-#     def setUp(self):
+#         def setup_class(self):
 #         fx.test_setup(self, 'cmip_solvation_singularity')
 #
-#     def tearDown(self):
+#     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #

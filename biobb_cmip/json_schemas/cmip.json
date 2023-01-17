@@ -116,6 +116,22 @@
                 }
             ]
         },
+        "input_rst_path": {
+            "type": "string",
+            "description": "Path to the input restart file",
+            "filetype": "output",
+            "sample": null,
+            "enum": [
+                ".*\\.txt$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.txt$",
+                    "description": "Path to the input restart file",
+                    "edam": "format_2330"
+                }
+            ]
+        },
         "output_byat_path": {
             "type": "string",
             "description": "Path to the output atom by atom energy file",
@@ -196,6 +212,22 @@
                 }
             ]
         },
+        "output_json_external_box_path": {
+            "type": "string",
+            "description": "Path to the output external CMIP box in JSON format",
+            "filetype": "output",
+            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json",
+            "enum": [
+                ".*\\.json$"
+            ],
+            "file_formats": [
+                {
+                    "extension": ".*\\.json$",
+                    "description": "Path to the output external CMIP box in JSON format",
+                    "edam": "format_3464"
+                }
+            ]
+        },
         "input_json_box_path": {
             "type": "string",
             "description": "Path to the input CMIP box in JSON format",
@@ -242,7 +274,7 @@
                         "mip_neg",
                         "mip_neu",
                         "solvation",
-                        "energy",
+                        "pb_interaction_energy",
                         "docking",
                         "docking_rst"
                     ],
@@ -268,7 +300,7 @@
                             "description": "Solvation & MEP"
                         },
                         {
-                            "name": "energy",
+                            "name": "pb_interaction_energy",
                             "description": "Docking Interaction energy calculation. PB electrostatics"
                         },
                         {
@@ -280,12 +312,6 @@
                             "description": "Docking from restart file"
                         }
                     ]
-                },
-                "box_size_factor": {
-                    "type": "number",
-                    "default": 1.0,
-                    "wf_prop": false,
-                    "description": "If optional output **output_json_box_path** is used the box size will be multiplied by this factor."
                 },
                 "params": {
                     "type": "object",
