@@ -92,10 +92,6 @@ class PreparePDB(BiobbObject):
             command_list += ' -keep_h '
         command_list += '--add_charges CMIP'
 
-        # Create command line
-        # opció eliminar lligands
-        # opció eliminar ions
-        # check_structure -v -i 2vgb.pdb -o 2vgb_cmip2.pdb --output_format cmip --non_interactive command_list --list 'water --remove yes; backbone --fix_atoms All --add_caps breaks --fix_chain none; fixside --fix All; add_hydrogen --add_mode auto --add_charges CMIP'
         self.cmd = [self.check_structure_path,
                     '-v',
                     '-i', self.stage_io_dict["in"]["input_pdb_path"],
@@ -112,9 +108,7 @@ class PreparePDB(BiobbObject):
         self.copy_to_host()
 
         # remove temporary folder(s)
-        self.tmp_files.extend([
-            self.stage_io_dict.get("unique_dir")
-        ])
+        self.tmp_files.extend([self.stage_io_dict.get("unique_dir")])
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)
