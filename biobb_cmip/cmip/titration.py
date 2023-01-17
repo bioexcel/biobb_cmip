@@ -70,6 +70,7 @@ class Titration(BiobbObject):
 
         # Call parent class constructor
         super().__init__(properties)
+        self.locals_var_dict = locals().copy()
 
         # Input/Output files
         self.io_dict = {
@@ -92,6 +93,7 @@ class Titration(BiobbObject):
 
         # Check the properties
         self.check_properties(properties)
+        self.check_arguments()
 
     @launchlogger
     def launch(self) -> int:
@@ -152,9 +154,14 @@ class Titration(BiobbObject):
         # Copy files to host
         self.copy_to_host()
 
-        # Remove temporal files
-        self.tmp_files.extend([combined_params_dir])
+        # remove temporary folder(s)
+        self.tmp_files.extend([
+            self.stage_io_dict.get("unique_dir"),
+            combined_params_dir
+        ])
         self.remove_tmp_files()
+
+        self.check_arguments(output_files_created=True, raise_exception=False)
 
         return self.return_code
 

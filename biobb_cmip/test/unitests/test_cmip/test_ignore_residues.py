@@ -7,8 +7,8 @@ class TestIgnoreResidues():
         fx.test_setup(self, 'ignore_residues')
 
     def teardown_class(self):
-        pass
-        #fx.test_teardown(self)
+        fx.test_teardown(self)
+        #pass
 
     def test_ignore_residues(self):
         ignore_residues(properties=self.properties, **self.paths)

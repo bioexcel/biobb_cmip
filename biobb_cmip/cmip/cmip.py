@@ -29,7 +29,7 @@ class Cmip(BiobbObject):
         output_cube_path (str) (Optional): Path to the output grid file in cube format. File type: output. Accepted formats: cube (edam:format_2330).
         output_rst_path (str) (Optional): Path to the output restart file. File type: output. Accepted formats: txt (edam:format_2330).
         input_rst_path (str) (Optional): Path to the input restart file. File type: output. Accepted formats: txt (edam:format_2330).
-        output_byat_path (str) (Optional): Path to the output atom by atom energy file. File type: output. Accepted formats: txt (edam:format_2330).
+        output_byat_path (str) (Optional): Path to the output atom by atom energy file. File type: output. Accepted formats: txt (edam:format_2330), out (edam:format_2330).
         output_log_path (str) (Optional): Path to the output CMIP log file LOG. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_cmip.log>`_. Accepted formats: log (edam:format_2330).
         input_vdw_params_path (str) (Optional): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. Accepted formats: txt (edam:format_2330).
         input_params_path (str) (Optional): Path to the CMIP input parameters file. File type: input. Accepted formats: txt (edam:format_2330).
@@ -82,6 +82,7 @@ class Cmip(BiobbObject):
 
         # Call parent class constructor
         super().__init__(properties)
+        self.locals_var_dict = locals().copy()
 
         # Input/Output files
         self.io_dict = {
@@ -108,6 +109,7 @@ class Cmip(BiobbObject):
 
         # Check the properties
         self.check_properties(properties)
+        self.check_arguments()
 
     @launchlogger
     def launch(self) -> int:
@@ -212,16 +214,13 @@ class Cmip(BiobbObject):
             self.cmd.append('-o')
             self.cmd.append(self.stage_io_dict["out"]["output_log_path"])
 
-        if self.stage_io_dict['out'].get('output_json_box_path') or \
-                self.stage_io_dict['out']['output_json_external_box_path']:
+
+        if self.stage_io_dict['out'].get('output_json_box_path') or self.stage_io_dict['out'].get('output_json_external_box_path'):
             self.cmd.append('-l')
             self.cmd.append(self.stage_io_dict["out"]["key_value_log_path"])
 
         # Run Biobb block
         self.run_biobb()
-
-        # Copy files to host
-        self.copy_to_host()
 
         # CMIP removes or adds a .pdb extension from pdb output name
         if self.io_dict['out'].get('output_pdb_path'):
@@ -278,12 +277,20 @@ class Cmip(BiobbObject):
             with open(self.io_dict['out'].get('output_json_external_box_path'), 'w') as json_file:
                 json_file.write(json.dumps(grid_dict, indent=4))
 
-        # Remove temporal files
-        self.tmp_files.extend([combined_params_dir])
+
+        # Copy files to host
+        self.copy_to_host()
+
+        # remove temporary folder(s)
+        self.tmp_files.extend([
+            self.stage_io_dict.get("unique_dir"),
+            combined_params_dir
+        ])
         self.remove_tmp_files()
 
-        return self.return_code
+        self.check_arguments(output_files_created=True, raise_exception=False)
 
+        return self.return_code
 
 def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,
          output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,

@@ -50,6 +50,7 @@ class IgnoreResidues(BiobbObject):
 
         # Call parent class constructor
         super().__init__(properties)
+        self.locals_var_dict = locals().copy()
 
         # Input/Output files
         self.io_dict = {
@@ -63,6 +64,7 @@ class IgnoreResidues(BiobbObject):
 
         # Check the properties
         self.check_properties(properties)
+        self.check_arguments()
 
     @launchlogger
     def launch(self) -> int:
@@ -93,8 +95,19 @@ class IgnoreResidues(BiobbObject):
 
         mark_residues(residue_list=self.residue_list, input_cmip_pdb_path=self.io_dict["in"]["input_cmip_pdb_path"], output_cmip_pdb_path=self.io_dict["out"]["output_cmip_pdb_path"], out_log=self.out_log, global_log=self.global_log)
 
-        # Remove temporal files
+        # Run Biobb block
+        #self.run_biobb()
+
+        # Copy files to host
+        self.copy_to_host()
+
+        # remove temporary folder(s)
+        self.tmp_files.extend([
+            self.stage_io_dict.get("unique_dir")
+        ])
         self.remove_tmp_files()
+
+        self.check_arguments(output_files_created=True, raise_exception=False)
 
         return self.return_code
 
@@ -122,9 +135,9 @@ def main():
     properties = settings.ConfReader(config=config).get_prop_dic()
 
     # Specific call of each building block
-    prepare_pdb(input_cmip_pdb_path=args.input_cmip_pdb_path,
-                output_cmip_pdb_path=args.output_cmip_pdb_path,
-                properties=properties)
+    ignore_residues(input_cmip_pdb_path=args.input_cmip_pdb_path,
+                    output_cmip_pdb_path=args.output_cmip_pdb_path,
+                    properties=properties)
 
 
 if __name__ == '__main__':

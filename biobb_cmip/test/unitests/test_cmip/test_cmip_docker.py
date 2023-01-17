@@ -3,7 +3,8 @@ from biobb_cmip.cmip.cmip import cmip
 
 
 # class TestCmipMipDocker():
-#         def setup_class(self):
+
+#     def setup_class(self):
 #         fx.test_setup(self, 'cmip_mip_docker')
 #
 #     def teardown_class(self):
@@ -19,7 +20,8 @@ from biobb_cmip.cmip.cmip import cmip
 
 
 # class TestCmipDockingDocker():
-#         def setup_class(self):
+
+#     def setup_class(self):
 #         fx.test_setup(self, 'cmip_docking_docker')
 #
 #     def teardown_class(self):
@@ -52,7 +54,7 @@ class TestCmipEnergyDocker():
         # assert fx.equal(self.paths['output_byat_path'], self.paths['ref_output_byat_path'])
 
 # class TestCmipSolvationDocker():
-#         def setup_class(self):
+#     def setup_class(self):
 #         fx.test_setup(self, 'cmip_solvation_docker')
 #
 #     def teardown_class(self):

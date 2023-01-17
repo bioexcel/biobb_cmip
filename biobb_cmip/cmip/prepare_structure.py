@@ -66,6 +66,7 @@ class PrepareStructure(BiobbObject):
 
         # Call parent class constructor
         super().__init__(properties)
+        self.locals_var_dict = locals().copy()
 
         # Input/Output files
         self.io_dict = {
@@ -76,6 +77,7 @@ class PrepareStructure(BiobbObject):
 
         # Check the properties
         self.check_properties(properties)
+        self.check_arguments()
 
     @launchlogger
     def launch(self) -> int:
@@ -92,7 +94,7 @@ class PrepareStructure(BiobbObject):
                 # Unzip topology to topology_out
                 top_file = fu.unzip_top(zip_file=self.io_dict['in']['input_topology_path'], out_log=self.out_log)
                 top_dir = str(Path(top_file).parent)
-                self.tmp_files(top_dir)
+                #self.tmp_files(top_dir)
 
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=UserWarning)
@@ -114,8 +116,17 @@ class PrepareStructure(BiobbObject):
                        elements_list)
 
         ###################################
-        # Remove temporal files
+        # Copy files to host
+        self.copy_to_host()
+
+        # remove temporary folder(s)
+        self.tmp_files.extend([
+            self.stage_io_dict.get("unique_dir"),
+            top_dir
+        ])
         self.remove_tmp_files()
+
+        self.check_arguments(output_files_created=True, raise_exception=False)
 
         return 0
 
@@ -146,9 +157,10 @@ def main():
     properties = settings.ConfReader(config=config).get_prop_dic()
 
     # Specific call of each building block
-    prepare_structure(input_pdb_path=args.input_pdb_path, output_cmip_pdb_path=args.output_cmip_pdb_path,
-                      input_topology_path=args.input_topology_path, properties=properties)
-
+    prepare_structure(  input_pdb_path=args.input_pdb_path, 
+                        output_cmip_pdb_path=args.output_cmip_pdb_path,
+                         input_topology_path=args.input_topology_path, 
+                         properties=properties)
 
 if __name__ == '__main__':
     main()

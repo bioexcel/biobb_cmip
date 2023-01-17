@@ -6,8 +6,8 @@ class TestTitrationSingularity():
         fx.test_setup(self, 'titration_singularity')
 
     def teardown_class(self):
-        #pass
         fx.test_teardown(self)
+        #pass
 
     def test_titration_singularity(self):
         titration(properties=self.properties, **self.paths)

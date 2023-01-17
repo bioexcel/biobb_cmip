@@ -3,7 +3,8 @@ from biobb_cmip.cmip.cmip import cmip
 
 
 # class TestCmipMipSingularity():
-#         def setup_class(self):
+
+#     def setup_class(self):
 #         fx.test_setup(self, 'cmip_mip_singularity')
 #
 #     def teardown_class(self):
@@ -19,7 +20,8 @@ from biobb_cmip.cmip.cmip import cmip
 #
 #
 # class TestCmipDockingSingularity():
-#         def setup_class(self):
+
+#     def setup_class(self):
 #         fx.test_setup(self, 'cmip_docking_singularity')
 #
 #     def teardown_class(self):
@@ -54,7 +56,8 @@ class TestCmipEnergySingularity():
         assert fx.equal(self.paths['output_cube_path'], self.paths['ref_output_cmip_mip_cube_path'])
 
 # class TestCmipSolvationSingularity():
-#         def setup_class(self):
+
+#     def setup_class(self):
 #         fx.test_setup(self, 'cmip_solvation_singularity')
 #
 #     def teardown_class(self):
