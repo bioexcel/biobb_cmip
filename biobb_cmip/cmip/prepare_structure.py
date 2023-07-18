@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 
 """Module containing the PrepareStructure class and the command line interface."""
-import os
 import argparse
 import warnings
-import shutil
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.configuration import settings
 from biobb_common.tools import file_utils as fu
 from biobb_common.tools.file_utils import launchlogger
-from biobb_common.command_wrapper import cmd_wrapper
+
 # Write the CMIP PDB
 from biobb_cmip.cmip.common import write_cmip_pdb
 # Dani's methods using a topology and a PDB file
@@ -82,7 +80,8 @@ class PrepareStructure(BiobbObject):
     def launch(self) -> int:
         """Execute the :class:`Cmip <cmip.cmip.PrepareStructure>` object."""
         # Setup Biobb
-        if self.check_restart(): return 0
+        if self.check_restart():
+            return 0
 
         # Dani's method
         if self.io_dict['in']['input_topology_path']:
@@ -91,6 +90,7 @@ class PrepareStructure(BiobbObject):
                 # Unzip topology to topology_out
                 top_file = fu.unzip_top(zip_file=self.io_dict['in']['input_topology_path'], out_log=self.out_log)
                 top_dir = str(Path(top_file).parent)
+                self.tmp_files.append(top_dir)
 
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=UserWarning)
@@ -114,7 +114,6 @@ class PrepareStructure(BiobbObject):
         ###################################
 
         # remove temporary folder(s)
-        self.tmp_files.extend([top_dir])
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)
