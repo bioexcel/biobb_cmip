@@ -1,5 +1,8 @@
 # Biobb CMIP changelog
 
+## What's new in version [4.0.0](https://github.com/bioexcel/biobb_cmip/releases/tag/4.0.0)?
+All inputs/outputs are now cheked.
+
 ## What's new in version [3.9.0](https://github.com/bioexcel/biobb_cmip/releases/tag/3.9.0)?
 All operations are now sandboxed
 

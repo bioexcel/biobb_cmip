@@ -6,79 +6,14 @@ biobb_command [-h] --config CONFIG --input_file(s) <input_file(s)> --output_file
 -----------------
 
 
-## Prepare_structure
-Generate a CMIP suitable PDB input.
-### Get help
-Command:
-```python
-prepare_structure -h
-```
-    /bin/sh: /Users/pau/anaconda3/envs/dev/bin/prepare_structure: Permission denied
-### I / O Arguments
-Syntax: input_argument (datatype) : Definition
-
-Config input / output arguments for this building block:
-* **input_pdb_path** (*string*): Path to the input PDB file. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr.pdb). Accepted formats: PDB
-* **input_topology_path** (*string*): Path to the input topology path. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr_topology.zip). Accepted formats: ZIP, TOP, PSF, PRMTOP
-* **output_cmip_pdb_path** (*string*): Path to the output PDB file. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/egfr_cmip.pdb). Accepted formats: PDB
-### Config
-Syntax: input_parameter (datatype) - (default_value) Definition
-
-Config parameters for this building block:
-* **remove_tmp** (*boolean*): (True) Remove temporal files..
-* **restart** (*boolean*): (False) Do not execute if output files exist..
-* **container_path** (*string*): (None) Path to the binary executable of your container..
-* **container_image** (*string*): (cmip/cmip:latest) Container Image identifier..
-* **container_volume_path** (*string*): (/data) Path to an internal directory in the container..
-* **container_working_dir** (*string*): (None) Path to the internal CWD in the container..
-* **container_user_id** (*string*): (None) User number id to be mapped inside the container..
-* **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
-### YAML
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_prepare_structure.yml)
-```python
-properties:
-  remove_tmp: true
-
-```
-#### Command line
-```python
-prepare_structure --config config_prepare_structure.yml --input_pdb_path egfr.pdb --input_topology_path egfr_topology.zip --output_cmip_pdb_path egfr_cmip.pdb
-```
-### JSON
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_prepare_structure.json)
-```python
-{
-  "properties": {
-    "remove_tmp": true
-  }
-}
-```
-#### Command line
-```python
-prepare_structure --config config_prepare_structure.json --input_pdb_path egfr.pdb --input_topology_path egfr_topology.zip --output_cmip_pdb_path egfr_cmip.pdb
-```
-
-## Prepare_pdb
+## Cmip_prepare_pdb
 Class to add CMIP charges and atom types.
 ### Get help
 Command:
 ```python
-prepare_pdb -h
+cmip_prepare_pdb -h
 ```
-    usage: prepare_pdb [-h] [-c CONFIG] -i INPUT_PDB_PATH -o OUTPUT_CMIP_PDB_PATH
-    
-    Model the missing atoms in the backbone of a PDB structure.
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -c CONFIG, --config CONFIG
-                            This file can be a YAML file, JSON file or JSON string
-    
-    required arguments:
-      -i INPUT_PDB_PATH, --input_pdb_path INPUT_PDB_PATH
-                            Input PDB file name
-      -o OUTPUT_CMIP_PDB_PATH, --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
-                            Output PDB file name
+    /bin/sh: cmip_prepare_pdb: command not found
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -97,7 +32,7 @@ Config parameters for this building block:
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
 ### YAML
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_prepare_pdb.yml)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_pdb.yml)
 ```python
 properties:
   remove_tmp: true
@@ -105,10 +40,10 @@ properties:
 ```
 #### Command line
 ```python
-prepare_pdb --config config_prepare_pdb.yml --input_pdb_path 1aki.pdb --output_cmip_pdb_path egfr_cmip.pdb
+cmip_prepare_pdb --config config_cmip_prepare_pdb.yml --input_pdb_path 1aki.pdb --output_cmip_pdb_path egfr_cmip.pdb
 ```
 ### JSON
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_prepare_pdb.json)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_pdb.json)
 ```python
 {
   "properties": {
@@ -118,30 +53,66 @@ prepare_pdb --config config_prepare_pdb.yml --input_pdb_path 1aki.pdb --output_c
 ```
 #### Command line
 ```python
-prepare_pdb --config config_prepare_pdb.json --input_pdb_path 1aki.pdb --output_cmip_pdb_path egfr_cmip.pdb
+cmip_prepare_pdb --config config_cmip_prepare_pdb.json --input_pdb_path 1aki.pdb --output_cmip_pdb_path egfr_cmip.pdb
 ```
 
-## Titration
+## Cmip_ignore_residues
+Class to ignore residues in CMIP potential calculations.
+### Get help
+Command:
+```python
+cmip_ignore_residues -h
+```
+    /bin/sh: cmip_ignore_residues: command not found
+### I / O Arguments
+Syntax: input_argument (datatype) : Definition
+
+Config input / output arguments for this building block:
+* **input_cmip_pdb_path** (*string*): Input PDB file path. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/input_ignore_res.pdb). Accepted formats: PDB
+* **output_cmip_pdb_path** (*string*): Output PDB file path. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ignore_res_gln3.pdb). Accepted formats: PDB
+### Config
+Syntax: input_parameter (datatype) - (default_value) Definition
+
+Config parameters for this building block:
+* **residue_list** (*string*): (None) Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. If no chain is provided all the residues in the pdb file will be market. ie: "A:3"..
+* **ignore_all** (*boolean*): (False) Mark all the residues in the PDB file..
+* **remove_tmp** (*boolean*): (True) Remove temporal files..
+* **restart** (*boolean*): (False) Do not execute if output files exist..
+### YAML
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_ignore_residues.yml)
+```python
+properties:
+  remove_tmp: true
+  residue_list: 3
+
+```
+#### Command line
+```python
+cmip_ignore_residues --config config_cmip_ignore_residues.yml --input_cmip_pdb_path input_ignore_res.pdb --output_cmip_pdb_path ignore_res_gln3.pdb
+```
+### JSON
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_ignore_residues.json)
+```python
+{
+  "properties": {
+    "residue_list": 3,
+    "remove_tmp": true
+  }
+}
+```
+#### Command line
+```python
+cmip_ignore_residues --config config_cmip_ignore_residues.json --input_cmip_pdb_path input_ignore_res.pdb --output_cmip_pdb_path ignore_res_gln3.pdb
+```
+
+## Cmip_titration
 Wrapper class for the CMIP titration module.
 ### Get help
 Command:
 ```python
-titration -h
+cmip_titration -h
 ```
-    usage: titration [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --output_pdb_path OUTPUT_PDB_PATH [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH]
-    
-    Wrapper of the CMIP Titration module.
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -c CONFIG, --config CONFIG
-                            This file can be a YAML file, JSON file or JSON string
-      --input_vdw_params_path INPUT_VDW_PARAMS_PATH
-      --input_params_path INPUT_PARAMS_PATH
-    
-    required arguments:
-      --input_pdb_path INPUT_PDB_PATH
-      --output_pdb_path OUTPUT_PDB_PATH
+    /bin/sh: cmip_titration: command not found
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -170,14 +141,14 @@ Config parameters for this building block:
 * **container_user_id** (*string*): (None) User number id to be mapped inside the container..
 * **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
 ### YAML
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_titration.yml)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration.yml)
 ```python
 properties:
   neutral: true
   remove_tmp: false
 
 ```
-#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_titration_docker.yml)
+#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_docker.yml)
 ```python
 properties:
   container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
@@ -186,7 +157,7 @@ properties:
   neutral: true
 
 ```
-#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_titration_singularity.yml)
+#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_singularity.yml)
 ```python
 properties:
   container_image: cmip.simg
@@ -197,10 +168,10 @@ properties:
 ```
 #### Command line
 ```python
-titration --config config_titration.yml --input_pdb_path 1kim_h.pdb --output_pdb_path 1kim_neutral.pdb --input_vdw_params_path input.txt --input_params_path input.txt
+cmip_titration --config config_cmip_titration.yml --input_pdb_path 1kim_h.pdb --output_pdb_path 1kim_neutral.pdb --input_vdw_params_path input.txt --input_params_path input.txt
 ```
 ### JSON
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_titration.json)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration.json)
 ```python
 {
   "properties": {
@@ -209,7 +180,7 @@ titration --config config_titration.yml --input_pdb_path 1kim_h.pdb --output_pdb
   }
 }
 ```
-#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_titration_docker.json)
+#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_docker.json)
 ```python
 {
   "properties": {
@@ -220,7 +191,7 @@ titration --config config_titration.yml --input_pdb_path 1kim_h.pdb --output_pdb
   }
 }
 ```
-#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_titration_singularity.json)
+#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_singularity.json)
 ```python
 {
   "properties": {
@@ -233,40 +204,17 @@ titration --config config_titration.yml --input_pdb_path 1kim_h.pdb --output_pdb
 ```
 #### Command line
 ```python
-titration --config config_titration.json --input_pdb_path 1kim_h.pdb --output_pdb_path 1kim_neutral.pdb --input_vdw_params_path input.txt --input_params_path input.txt
+cmip_titration --config config_cmip_titration.json --input_pdb_path 1kim_h.pdb --output_pdb_path 1kim_neutral.pdb --input_vdw_params_path input.txt --input_params_path input.txt
 ```
 
-## Cmip
+## Cmip_run
 Wrapper class for the CMIP cmip module.
 ### Get help
 Command:
 ```python
-cmip -h
+cmip_run -h
 ```
-    usage: cmip [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH [--input_probe_pdb_path INPUT_PROBE_PDB_PATH] [--output_pdb_path OUTPUT_PDB_PATH] [--output_grd_path OUTPUT_GRD_PATH] [--output_cube_path OUTPUT_CUBE_PATH] [--output_rst_path OUTPUT_RST_PATH] [--output_byat_path OUTPUT_BYAT_PATH] [--output_log_path OUTPUT_LOG_PATH] [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH] [--output_json_box_path OUTPUT_JSON_BOX_PATH] [--output_json_external_box_path OUTPUT_JSON_EXTERNAL_BOX_PATH] [--input_json_box_path INPUT_JSON_BOX_PATH] [--input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH]
-    
-    Wrapper of the CMIP cmip module.
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -c CONFIG, --config CONFIG
-                            This file can be a YAML file, JSON file or JSON string
-      --input_probe_pdb_path INPUT_PROBE_PDB_PATH
-      --output_pdb_path OUTPUT_PDB_PATH
-      --output_grd_path OUTPUT_GRD_PATH
-      --output_cube_path OUTPUT_CUBE_PATH
-      --output_rst_path OUTPUT_RST_PATH
-      --output_byat_path OUTPUT_BYAT_PATH
-      --output_log_path OUTPUT_LOG_PATH
-      --input_vdw_params_path INPUT_VDW_PARAMS_PATH
-      --input_params_path INPUT_PARAMS_PATH
-      --output_json_box_path OUTPUT_JSON_BOX_PATH
-      --output_json_external_box_path OUTPUT_JSON_EXTERNAL_BOX_PATH
-      --input_json_box_path INPUT_JSON_BOX_PATH
-      --input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH
-    
-    required arguments:
-      --input_pdb_path INPUT_PDB_PATH
+    /bin/sh: cmip_run: command not found
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -302,13 +250,13 @@ Config parameters for this building block:
 * **container_user_id** (*string*): (None) User number id to be mapped inside the container..
 * **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
 ### YAML
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip.yml)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run.yml)
 ```python
 properties:
   execution_type: pb_interaction_energy
 
 ```
-#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_docker.yml)
+#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run_docker.yml)
 ```python
 properties:
   container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
@@ -318,7 +266,7 @@ properties:
   remove_tmp: true
 
 ```
-#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_singularity.yml)
+#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run_singularity.yml)
 ```python
 properties:
   container_image: cmip.simg
@@ -330,10 +278,10 @@ properties:
 ```
 #### Command line
 ```python
-cmip --config config_cmip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
+cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
 ```
 ### JSON
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip.json)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run.json)
 ```python
 {
   "properties": {
@@ -341,7 +289,7 @@ cmip --config config_cmip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path
   }
 }
 ```
-#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_docker.json)
+#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run_docker.json)
 ```python
 {
   "properties": {
@@ -353,7 +301,7 @@ cmip --config config_cmip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path
   }
 }
 ```
-#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_singularity.json)
+#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run_singularity.json)
 ```python
 {
   "properties": {
@@ -367,54 +315,57 @@ cmip --config config_cmip.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path
 ```
 #### Command line
 ```python
-cmip --config config_cmip.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
+cmip_run --config config_cmip_run.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
 ```
 
-## Ignore_residues
-Class to ignore residues in CMIP potential calculations.
+## Cmip_prepare_structure
+Generate a CMIP suitable PDB input.
 ### Get help
 Command:
 ```python
-ignore_residues -h
+cmip_prepare_structure -h
 ```
-    /bin/sh: /Users/pau/anaconda3/envs/dev/bin/ignore_residues: Permission denied
+    /bin/sh: cmip_prepare_structure: command not found
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
 Config input / output arguments for this building block:
-* **input_cmip_pdb_path** (*string*): Input PDB file path. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/input_ignore_res.pdb). Accepted formats: PDB
-* **output_cmip_pdb_path** (*string*): Output PDB file path. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ignore_res_gln3.pdb). Accepted formats: PDB
+* **input_pdb_path** (*string*): Path to the input PDB file. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr.pdb). Accepted formats: PDB
+* **input_topology_path** (*string*): Path to the input topology path. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr_topology.zip). Accepted formats: ZIP, TOP, PSF, PRMTOP
+* **output_cmip_pdb_path** (*string*): Path to the output PDB file. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/egfr_cmip.pdb). Accepted formats: PDB
 ### Config
 Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
-* **residue_list** (*string*): (None) Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. If no chain is provided all the residues in the pdb file will be market. ie: "A:3"..
-* **ignore_all** (*boolean*): (False) Mark all the residues in the PDB file..
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
+* **container_path** (*string*): (None) Path to the binary executable of your container..
+* **container_image** (*string*): (cmip/cmip:latest) Container Image identifier..
+* **container_volume_path** (*string*): (/data) Path to an internal directory in the container..
+* **container_working_dir** (*string*): (None) Path to the internal CWD in the container..
+* **container_user_id** (*string*): (None) User number id to be mapped inside the container..
+* **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
 ### YAML
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_ignore_residues.yml)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_structure.yml)
 ```python
 properties:
   remove_tmp: true
-  residue_list: 3
 
 ```
 #### Command line
 ```python
-ignore_residues --config config_ignore_residues.yml --input_cmip_pdb_path input_ignore_res.pdb --output_cmip_pdb_path ignore_res_gln3.pdb
+cmip_prepare_structure --config config_cmip_prepare_structure.yml --input_pdb_path egfr.pdb --input_topology_path egfr_topology.zip --output_cmip_pdb_path egfr_cmip.pdb
 ```
 ### JSON
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_ignore_residues.json)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_structure.json)
 ```python
 {
   "properties": {
-    "residue_list": 3,
     "remove_tmp": true
   }
 }
 ```
 #### Command line
 ```python
-ignore_residues --config config_ignore_residues.json --input_cmip_pdb_path input_ignore_res.pdb --output_cmip_pdb_path ignore_res_gln3.pdb
+cmip_prepare_structure --config config_cmip_prepare_structure.json --input_pdb_path egfr.pdb --input_topology_path egfr_topology.zip --output_cmip_pdb_path egfr_cmip.pdb
 ```

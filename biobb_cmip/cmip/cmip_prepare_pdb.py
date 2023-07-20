@@ -7,9 +7,9 @@ from biobb_common.configuration import settings
 from biobb_common.tools.file_utils import launchlogger
 
 
-class PreparePDB(BiobbObject):
+class CmipPreparePDB(BiobbObject):
     """
-    | biobb_cmip PreparePDB
+    | biobb_cmip CmipPreparePDB
     | Class to add CMIP charges and atom types.
     | Add CMIP charges and atom types to a PDB structure using `biobb_structure_checking <https://anaconda.org/bioconda/biobb_structure_checking>`_.
 
@@ -29,9 +29,9 @@ class PreparePDB(BiobbObject):
     Examples:
         This is a use example of how to use the building block from Python::
 
-            from biobb_cmip.cmip.prepare_pdb import prepare_pdb
+            from biobb_cmip.cmip.cmip_prepare_pdb import cmip_prepare_pdb
             prop = { 'restart': False }
-            prepare_pdb(input_pdb_path='/path/to/myStructure.pdb',
+            cmip_prepare_pdb(input_pdb_path='/path/to/myStructure.pdb',
                         output_cmip_pdb_path='/path/to/newStructure.pdb',
                         properties=prop)
 
@@ -74,7 +74,8 @@ class PreparePDB(BiobbObject):
         """Execute the :class:`PreparePDB <cmip.prepare_pdb.PreparePDB>` object."""
 
         # Setup Biobb
-        if self.check_restart(): return 0
+        if self.check_restart():
+            return 0
         self.stage_files()
 
         command_list = ""
@@ -116,12 +117,12 @@ class PreparePDB(BiobbObject):
         return self.return_code
 
 
-def prepare_pdb(input_pdb_path: str, output_cmip_pdb_path: str, properties: dict = None, **kwargs) -> int:
+def cmip_prepare_pdb(input_pdb_path: str, output_cmip_pdb_path: str, properties: dict = None, **kwargs) -> int:
     """Create :class:`PreparePDB <cmip.prepare_pdb.PreparePDB>` class and
     execute the :meth:`launch() <cmip.prepare_pdb.PreparePDB.launch>` method."""
-    return PreparePDB(input_pdb_path=input_pdb_path,
-                      output_cmip_pdb_path=output_cmip_pdb_path,
-                      properties=properties, **kwargs).launch()
+    return CmipPreparePDB(input_pdb_path=input_pdb_path,
+                          output_cmip_pdb_path=output_cmip_pdb_path,
+                          properties=properties, **kwargs).launch()
 
 
 def main():
@@ -139,9 +140,9 @@ def main():
     properties = settings.ConfReader(config=config).get_prop_dic()
 
     # Specific call of each building block
-    prepare_pdb(input_pdb_path=args.input_pdb_path,
-                output_cmip_pdb_path=args.output_cmip_pdb_path,
-                properties=properties)
+    cmip_prepare_pdb(input_pdb_path=args.input_pdb_path,
+                     output_cmip_pdb_path=args.output_cmip_pdb_path,
+                     properties=properties)
 
 
 if __name__ == '__main__':

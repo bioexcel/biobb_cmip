@@ -19,7 +19,7 @@ from biobb_cmip.cmip.common import get_pdb_charges
 from biobb_cmip.cmip.common import get_pdb_cmip_elements_canonical
 
 
-class PrepareStructure(BiobbObject):
+class CmipPrepareStructure(BiobbObject):
     """
     | biobb_cmip PrepareStructure
     | Generate a CMIP suitable PDB input.
@@ -121,14 +121,14 @@ class PrepareStructure(BiobbObject):
         return 0
 
 
-def prepare_structure(input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: str = None,
-                      properties: dict = None, **kwargs) -> int:
+def cmip_prepare_structure(input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: str = None,
+                           properties: dict = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.PrepareStructure>` class and
     execute the :meth:`launch() <cmip.cmip.PrepareStructure.launch>` method."""
 
-    return PrepareStructure(input_pdb_path=input_pdb_path, output_cmip_pdb_path=output_cmip_pdb_path,
-                            input_topology_path=input_topology_path, properties=properties,
-                            **kwargs).launch()
+    return CmipPrepareStructure(input_pdb_path=input_pdb_path, output_cmip_pdb_path=output_cmip_pdb_path,
+                                input_topology_path=input_topology_path, properties=properties,
+                                **kwargs).launch()
 
 
 def main():
@@ -147,10 +147,10 @@ def main():
     properties = settings.ConfReader(config=config).get_prop_dic()
 
     # Specific call of each building block
-    prepare_structure(input_pdb_path=args.input_pdb_path,
-                      output_cmip_pdb_path=args.output_cmip_pdb_path,
-                      input_topology_path=args.input_topology_path,
-                      properties=properties)
+    cmip_prepare_structure(input_pdb_path=args.input_pdb_path,
+                           output_cmip_pdb_path=args.output_cmip_pdb_path,
+                           input_topology_path=args.input_topology_path,
+                           properties=properties)
 
 
 if __name__ == '__main__':

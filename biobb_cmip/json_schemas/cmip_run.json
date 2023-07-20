@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://bioexcel.eu/biobb_cmip/json_schemas/1.0/cmip",
+    "$id": "http://bioexcel.eu/biobb_cmip/json_schemas/1.0/cmip_run",
     "name": "biobb_cmip Titration",
     "title": "Wrapper class for the CMIP cmip module.",
     "description": "The CMIP cmip module. CMIP cmip module compute classical molecular interaction potentials.",

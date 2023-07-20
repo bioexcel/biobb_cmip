@@ -1,15 +1,16 @@
 from biobb_common.tools import test_fixtures as fx
-from biobb_cmip.cmip.titration import titration
+from biobb_cmip.cmip.cmip_titration import cmip_titration
 
-class TestTitrationDocker():
+
+class TestCmipTitration():
     def setup_class(self):
-        fx.test_setup(self, 'titration_docker')
+        fx.test_setup(self, 'cmip_titration')
 
     def teardown_class(self):
         fx.test_teardown(self)
-        #pass
+        # pass
 
-    def test_titration_docker(self):
-        titration(properties=self.properties, **self.paths)
+    def test_cmip_titration(self):
+        cmip_titration(properties=self.properties, **self.paths)
         assert fx.not_empty(self.paths['output_pdb_path'])
         assert fx.equal(self.paths['output_pdb_path'], self.paths['ref_output_pdb_path'])

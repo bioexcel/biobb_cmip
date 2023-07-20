@@ -1,65 +1,72 @@
 from biobb_common.tools import test_fixtures as fx
-from biobb_cmip.cmip.cmip import cmip
+from biobb_cmip.cmip.cmip_run import cmip_run
+import pytest
 
 
-# class TestCmipMip():
+
+# class TestCmipMipSingularity():
+
 #     def setup_class(self):
-#         fx.test_setup(self, 'cmip_mip')
+#         fx.test_setup(self, 'cmip_mip_singularity')
 #
 #     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #
-#     def test_cmip_mip(self):
+#     def test_cmip_mip_singularity(self):
 #         cmip(properties=self.properties, **self.paths)
 #         assert fx.not_empty(self.paths['output_cube_path'])
 #         assert fx.not_empty(self.paths['output_grd_path'])
 #         assert fx.equal(self.paths['output_grd_path'], self.paths['ref_output_cmip_mip_grd_path'])
 #         assert fx.equal(self.paths['output_cube_path'], self.paths['ref_output_cmip_mip_cube_path'])
-
-
-# class TestCmipDocking():
+#
+#
+# class TestCmipDockingSingularity():
 
 #     def setup_class(self):
-#         fx.test_setup(self, 'cmip_docking')
+#         fx.test_setup(self, 'cmip_docking_singularity')
 #
 #     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #
-#     def test_cmip_docking(self):
+#     def test_cmip_docking_singularity(self):
 #         cmip(properties=self.properties, **self.paths)
 #         assert fx.not_empty(self.paths['output_pdb_path'])
 #         assert fx.not_empty(self.paths['output_grd_path'])
 #         assert fx.not_empty(self.paths['output_rst_path'])
-#         assert fx.equal(self.paths['output_pdb_path'], self.paths['ref_output_cmip_docking_pdb_path'], remove_hetatm=False)
+#         # Can not compare PDB files formed excluvely by HETATM
+#         #assert fx.equal(self.paths['output_pdb_path'], self.paths['ref_output_cmip_docking_pdb_path'])
+#         # GRD differs between executions
 #         #assert fx.equal(self.paths['output_grd_path'], self.paths['ref_output_cmip_docking_grd_path'])
+#         # RST differs between executions
 #         #assert fx.equal(self.paths['output_rst_path'], self.paths['ref_output_cmip_docking_rst_path'])
-
-
-class TestCmipEnergy():
+class TestCmipRunEnergySingularity():
     def setup_class(self):
-        fx.test_setup(self, 'cmip')
+        fx.test_setup(self, 'cmip_run_singularity')
 
     def teardown_class(self):
-        #pass
+        # pass
         fx.test_teardown(self)
 
-    def test_cmip_energy(self):
-        cmip(properties=self.properties, **self.paths)
-        assert fx.not_empty(self.paths['output_byat_path'])
-        #assert fx.equal(self.paths['output_byat_path'], self.paths['ref_output_byat_path'])
+    @pytest.mark.skip(reason="singularity currently not available")
+    def test_cmip_run_mip_singularity(self):
+        cmip_run(properties=self.properties, **self.paths)
+        assert fx.not_empty(self.paths['output_cube_path'])
+        assert fx.not_empty(self.paths['output_grd_path'])
+        assert fx.equal(self.paths['output_grd_path'], self.paths['ref_output_cmip_mip_grd_path'])
+        assert fx.equal(self.paths['output_cube_path'], self.paths['ref_output_cmip_mip_cube_path'])
 
-# class TestCmipSolvation():
+# class TestCmipSolvationSingularity():
 
 #     def setup_class(self):
-#         fx.test_setup(self, 'cmip_solvation')
+#         fx.test_setup(self, 'cmip_solvation_singularity')
 #
 #     def teardown_class(self):
 #         #pass
 #         fx.test_teardown(self)
 #
-#     def test_cmip_mip(self):
+#     def test_cmip_mip_singularity(self):
 #         cmip(properties=self.properties, **self.paths)
 #         assert fx.not_empty(self.paths['output_cube_path'])
 #         assert fx.not_empty(self.paths['output_grd_path'])

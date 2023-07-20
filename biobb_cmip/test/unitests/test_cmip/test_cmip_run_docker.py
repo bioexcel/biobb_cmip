@@ -1,5 +1,5 @@
 from biobb_common.tools import test_fixtures as fx
-from biobb_cmip.cmip.cmip import cmip
+from biobb_cmip.cmip.cmip_run import cmip_run
 
 
 # class TestCmipMipDocker():
@@ -40,16 +40,16 @@ from biobb_cmip.cmip.cmip import cmip
 #         # RST differs between executions
 #         #assert fx.equal(self.paths['output_rst_path'], self.paths['ref_output_cmip_docking_rst_path'])
 
-class TestCmipEnergyDocker():
+class TestCmipRunEnergyDocker():
     def setup_class(self):
-        fx.test_setup(self, 'cmip_docker')
+        fx.test_setup(self, 'cmip_run_docker')
 
     def teardown_class(self):
         # pass
         fx.test_teardown(self)
 
-    def test_cmip_energy(self):
-        cmip(properties=self.properties, **self.paths)
+    def test_cmip_run_energy(self):
+        cmip_run(properties=self.properties, **self.paths)
         assert fx.not_empty(self.paths['output_byat_path'])
         # assert fx.equal(self.paths['output_byat_path'], self.paths['ref_output_byat_path'])
 

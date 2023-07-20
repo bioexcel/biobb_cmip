@@ -6,54 +6,54 @@
     "conda": "https://anaconda.org/bioconda/biobb_cmip",
     "docker": "https://quay.io/biocontainers/biobb_cmip:3.7.8--pyhdfd78af_0",
     "singularity": "https://depot.galaxyproject.org/singularity/biobb_cmip:3.7.8--pyhdfd78af_0",
-    "version": "3.9.0",
+    "version": "4.0.0",
     "tools" : [
         {
-            "block" : "Cmip",
+            "block" : "CmipRun",
             "tool" : "CMIP cmip",
             "desc" : "CMIP cmip module compute classical molecular interaction potentials.",
-            "exec" : "cmip",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip"
+            "exec" : "cmip_run",
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_run"
         },
         {
-            "block" : "Titration",
+            "block" : "CmipTitration",
             "tool" : "CMIP titration",
             "desc" : "CMIP cmip module compute classical molecular interaction potentials.",
-            "exec" : "titration",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.titration"
+            "exec" : "cmip_titration",
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_titration"
         },
         {
-            "block" : "PrepareStructure",
+            "block" : "CmipPrepareStructure",
             "tool" : "Prepare Structure",
             "desc" : "Creates a CMIP suitable PDB from an standar structure file",
-            "exec" : "prepare_structure",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.prepare_structure"
+            "exec" : "cmip_prepare_structure",
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_structure"
         },
         {
-            "block" : "PreparePDB",
+            "block" : "CmipPreparePDB",
             "tool" : "Prepare PDB",
             "desc" : "Creates a CMIP suitable PDB from an standar PDB file",
-            "exec" : "prepare_pdb",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.prepare_pdb"
+            "exec" : "cmip_prepare_pdb",
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_pdb"
         },
         {
-            "block" : "IgnoreResidues",
+            "block" : "CmipIgnoreResidues",
             "tool" : "Ignore Residues",
             "desc" : "Mark residues which charges will be ignored in the CMIP potential calculations.",
-            "exec" : "ignore_residues",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.ignore_residues"
+            "exec" : "cmip_ignore_residues",
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_ignore_residues"
         }
     ],
     "dep_pypi" : [
-        "install_requires=['biobb_common==3.9.0', 'mdanalysis==2.0.0', 'biobb_structure_checking==3.12.1']",
+        "install_requires=['biobb_common==4.0.0', 'mdanalysis', 'biobb_structure_checking==3.13.0']",
         "python_requires='>=3.7'"
     ],
     "dep_conda" : [
         "python >=3.7",
-        "biobb_common ==3.9.0",
+        "biobb_common ==4.0.0",
         "cmip ==2.7.0",
-        "mdanalysis==2.0.0",
-        "biobb_structure_checking==3.12.1"
+        "mdanalysis >=2.0.0",
+        "biobb_structure_checking==3.13.0"
     ],
     "keywords" : [
         "classical",

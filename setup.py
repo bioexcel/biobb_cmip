@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="biobb_cmip",
-    version="3.9.0",
+    version="4.0.0",
     author="Biobb developers",
     author_email="pau.andrio@bsc.es",
     description="biobb_cmip is the Biobb module collection to compute classical molecular interaction potentials.",
@@ -20,9 +20,9 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=['docs', 'test']),
     include_package_data=True,
     install_requires=[
-        'biobb_common==3.9.0',
-        'mdanalysis==2.0.0',
-        'biobb_structure_checking==3.12.1'
+        'biobb_common==4.0.0',
+        'mdanalysis>=2.0.0',
+        'biobb_structure_checking==3.13.0'
     ],
     python_requires='>=3.7',
     entry_points={
@@ -34,11 +34,14 @@ setuptools.setup(
             "cmip_ignore_residues = biobb_cmip.cmip.ignore_residues:main"
         ]
     },
-    classifiers=[
-        "Development Status :: 3 - Alpha",
+    classifiers=(
+        "Development Status :: 5 - Production/Stable",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX",
-    ],
+        "Operating System :: Unix"
+    ),
 )

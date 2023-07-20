@@ -2,7 +2,7 @@
 can_write_console_log: False
 working_dir_path: /tmp/biobb/unitests
 
-titration:
+cmip_titration:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_pdb_path: output_pdb.pdb
@@ -11,7 +11,7 @@ titration:
     remove_tmp: False
     neutral: True
 
-titration_docker:
+cmip_titration_docker:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_pdb_path: output_pdb.pdb
@@ -22,7 +22,7 @@ titration_docker:
     container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
 
-titration_singularity:
+cmip_titration_singularity:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_pdb_path: output_pdb.pdb
@@ -33,7 +33,7 @@ titration_singularity:
     container_image: cmip.simg
     container_volume_path: /inout
 
-cmip_mip:
+cmip_run_mip:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_grd_path: output_grd.grd
@@ -44,7 +44,7 @@ cmip_mip:
     remove_tmp: True
     execution_type: mip_pos
 
-cmip_mip_docker:
+cmip_run_mip_docker:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_grd_path: output_grd.grd
@@ -58,7 +58,7 @@ cmip_mip_docker:
     container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
 
-cmip_mip_singularity:
+cmip_run_mip_singularity:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_grd_path: output_grd.grd
@@ -72,7 +72,7 @@ cmip_mip_singularity:
     container_image: cmip.simg
     container_volume_path: /inout
 
-cmip_docking:
+cmip_run_docking:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     input_probe_pdb_path: file:test_data_dir/cmip/1kim_l.pdb
@@ -86,7 +86,7 @@ cmip_docking:
     remove_tmp: False
     execution_type: docking
 
-cmip_docking_docker:
+cmip_run_docking_docker:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     input_probe_pdb_path: file:test_data_dir/cmip/1kim_l.pdb
@@ -103,7 +103,7 @@ cmip_docking_docker:
     container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
 
-cmip_docking_singularity:
+cmip_run_docking_singularity:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     input_probe_pdb_path: file:test_data_dir/cmip/1kim_l.pdb
@@ -120,7 +120,7 @@ cmip_docking_singularity:
     container_image: cmip.simg
     container_volume_path: /inout
 
-cmip:
+cmip_run:
   paths:
     input_pdb_path: file:test_data_dir/cmip/RBD-hACE2.hACE2.cmip.pdb
     input_probe_pdb_path: file:test_data_dir/cmip/RBD-hACE2.RBD.cmip.pdb
@@ -130,7 +130,7 @@ cmip:
     #remove_tmp: True
     execution_type: pb_interaction_energy
 
-cmip_docker:
+cmip_run_docker:
   paths:
     input_pdb_path: file:test_data_dir/cmip/RBD-hACE2.hACE2.cmip.pdb
     input_probe_pdb_path: file:test_data_dir/cmip/RBD-hACE2.RBD.cmip.pdb
@@ -143,7 +143,7 @@ cmip_docker:
     container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
 
-cmip_singularity:
+cmip_run_singularity:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_grd_path: output_grd.grd
@@ -157,7 +157,7 @@ cmip_singularity:
     container_image: cmip.simg
     container_volume_path: /inout
 
-cmip_solvation:
+cmip_run_solvation:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_grd_path: output_grd.grd
@@ -168,7 +168,7 @@ cmip_solvation:
     remove_tmp: True
     execution_type: mip_pos
 
-cmip_solvation_docker:
+cmip_run_solvation_docker:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_grd_path: output_grd.grd
@@ -182,7 +182,7 @@ cmip_solvation_docker:
     container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
     container_volume_path: /inout
 
-cmip_solvation_singularity:
+cmip_run_solvation_singularity:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1kim_h.pdb
     output_grd_path: output_grd.grd
@@ -196,7 +196,7 @@ cmip_solvation_singularity:
     container_image: cmip.simg
     container_volume_path: /inout
 
-prepare_structure:
+cmip_prepare_structure:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1aki.pdb
     output_cmip_pdb_path: 1aki_cmip.pdb
@@ -204,7 +204,7 @@ prepare_structure:
   properties:
     remove_tmp: True
 
-prepare_pdb:
+cmip_prepare_pdb:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1aki.pdb
     output_cmip_pdb_path: 1aki_cmip.pdb
@@ -212,7 +212,7 @@ prepare_pdb:
   properties:
     remove_tmp: True
 
-prepare_structure_topology:
+cmip_prepare_structure_topology:
   paths:
     input_pdb_path: file:test_data_dir/cmip/egfr.pdb
     input_topology_path: file:test_data_dir/cmip/egfr_topology.zip
@@ -221,7 +221,7 @@ prepare_structure_topology:
   properties:
     remove_tmp: True
 
-ignore_residues:
+cmip_ignore_residues:
   paths:
     input_cmip_pdb_path: file:test_data_dir/cmip/input_ignore_res.pdb
     output_cmip_pdb_path: ignore_residues_output.pdb

@@ -1,17 +1,17 @@
 from biobb_common.tools import test_fixtures as fx
-from biobb_cmip.cmip.ignore_residues import ignore_residues
+from biobb_cmip.cmip.cmip_ignore_residues import cmip_ignore_residues
 
 
-class TestIgnoreResidues():
+class TestCmipIgnoreResidues():
     def setup_class(self):
-        fx.test_setup(self, 'ignore_residues')
+        fx.test_setup(self, 'cmip_ignore_residues')
 
     def teardown_class(self):
         fx.test_teardown(self)
-        #pass
+        # pass
 
-    def test_ignore_residues(self):
-        ignore_residues(properties=self.properties, **self.paths)
+    def test_cmip_ignore_residues(self):
+        cmip_ignore_residues(properties=self.properties, **self.paths)
         assert fx.not_empty(self.paths['output_cmip_pdb_path'])
         assert fx.equal(self.paths['output_cmip_pdb_path'], self.paths['ref_output_ignore_residues_pdb_path'])
 

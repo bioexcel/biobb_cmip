@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://bioexcel.eu/biobb_cmip/json_schemas/1.0/prepare_structure",
+    "$id": "http://bioexcel.eu/biobb_cmip/json_schemas/1.0/cmip_prepare_structure",
     "name": "biobb_cmip PrepareStructure",
     "title": "Generate a CMIP suitable PDB input.",
     "description": "Generate a CMIP suitable PDB input from a common PDB file or a Topology + PDB file.",

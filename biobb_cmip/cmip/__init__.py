@@ -1,2 +1,2 @@
 name = "cmip"
-__all__ = ["titration", "cmip", "prepare_structure", "prepare_pdb", "ignore_residues"]
+__all__ = ["cmip_titration", "cmip_run", "cmip_prepare_structure", "cmip_prepare_pdb", "cmip_ignore_residues"]

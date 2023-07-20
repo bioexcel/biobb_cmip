@@ -10,9 +10,9 @@ from biobb_common.tools.file_utils import launchlogger
 import biobb_common.tools.file_utils as fu
 
 
-class IgnoreResidues(BiobbObject):
+class CmipIgnoreResidues(BiobbObject):
     """
-    | biobb_cmip IgnoreResidues
+    | biobb_cmip CmipIgnoreResidues
     | Class to ignore residues in CMIP potential calculations.
     | Mark residues which will be ignored in the CMIP potential calculations except for dielectric definition.
 
@@ -29,9 +29,9 @@ class IgnoreResidues(BiobbObject):
     Examples:
         This is a use example of how to use the building block from Python::
 
-            from biobb_cmip.cmip.ignore_residues import ignore_residues
+            from biobb_cmip.cmip.cmip_ignore_residues import cmip_ignore_residues
             prop = { 'residue_list': "A:3" }
-            ignore_residues(input_cmip_pdb_path='/path/to/myStructure.pdb',
+            cmip_ignore_residues(input_cmip_pdb_path='/path/to/myStructure.pdb',
                             output_cmip_pdb_path='/path/to/newStructure.pdb',
                             properties=prop)
 
@@ -71,7 +71,8 @@ class IgnoreResidues(BiobbObject):
         """Execute the :class:`IgnoreResidues <cmip.ignore_residues.IgnoreResidues>` object."""
 
         # Setup Biobb
-        if self.check_restart(): return 0
+        if self.check_restart():
+            return 0
 
         if not self.ignore_all and not self.residue_list:
             fu.log(f"Residue_list is empty and ignore_all is false nothing will be done.", self.out_log, self.global_log)
@@ -103,12 +104,12 @@ class IgnoreResidues(BiobbObject):
         return self.return_code
 
 
-def ignore_residues(input_cmip_pdb_path: str, output_cmip_pdb_path: str, properties: dict = None, **kwargs) -> int:
+def cmip_ignore_residues(input_cmip_pdb_path: str, output_cmip_pdb_path: str, properties: dict = None, **kwargs) -> int:
     """Create :class:`IgnoreResidues <cmip.ignore_residues.IgnoreResidues>` class and
     execute the :meth:`launch() <cmip.ignore_residues.IgnoreResidues.launch>` method."""
-    return IgnoreResidues(input_cmip_pdb_path=input_cmip_pdb_path,
-                          output_cmip_pdb_path=output_cmip_pdb_path,
-                          properties=properties, **kwargs).launch()
+    return CmipIgnoreResidues(input_cmip_pdb_path=input_cmip_pdb_path,
+                              output_cmip_pdb_path=output_cmip_pdb_path,
+                              properties=properties, **kwargs).launch()
 
 
 def main():
@@ -126,9 +127,9 @@ def main():
     properties = settings.ConfReader(config=config).get_prop_dic()
 
     # Specific call of each building block
-    ignore_residues(input_cmip_pdb_path=args.input_cmip_pdb_path,
-                    output_cmip_pdb_path=args.output_cmip_pdb_path,
-                    properties=properties)
+    cmip_ignore_residues(input_cmip_pdb_path=args.input_cmip_pdb_path,
+                         output_cmip_pdb_path=args.output_cmip_pdb_path,
+                         properties=properties)
 
 
 if __name__ == '__main__':

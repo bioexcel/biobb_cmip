@@ -15,7 +15,7 @@ from biobb_cmip.cmip.common import params_preset
 from biobb_cmip.cmip.common import get_grid
 
 
-class Cmip(BiobbObject):
+class CmipRun(BiobbObject):
     """
     | biobb_cmip Titration
     | Wrapper class for the CMIP cmip module.
@@ -229,15 +229,21 @@ class Cmip(BiobbObject):
                 shutil.move(output_pdb_path[:-4], self.io_dict['out'].get('output_pdb_path'))
             elif Path(output_pdb_path + ".pdb").exists():
                 shutil.move(output_pdb_path + ".pdb", self.io_dict['out'].get('output_pdb_path'))
+            elif not Path(output_pdb_path).exists():
+                fu.log(f"WARNING: File not found output_pdb_path: {output_pdb_path}", self.out_log, self.global_log)
 
         # Replace "ATOMTM" tag for "ATOM  "
+
         output_pdb_path = self.io_dict['out'].get('output_pdb_path')
         if output_pdb_path:
-            with open(output_pdb_path) as pdb_file:
-                list_pdb_lines = pdb_file.readlines()
-            with open(output_pdb_path, 'w') as pdb_file:
-                for line in list_pdb_lines:
-                    pdb_file.write(line.replace('ATOMTM', 'ATOM  '))
+            if Path(output_pdb_path).exists():
+                with open(output_pdb_path) as pdb_file:
+                    list_pdb_lines = pdb_file.readlines()
+                with open(output_pdb_path, 'w') as pdb_file:
+                    for line in list_pdb_lines:
+                        pdb_file.write(line.replace('ATOMTM', 'ATOM  '))
+            else:
+                fu.log(f"WARNING: File not found output_pdb_path: {output_pdb_path} Abs Path: {Path(output_pdb_path).resolve()}", self.out_log, self.global_log)
 
         # Create json_box_path file from CMIP log file
         if self.io_dict['out'].get('output_json_box_path'):
@@ -287,22 +293,22 @@ class Cmip(BiobbObject):
         return self.return_code
 
 
-def cmip(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,
-         output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
-         output_byat_path: str = None, output_log_path: str = None,
-         input_vdw_params_path: str = None, input_params_path: str = None, output_json_box_path: str = None,
-         output_json_external_box_path: str = None, input_json_box_path: str = None,
-         input_json_external_box_path: str = None, properties: dict = None, **kwargs) -> int:
+def cmip_run(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,
+             output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
+             output_byat_path: str = None, output_log_path: str = None,
+             input_vdw_params_path: str = None, input_params_path: str = None, output_json_box_path: str = None,
+             output_json_external_box_path: str = None, input_json_box_path: str = None,
+             input_json_external_box_path: str = None, properties: dict = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.Cmip>` class and
     execute the :meth:`launch() <cmip.cmip.Cmip.launch>` method."""
 
-    return Cmip(input_pdb_path=input_pdb_path, input_probe_pdb_path=input_probe_pdb_path,
-                output_pdb_path=output_pdb_path, output_grd_path=output_grd_path, output_cube_path=output_cube_path,
-                output_rst_path=output_rst_path, output_byat_path=output_byat_path, output_log_path=output_log_path,
-                input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
-                output_json_box_path=output_json_box_path, output_json_external_box_path=output_json_external_box_path,
-                input_json_box_path=input_json_box_path, input_json_external_box_path=input_json_external_box_path,
-                properties=properties, **kwargs).launch()
+    return CmipRun(input_pdb_path=input_pdb_path, input_probe_pdb_path=input_probe_pdb_path,
+                   output_pdb_path=output_pdb_path, output_grd_path=output_grd_path, output_cube_path=output_cube_path,
+                   output_rst_path=output_rst_path, output_byat_path=output_byat_path, output_log_path=output_log_path,
+                   input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
+                   output_json_box_path=output_json_box_path, output_json_external_box_path=output_json_external_box_path,
+                   input_json_box_path=input_json_box_path, input_json_external_box_path=input_json_external_box_path,
+                   properties=properties, **kwargs).launch()
 
 
 def main():
@@ -332,14 +338,14 @@ def main():
     properties = settings.ConfReader(config=config).get_prop_dic()
 
     # Specific call of each building block
-    cmip(input_pdb_path=args.input_pdb_path, input_probe_pdb_path=args.input_probe_pdb_path,
-         output_pdb_path=args.output_pdb_path, output_grd_path=args.output_grd_path,
-         output_cube_path=args.output_cube_path, output_rst_path=args.output_rst_path,
-         output_byat_path=args.output_byat_path, output_log_path=args.output_log_path,
-         input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
-         output_json_box_path=args.output_json_box_path,
-         output_json_external_box_path=args.output_json_external_box_path, input_json_box_path=args.input_json_box_path,
-         input_json_external_box_path=args.input_json_external_box_path, properties=properties)
+    cmip_run(input_pdb_path=args.input_pdb_path, input_probe_pdb_path=args.input_probe_pdb_path,
+             output_pdb_path=args.output_pdb_path, output_grd_path=args.output_grd_path,
+             output_cube_path=args.output_cube_path, output_rst_path=args.output_rst_path,
+             output_byat_path=args.output_byat_path, output_log_path=args.output_log_path,
+             input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
+             output_json_box_path=args.output_json_box_path,
+             output_json_external_box_path=args.output_json_external_box_path, input_json_box_path=args.input_json_box_path,
+             input_json_external_box_path=args.input_json_external_box_path, properties=properties)
 
 
 if __name__ == '__main__':

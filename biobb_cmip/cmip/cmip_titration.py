@@ -15,7 +15,7 @@ from biobb_cmip.cmip.common import params_preset
 from biobb_cmip.cmip.common import get_pdb_total_charge
 
 
-class Titration(BiobbObject):
+class CmipTitration(BiobbObject):
     """
     | biobb_cmip Titration
     | Wrapper class for the CMIP titration module.
@@ -99,8 +99,8 @@ class Titration(BiobbObject):
     def launch(self) -> int:
         """Execute the :class:`Titration <cmip.titration.Titration>` object."""
         # Setup Biobb
-        if self.check_restart(): return 0
-
+        if self.check_restart():
+            return 0
 
         # Check if output_pdb_path ends with ".pdb"
         if not self.io_dict['out']['output_pdb_path'].endswith('.pdb'):
@@ -162,15 +162,15 @@ class Titration(BiobbObject):
         return self.return_code
 
 
-def titration(input_pdb_path: str, output_pdb_path: str,
-              input_vdw_params_path: str = None, input_params_path: str = None,
-              properties: dict = None, **kwargs) -> int:
+def cmip_titration(input_pdb_path: str, output_pdb_path: str,
+                   input_vdw_params_path: str = None, input_params_path: str = None,
+                   properties: dict = None, **kwargs) -> int:
     """Create :class:`Titration <cmip.titration.Titration>` class and
     execute the :meth:`launch() <cmip.titration.Titration.launch>` method."""
 
-    return Titration(input_pdb_path=input_pdb_path, output_pdb_path=output_pdb_path,
-                     input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
-                     properties=properties, **kwargs).launch()
+    return CmipTitration(input_pdb_path=input_pdb_path, output_pdb_path=output_pdb_path,
+                         input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
+                         properties=properties, **kwargs).launch()
 
 
 def main():
@@ -190,9 +190,9 @@ def main():
     properties = settings.ConfReader(config=config).get_prop_dic()
 
     # Specific call of each building block
-    titration(input_pdb_path=args.input_pdb_path, output_pdb_path=args.output_pdb_path,
-              input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
-              properties=properties)
+    cmip_titration(input_pdb_path=args.input_pdb_path, output_pdb_path=args.output_pdb_path,
+                   input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
+                   properties=properties)
 
 
 if __name__ == '__main__':
