@@ -21,7 +21,7 @@ setuptools.setup(
     include_package_data=True,
     install_requires=[
         'biobb_common==4.0.0',
-        'mdanalysis>=2.0.0',
+        'mdanalysis==2.0.0',
         'biobb_structure_checking==3.13.0'
     ],
     python_requires='>=3.7',
