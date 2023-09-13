@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>report.html</title>
+    <link href="assets/style.css" rel="stylesheet" type="text/css"/></head>
+  <body onLoad="init()">
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) { // eslint-disable-line no-redeclare
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function findAll(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sortColumn(elem) {
+    toggleSortStates(elem);
+    const colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    let key;
+    if (elem.classList.contains('result')) {
+        key = keyResult;
+    } else if (elem.classList.contains('links')) {
+        key = keyLink;
+    } else {
+        key = keyAlpha;
+    }
+    sortTable(elem, key(colIndex));
+}
+
+function showAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(showExtras);
+}
+
+function hideAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(hideExtras);
+}
+
+function showExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.remove('collapsed');
+    expandcollapse.classList.remove('expander');
+    expandcollapse.classList.add('collapser');
+}
+
+function hideExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.add('collapsed');
+    expandcollapse.classList.remove('collapser');
+    expandcollapse.classList.add('expander');
+}
+
+function showFilters() {
+    let visibleString = getQueryParameter('visible') || 'all';
+    visibleString = visibleString.toLowerCase();
+    const checkedItems = visibleString.split(',');
+
+    const filterItems = document.getElementsByClassName('filter');
+    for (let i = 0; i < filterItems.length; i++) {
+        filterItems[i].hidden = false;
+
+        if (visibleString != 'all') {
+            filterItems[i].checked = checkedItems.includes(filterItems[i].getAttribute('data-test-result'));
+            filterTable(filterItems[i]);
+        }
+    }
+}
+
+function addCollapse() {
+    // Add links for show/hide all
+    const resulttable = find('table#results-table');
+    const showhideall = document.createElement('p');
+    showhideall.innerHTML = '<a href="javascript:showAllExtras()">Show all details</a> / ' +
+                            '<a href="javascript:hideAllExtras()">Hide all details</a>';
+    resulttable.parentElement.insertBefore(showhideall, resulttable);
+
+    // Add show/hide link to each result
+    findAll('.col-result').forEach(function(elem) {
+        const collapsed = getQueryParameter('collapsed') || 'Passed';
+        const extras = elem.parentNode.nextElementSibling;
+        const expandcollapse = document.createElement('span');
+        if (extras.classList.contains('collapsed')) {
+            expandcollapse.classList.add('expander');
+        } else if (collapsed.includes(elem.innerHTML)) {
+            extras.classList.add('collapsed');
+            expandcollapse.classList.add('expander');
+        } else {
+            expandcollapse.classList.add('collapser');
+        }
+        elem.appendChild(expandcollapse);
+
+        elem.addEventListener('click', function(event) {
+            if (event.currentTarget.parentNode.nextElementSibling.classList.contains('collapsed')) {
+                showExtras(event.currentTarget);
+            } else {
+                hideExtras(event.currentTarget);
+            }
+        });
+    });
+}
+
+function getQueryParameter(name) {
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function init () { // eslint-disable-line no-unused-vars
+    resetSortHeaders();
+
+    addCollapse();
+
+    showFilters();
+
+    sortColumn(find('.initial-sort'));
+
+    findAll('.sortable').forEach(function(elem) {
+        elem.addEventListener('click',
+            function() {
+                sortColumn(elem);
+            }, false);
+    });
+}
+
+function sortTable(clicked, keyFunc) {
+    const rows = findAll('.results-table-row');
+    const reversed = !clicked.classList.contains('asc');
+    const sortedRows = sort(rows, keyFunc, reversed);
+    /* Whole table is removed here because browsers acts much slower
+     * when appending existing elements.
+     */
+    const thead = document.getElementById('results-table-head');
+    document.getElementById('results-table').remove();
+    const parent = document.createElement('table');
+    parent.id = 'results-table';
+    parent.appendChild(thead);
+    sortedRows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+    document.getElementsByTagName('BODY')[0].appendChild(parent);
+}
+
+function sort(items, keyFunc, reversed) {
+    const sortArray = items.map(function(item, i) {
+        return [keyFunc(item), i];
+    });
+
+    sortArray.sort(function(a, b) {
+        const keyA = a[0];
+        const keyB = b[0];
+
+        if (keyA == keyB) return 0;
+
+        if (reversed) {
+            return keyA < keyB ? 1 : -1;
+        } else {
+            return keyA > keyB ? 1 : -1;
+        }
+    });
+
+    return sortArray.map(function(item) {
+        const index = item[1];
+        return items[index];
+    });
+}
+
+function keyAlpha(colIndex) {
+    return function(elem) {
+        return elem.childNodes[1].childNodes[colIndex].firstChild.data.toLowerCase();
+    };
+}
+
+function keyLink(colIndex) {
+    return function(elem) {
+        const dataCell = elem.childNodes[1].childNodes[colIndex].firstChild;
+        return dataCell == null ? '' : dataCell.innerText.toLowerCase();
+    };
+}
+
+function keyResult(colIndex) {
+    return function(elem) {
+        const strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
+            'Skipped', 'Passed'];
+        return strings.indexOf(elem.childNodes[1].childNodes[colIndex].firstChild.data);
+    };
+}
+
+function resetSortHeaders() {
+    findAll('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    findAll('.sortable').forEach(function(elem) {
+        const icon = document.createElement('div');
+        icon.className = 'sort-icon';
+        icon.textContent = 'vvv';
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove('desc', 'active');
+        elem.classList.add('asc', 'inactive');
+    });
+}
+
+function toggleSortStates(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        resetSortHeaders();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function isAllRowsHidden(value) {
+    return value.hidden == false;
+}
+
+function filterTable(elem) { // eslint-disable-line no-unused-vars
+    const outcomeAtt = 'data-test-result';
+    const outcome = elem.getAttribute(outcomeAtt);
+    const classOutcome = outcome + ' results-table-row';
+    const outcomeRows = document.getElementsByClassName(classOutcome);
+
+    for(let i = 0; i < outcomeRows.length; i++){
+        outcomeRows[i].hidden = !elem.checked;
+    }
+
+    const rows = findAll('.results-table-row').filter(isAllRowsHidden);
+    const allRowsHidden = rows.length == 0 ? true : false;
+    const notFoundMessage = document.getElementById('not-found-message');
+    notFoundMessage.hidden = !allRowsHidden;
+}
+</script>
+    <h1>report.html</h1>
+    <p>Report generated on 13-Sep-2023 at 14:40:36 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
+    <h2>Summary</h2>
+    <p>4 tests ran in 27.81 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">4 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable result initial-sort" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable" col="duration">Duration</th>
+          <th class="sortable links" col="links">Links</th></tr>
+        <tr hidden="true" id="not-found-message">
+          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">biobb_cmip/test/unitests/test_cmip/test_cmip_ignore_residues.py::TestCmipIgnoreResidues::test_cmip_ignore_residues</td>
+          <td class="col-duration">0.37</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>Checking if empty file: /tmp/biobb/unitests_11/cmip_ignore_residues/ignore_residues_output.pdb
+Checking RMSD between:
+     PDB_A: /tmp/biobb/unitests_11/cmip_ignore_residues/ignore_residues_output.pdb
+     PDB_B: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/reference/cmip/ignore_res_gln3.pdb
+     Ignoring HETAMT in RMSD
+     Ignoring Hydrogen atoms in RMSD
+     Atoms ALIGNED in PDB_A: 3173
+     Atoms ALIGNED in PDB_B: 3173
+     RMS: 1.0024822746830985e-14
+     RMS_CUTOFF: 1
+<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_ignore_residues Version: 4.0.0
+INFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 Residue list: [&#x27;:3&#x27;]
+INFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 17 residues have been marked
+INFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 Removed: []<br/> ----------------------------Captured stdout teardown---------------------------- <br/>
+Removing: /tmp/biobb/unitests_11
+<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">biobb_cmip/test/unitests/test_cmip/test_cmip_prepare_pdb.py::TestCmipPreparePDB::test_cmip_prepare_pdb</td>
+          <td class="col-duration">0.69</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>Checking if empty file: /tmp/biobb/unitests_11/cmip_prepare_pdb/1aki_cmip.pdb
+Checking RMSD between:
+     PDB_A: /tmp/biobb/unitests_11/cmip_prepare_pdb/1aki_cmip.pdb
+     PDB_B: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/reference/cmip/1aki_cmip.pdb
+     Ignoring HETAMT in RMSD
+     Ignoring Hydrogen atoms in RMSD
+     Atoms ALIGNED in PDB_A: 1001
+     Atoms ALIGNED in PDB_B: 1001
+     RMS: 1.4828848083881487e-14
+     RMS_CUTOFF: 1
+<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_prepare_pdb Version: 4.0.0
+INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:file_utils.py:390 Copy: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/1aki.pdb to /tmp/biobb/unitests_11/cmip_prepare_pdb/3dd88482-6b3a-4572-a826-d2f917cd2148
+INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:cmd_wrapper.py:33 check_structure -v -i /tmp/biobb/unitests_11/cmip_prepare_pdb/3dd88482-6b3a-4572-a826-d2f917cd2148/1aki.pdb -o /tmp/biobb/unitests_11/cmip_prepare_pdb/3dd88482-6b3a-4572-a826-d2f917cd2148/1aki_cmip.pdb --output_format cmip --non_interactive command_list --list &#x27;water --remove yes; backbone --add_caps none; fixside --fix All; add_hydrogen --add_mode auto --add_charges CMIP&#x27;
+
+INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:cmd_wrapper.py:50 Exit code 0
+
+INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:cmd_wrapper.py:52 ================================================================================
+=                   BioBB structure checking utility v3.13.4                   =
+=            P. Andrio, A. Hospital, G. Bayarri, J.L. Gelpi 2018-23            =
+================================================================================
+
+Warning: sequence features may not be available, use --sequence for  external fasta input
+Structure /tmp/biobb/unitests_11/cmip_prepare_pdb/3dd88482-6b3a-4572-a826-d2f917cd2148/1aki.pdb loaded
+ PDB id: 1AKI 
+ Title: the structure of the orthorhombic form of hen egg-white lysozyme at 1.5 angstroms resolution
+ Experimental method: x-ray diffraction
+ Keywords: hydrolase, glycosidase
+ Resolution (A): 1.5
+
+ Num. models: 1
+ Num. chains: 1 (A: Protein)
+ Num. residues:  207
+ Num. residues with ins. codes:  0
+ Num. residues with H atoms: 0
+ Num. HETATM residues:  78
+ Num. ligands or modified residues:  0
+ Num. water mol.:  78
+ Num. atoms:  1079
+
+Step 1: water --remove yes
+Running water. Options: --remove yes
+Detected 78 Water molecules
+Removed 78 Water molecules
+
+Step 2:  backbone --add_caps none
+Running backbone. Options: --add_caps none
+Found No residues with missing backbone atoms
+No backbone breaks
+No unexpected backbone links
+Capping terminal ends
+True terminal residues: A1,A129
+Nothing to do
+No caps added
+
+Step 3:  fixside --fix All
+Running fixside. Options: --fix All
+Found no residues with missing or unknown side chain atoms
+
+Step 4:  add_hydrogen --add_mode auto --add_charges CMIP
+Running add_hydrogen. Options: --add_mode auto --add_charges CMIP
+Found 38 Residues requiring selection on adding H atoms
+ CYS A6,A30,A64,A76,A80,A94,A115,A127
+ ASP A18,A48,A52,A66,A87,A101,A119
+ GLU A7,A35
+ HIS A15
+ LYS A1,A13,A33,A96,A97,A116
+ ARG A5,A14,A21,A45,A61,A68,A73,A112,A114,A125,A128
+ TYR A20,A23,A53
+WARNING: fixing side chains, override with --no_fix_side
+Running fixside. Options: --fix all
+Found no residues with missing or unknown side chain atoms
+Selection: auto
+Replacing HIS A15 by HIE
+Updating partial charges and atom types
+Total assigned charge:       8.00
+Command list completed
+Final Num. models: 1
+Final Num. chains: 1 (A: Protein)
+Final Num. residues:  129
+Final Num. residues with ins. codes:  0
+Final Num. residues with H atoms: 129 (total 967 H atoms)
+Final Num. HETATM residues:  0
+Final Num. ligands or modified residues:  0
+Final Num. water mol.:  0
+Final Num. atoms:  1968
+Structure saved on /tmp/biobb/unitests_11/cmip_prepare_pdb/3dd88482-6b3a-4572-a826-d2f917cd2148/1aki_cmip.pdb
+
+INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:file_utils.py:390 Removed: [&#x27;/tmp/biobb/unitests_11/cmip_prepare_pdb/3dd88482-6b3a-4572-a826-d2f917cd2148&#x27;]<br/> ----------------------------Captured stdout teardown---------------------------- <br/>
+Removing: /tmp/biobb/unitests_11
+<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">biobb_cmip/test/unitests/test_cmip/test_cmip_prepare_structure.py::TestCmipPrepareStructureTopology::test_cmip_prepare_structure_Topology</td>
+          <td class="col-duration">8.19</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>Checking if empty file: /tmp/biobb/unitests_11/cmip_prepare_structure_topology/prepare_structure_topology_output.pdb
+Checking RMSD between:
+     PDB_A: /tmp/biobb/unitests_11/cmip_prepare_structure_topology/prepare_structure_topology_output.pdb
+     PDB_B: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/reference/cmip/egfr_cmip.pdb
+     Ignoring Hydrogen atoms in RMSD
+     Atoms ALIGNED in PDB_A: 2872
+     Atoms ALIGNED in PDB_B: 2872
+     RMS: 1.1126217417895259e-14
+     RMS_CUTOFF: 1
+<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_prepare_structure Version: 4.0.0
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:171 Extracting: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/egfr_topology.zip
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:172 to:
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:173 [&#x27;2d465f92-a84f-47d0-aee6-fb3ad2f08f98/pdb2gmx_p2g.top&#x27;, &#x27;2d465f92-a84f-47d0-aee6-fb3ad2f08f98/pdb2gmx_posre.itp&#x27;]
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:251 Unzipping: 
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:252 /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/egfr_topology.zip
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:253 To: 
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:255 2d465f92-a84f-47d0-aee6-fb3ad2f08f98/pdb2gmx_p2g.top
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:255 2d465f92-a84f-47d0-aee6-fb3ad2f08f98/pdb2gmx_posre.itp
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Reading: 2d465f92-a84f-47d0-aee6-fb3ad2f08f98/pdb2gmx_p2g.top to extract charges
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Reading: 2d465f92-a84f-47d0-aee6-fb3ad2f08f98/pdb2gmx_p2g.top to extract elements
+INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Removed: [&#x27;2d465f92-a84f-47d0-aee6-fb3ad2f08f98&#x27;]<br/> ----------------------------Captured stdout teardown---------------------------- <br/>
+Removing: /tmp/biobb/unitests_11
+<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">biobb_cmip/test/unitests/test_cmip/test_cmip_run.py::TestCmipRunEnergy::test_cmip_run_energy</td>
+          <td class="col-duration">17.86</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>Checking if empty file: /tmp/biobb/unitests_11/cmip_run/output_byat.out
+<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_run Version: 4.0.0
+INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/RBD-hACE2.hACE2.cmip.pdb to /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36
+INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/RBD-hACE2.RBD.cmip.pdb to /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36
+INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: /home/user/micromamba/envs/test_environment/share/cmip/dat/vdwprm to /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36
+INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: aa7e323f-c68a-4a76-bdfd-f11674c3d661/params to /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36
+INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:cmd_wrapper.py:33 cmip -i /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36/params -vdw /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36/vdwprm -hs /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36/RBD-hACE2.hACE2.cmip.pdb -pr /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36/RBD-hACE2.RBD.cmip.pdb -byat /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36/output_byat.out
+
+INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:cmd_wrapper.py:50 Exit code 0
+
+INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:cmd_wrapper.py:52  =================================================
+ =                                               =
+ =                C M I P  (2.7.0)               =
+ =          J. Ll. Gelpi, A. Morreale,           =
+ =            F. J. Luque, M.Orozco              =
+ =      Dept. Biochemistry. Univ. Barcelona      =
+ =                  1999-2021                    =
+ =================================================
+
+  Code for ASA calculation by Juan F. Recio       
+
+#T Run started at   14:40:18 h on 13- 9-2023
+ SIZES
+ -----
+ MAXTIP:           100
+ MAXATH:            80000
+ MAXATP x MAXCONF: 100000
+
+ INPUT FILES
+ -----------
+    Calc. settings: /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36/params                                                                           
+ VdW Parameters:      /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36/vdwprm                                                                           
+ PDB Host:            /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36/RBD-hACE2.hACE2.cmip.pdb                                                         
+ PDB Guest:           /tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36/RBD-hACE2.RBD.cmip.pdb                                                           
+ Conf. energies:      energies                                                                                                                                              
+
+ OUTPUT FILES
+ ------------
+ LOG file:            output                                                                                                                                                
+ Grid Out:            gridout                                                                                                                                               
+ Output PDB coords:          outpdb                                                                                                                                                
+
+ Parameters
+ ----------
+Docking Interaction energy calculation. PB electrostatics                       
+&amp;cntrl                                                                          
+ tipcalc = 3                                                                    
+ calcgrid = 1                                                                   
+ irest = 0                                                                      
+ orest = 0                                                                      
+ coorfmt = 2                                                                    
+ fvdw = 0.8                                                                     
+ pbelec = 1                                                                     
+ pbinic = 2                                                                     
+ wgp = 0                                                                        
+ ebyatom = 1                                                                    
+ readgrid = 2                                                                   
+ CENX=0.0,CENY=0.0,CENZ=0.0                                                     
+ DIMX=64,DIMY=64,DIMZ=64                                                        
+ INTX0=1.5,INTY0=1.5,INTZ0=1.5                                                  
+ readgrid0 = 2                                                                  
+ perfill0 = 0.6                                                                 
+ pbfocus = 1                                                                    
+ IREST = 0                                                                      
+&amp;end                                                                            
+
+ 18 VdW parameters loaded successfully
+
+ Host:      9519 atoms loaded, charge   -27.000
+
+ TYPE OF CALCULATION: DOCKING
+ Single point
+
+ Guest: 3000 atom(s), charge -11.145,    1 conformation(s) loaded
+
+ PB Focussing requested
+ AUTOMATIC OUTER GRID
+ --------------------
+ Fill:    0.600
+Automatic Outer Grid                                                                                                                
+ Grid Size:      96.000 138.000 108.000  90.000  90.000  90.000
+ Grid density:    64   92   72
+ Grid units:      1.500   1.500   1.500
+ Grid origin:    23.610  -1.245   2.315
+ Grid center:    71.610  67.755  56.315
+     441285 Grid points
+
+ AUTOMATIC GRID
+ --------------
+ Fill:    0.800
+Automatic Grid                                                                                                                      
+ Grid Size:      72.000 103.000  81.500  90.000  90.000  90.000
+ Grid density:   144  206  163
+ Grid units:      0.500   0.500   0.500
+ Grid origin:    35.610  16.255  15.565
+ Grid center:    71.610  67.755  56.315
+    4922460 Grid points
+
+ All input data read succesfully
+
+ Warning: Dielectric grid computed at double density
+ Mapping host molecule to outer grid
+   Total charge            :   -27.0000248    
+   Low diel. grid points   :                230941 (   97428.2344     A3)
+   High diel. grid points  :               3229484
+   I Str=0 grid points     :                441285
+   Boundary grid points    :                 57064
+ Mapping host molecule to grid
+   Total charge            :   -27.0000019    
+   Low diel. grid points   :               5855067 (   91485.4219      A3)
+   High diel. grid points  :              33174672
+   I Str=0 grid points     :               4922460
+   Boundary grid points    :                550671
+
+ CLHOST=           0
+ EXTERNAL CUTOFF=   999999.000    
+ Checking potentials to calculate...
+ - Vdw: C   
+ - Vdw: N   
+ - Vdw: S   
+ - Vdw: HO  
+ - Vdw: HN  
+ - Vdw: H   
+ - Vdw: O   
+ - Electrostatic 
+     Dielectric type    :            0
+     Dielectric constant:    2.00000000    
+ Vdw energies:
+  -C    -2.15     0.254E+21
+  -N    -2.73     0.266E+21
+  -S    -3.82     0.557E+21
+  -HO    0.00      0.00    
+  -HN  -0.344     0.116E+18
+  -H   -0.860     0.268E+20
+  -O    -2.87     0.169E+21
+     Poisson-Boltzmann calculation requested
+     Focussing          :            1
+     Initial potentials :            2
+     Solute  Dielectric :    2.00000000    
+     Solvent Dielectric :    79.8000031    
+     Solvent radius     :    1.39999998    
+     Convergence crit.  :    9.99999975E-05
+     Ionic strength     :    0.00000000    
+ Outer grid
+          20  0.147574857       14.6699677    
+          40   2.98345201E-02   3.29004049    
+          60   6.40256703E-03  0.731274426    
+          80   1.45485543E-03  0.142998144    
+         100   3.42993939E-04   1.78021304E-02
+         120   8.23287264E-05   2.51317094E-03
+         140   1.94953154E-05   8.38404230E-04
+ Converged at   158 iterations (Mean:       0.494E-05, Max:      0.923E-04)
+ Potentials:   -145.994   169.029
+ Inner Grid limits
+ Potentials:   -128.467   156.689
+          20  0.879424930       44.1415787    
+          40  0.403403580       18.3190784    
+          60  0.196925759       11.3940735    
+          80   9.77351665E-02   6.85034180    
+         100   4.82290126E-02   3.02071881    
+         120   2.38220431E-02   1.71308899    
+         140   1.16539253E-02  0.880087018    
+         160   5.68585889E-03  0.497510761    
+         180   2.73818849E-03  0.352287740    
+         200   1.29186665E-03  0.225940481    
+         220   5.93950739E-04  0.123246640    
+         240   2.69010896E-04   4.76482585E-02
+         260   1.19791985E-04   1.82344895E-02
+         280   5.35966174E-05   5.74939372E-03
+         300   2.40470090E-05   2.51911697E-03
+         320   1.08288432E-05   9.81772435E-04
+         340   4.89419881E-06   3.82507744E-04
+         360   2.25630379E-06   1.72914923E-04
+ Converged at   376 iterations (Mean:       0.125E-05, Max:      0.967E-04)
+ Potentials:   -739.519  1051.831
+ Internal:        4.20389539E-42  kcal/mol
+ Van der Waals:         Infinity  kcal/mol
+ Electrostatic:   90.0758896     kcal/mol
+ Total Energy :         Infinity kcal/mol
+
+#T Run finished at  14:40:36 h on 13- 9-2023
+
+#T       T I M I N G S 
+#T       ---------------
+#T         Input:     0.188 s,   1.05%
+#T         Setup:     2.500 s,  14.04%
+#T         Grids:    15.125 s,  84.91%
+#T        Energy:     0.000 s,   0.00%
+#T        Output:     0.000 s,   0.00%
+ ----------------------------------
+#T         TOTAL:    17.812 s ( 0.00 h)
+
+INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Removed: [&#x27;/tmp/biobb/unitests_11/cmip_run/e520eb8f-2cc8-411b-93d8-419e9f6a8d36&#x27;, &#x27;aa7e323f-c68a-4a76-bdfd-f11674c3d661&#x27;]<br/> ----------------------------Captured stdout teardown---------------------------- <br/>
+Removing: /tmp/biobb/unitests_11
+<br/></div></td></tr></tbody></table></body></html>

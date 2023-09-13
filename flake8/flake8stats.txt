@@ -1,0 +1,17 @@
+12    E201 whitespace after '['
+13    E202 whitespace before ')'
+3     E203 whitespace before ':'
+1     E225 missing whitespace around operator
+5     E231 missing whitespace after ','
+4     E241 multiple spaces after ':'
+6     E251 unexpected spaces around keyword / parameter equals
+2     E265 block comment should start with '# '
+8     E302 expected 2 blank lines, found 1
+2     E303 too many blank lines (3)
+1     E701 multiple statements on one line (colon)
+5     F401 'shutil' imported but unused
+5     F541 f-string is missing placeholders
+1     F811 redefinition of unused 'List' from line 5
+1     F841 local variable 'tmp_files' is assigned to but never used
+10    W292 no newline at end of file
+3     W391 blank line at end of file
