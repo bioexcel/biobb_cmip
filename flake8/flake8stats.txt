@@ -13,5 +13,5 @@
 5     F541 f-string is missing placeholders
 1     F811 redefinition of unused 'List' from line 5
 1     F841 local variable 'tmp_files' is assigned to but never used
-10    W292 no newline at end of file
+4     W292 no newline at end of file
 3     W391 blank line at end of file
