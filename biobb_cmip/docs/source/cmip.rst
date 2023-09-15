@@ -5,45 +5,45 @@ Submodules
 ----------
 
 
-cmip.titration module
+cmip.cmip_titration module
 ------------------------------
 
-.. automodule:: cmip.titration
+.. automodule:: cmip.cmip_titration
     :members:
     :undoc-members:
     :show-inheritance:
 
-cmip.cmip module
+cmip.cmip_run module
 ------------------------------
 
-.. automodule:: cmip.cmip
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-cmip.prepare_structure module
-------------------------------
-
-.. automodule:: cmip.prepare_structure
+.. automodule:: cmip.cmip_run
     :members:
     :undoc-members:
     :show-inheritance:
 
 
-cmip.prepare_pdb module
-------------------------------
+cmip.cmip_prepare_structure module
+------------------------------------
 
-.. automodule:: cmip.prepare_pdb
+.. automodule:: cmip.cmip_prepare_structure
     :members:
     :undoc-members:
     :show-inheritance:
 
 
-cmip.ignore_residues module
+cmip.cmip_prepare_pdb module
 ------------------------------
 
-.. automodule:: cmip.ignore_residues
+.. automodule:: cmip.cmip_prepare_pdb
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+cmip.cmip_ignore_residues module
+---------------------------------
+
+.. automodule:: cmip.cmip_ignore_residues
     :members:
     :undoc-members:
     :show-inheritance:
