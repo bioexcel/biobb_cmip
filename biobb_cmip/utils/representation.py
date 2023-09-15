@@ -2,7 +2,7 @@
 from biobb_cmip.cmip.common import get_grid
 from pathlib import Path
 from MDAnalysis.lib.util import inverse_aa_codes
-from typing import List, Dict, Mapping, Union, Set, Sequence, Tuple, List
+from typing import List, Dict, Union, Tuple
 
 
 def get_energies_byat(cmip_energies_byat_out: Union[str, Path], cutoff: float = 100.0) -> Tuple[List[str], Dict[str, List[float]]]:
@@ -54,7 +54,7 @@ def get_energies_byres(cmip_energies_byat_out: Union[str, Path], cutoff: float =
                 energy_dict["ES&VDW"][index] += both
             else:
                 residues.append(residue)
-                #residues.append(int(residue_id)+696)
+                # residues.append(int(residue_id)+696)
                 energy_dict["ES"].append(es)
                 energy_dict["VDW"].append(vdw)
                 energy_dict["ES&VDW"].append(both)
@@ -97,26 +97,27 @@ def _get_vertex_list(cmip_log_path: Union[str, Path]) -> List[str]:
         _pdb_coord_formatter(origin[0] + size[0]) + _pdb_coord_formatter(origin[1] + size[1]) + _pdb_coord_formatter(origin[2] + size[2]),
     ]
 
+
 def _pdb_coord_formatter(coordinate: float) -> str:
     return str(round(coordinate, 3)).rjust(8)
 
 
 def _get_atom_pair() -> List[List[str]]:
-    return [[ "9999:Z.ZN0", "9999:Z.ZN1" ],
-            [ "9999:Z.ZN0", "9999:Z.ZN2" ],
-            [ "9999:Z.ZN0", "9999:Z.ZN3" ],
-            [ "9999:Z.ZN1", "9999:Z.ZN4" ],
-            [ "9999:Z.ZN1", "9999:Z.ZN5" ],
+    return [["9999:Z.ZN0", "9999:Z.ZN1"],
+            ["9999:Z.ZN0", "9999:Z.ZN2"],
+            ["9999:Z.ZN0", "9999:Z.ZN3"],
+            ["9999:Z.ZN1", "9999:Z.ZN4"],
+            ["9999:Z.ZN1", "9999:Z.ZN5"],
 
-            [ "9999:Z.ZN2", "9999:Z.ZN4" ],
-            [ "9999:Z.ZN2", "9999:Z.ZN6" ],
+            ["9999:Z.ZN2", "9999:Z.ZN4"],
+            ["9999:Z.ZN2", "9999:Z.ZN6"],
 
-            [ "9999:Z.ZN3", "9999:Z.ZN5" ],
-            [ "9999:Z.ZN3", "9999:Z.ZN6" ],
+            ["9999:Z.ZN3", "9999:Z.ZN5"],
+            ["9999:Z.ZN3", "9999:Z.ZN6"],
 
-            [ "9999:Z.ZN4", "9999:Z.ZN7" ],
-            [ "9999:Z.ZN5", "9999:Z.ZN7" ],
-            [ "9999:Z.ZN6", "9999:Z.ZN7" ]]
+            ["9999:Z.ZN4", "9999:Z.ZN7"],
+            ["9999:Z.ZN5", "9999:Z.ZN7"],
+            ["9999:Z.ZN6", "9999:Z.ZN7"]]
 
 # AUTOMATIC OUTER GRID / titleGrid0=Automatic Outer Grid
 #
@@ -138,8 +139,3 @@ def _get_atom_pair() -> List[List[str]]:
 # Origin:
 #     Grid origin:    23.610  -1.245   2.315
 #     origin=   23.6100006     ,  -1.24499512     ,   2.31500244
-
-
-
-
-

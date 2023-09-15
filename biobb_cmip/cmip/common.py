@@ -52,7 +52,7 @@ def _get_grid_from_text(cmip_log_path: Union[str, Path], external: bool = False)
                 int_match = re.match(r"Grid units:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))", line.strip())
                 if int_match:
                     grid_params['INT'] = float(int_match.group(1)), float(int_match.group(2)), float(int_match.group(3))
-                cen_match = re.match(r"Grid center:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))",line.strip())
+                cen_match = re.match(r"Grid center:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))", line.strip())
                 if cen_match:
                     grid_params['CEN'] = float(cen_match.group(1)), float(cen_match.group(2)), float(cen_match.group(3))
                 dim_match = re.match(r"Grid density:\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))\s+([-+]?(?:\d*\.\d+|\d+))", line.strip())
@@ -86,7 +86,7 @@ def _get_grid_from_key_value(cmip_log_path: Union[str, Path], external: bool = F
                 int_match = re.match(r"spacing=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))", line.strip())
                 if int_match:
                     grid_params['INT'] = float(int_match.group(1)), float(int_match.group(2)), float(int_match.group(3))
-                cen_match = re.match(r"center=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))",line.strip())
+                cen_match = re.match(r"center=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))", line.strip())
                 if cen_match:
                     grid_params['CEN'] = float(cen_match.group(1)), float(cen_match.group(2)), float(cen_match.group(3))
                 dim_match = re.match(r"dim=\s+([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))\s*,\s*([-+]?(?:\d*\.\d+|\d+))", line.strip())
@@ -95,7 +95,6 @@ def _get_grid_from_key_value(cmip_log_path: Union[str, Path], external: bool = F
                 if origin and size and grid_params['INT'] and grid_params['CEN'] and grid_params['DIM']:
                     break
     return origin, size, grid_params
-
 
 
 def create_unique_file_path(parent_dir: Union[str, Path] = None, extension: str = None) -> str:
@@ -198,14 +197,14 @@ class ResiduesDataLib:
                     continue
                 data = line.split()
                 r = Residue(data)
-                self.RData[r.id]=r
+                self.RData[r.id] = r
             self.nres = len(self.RData)
 
     def getParams(self, resid, atid):
         if resid+':'+atid in self.RData:
             return self.RData[resid+':'+atid]
         else:
-            print("WARNING: atom not found in library (",resid+':'+atid,')')
+            print("WARNING: atom not found in library (", resid+':'+atid, ')')
             return {}
 
 
@@ -248,7 +247,7 @@ def get_pdb_charges(input_pdb_filename: str, residue_library_path: str = None) -
 
 def get_pdb_cmip_elements_canonical(input_pdb_filename: str, residue_library_path: str = None) -> List:
     if not residue_library_path:
-        residue_library_path = str(Path(__file__).parent.joinpath("dat","aa.lib").resolve())
+        residue_library_path = str(Path(__file__).parent.joinpath("dat", "aa.lib").resolve())
 
     aaLib = ResiduesDataLib(residue_library_path)
     print("{} residue/atom pairs loaded from {}".format(aaLib.nres, residue_library_path))
@@ -316,7 +315,7 @@ def params_grid(grid_type: str, readgrid: int = 0, perfill: float = 0.8,
     #     cmip, titration, pbsolvation = 2, >3
 
     grid_dict = {}
-    grid_dict[f"readgrid"] = f"{readgrid}"
+    grid_dict["readgrid"] = f"{readgrid}"
 
     if grid_type in ['pb_interaction_energy', 'mip_pos', 'mip_neu', 'mip_neg', 'docking']:
         grid_dict['grid_cen'] = f"CENX={grid_cen[0]},CENY={grid_cen[1]},CENZ={grid_cen[2]}"
@@ -335,7 +334,7 @@ def params_preset(execution_type: str) -> Dict[str, str]:
     probe_grid_dict = {}
     execution_type = execution_type.strip()
     if execution_type == 'titration':
-        grid_dict = params_grid(grid_type=execution_type, readgrid=2, perfill=0.8, grid_int=(0.5, 0.5, 0.5) )
+        grid_dict = params_grid(grid_type=execution_type, readgrid=2, perfill=0.8, grid_int=(0.5, 0.5, 0.5))
         params_dict = {
             'title': 'Titration',
             'tipcalc': 1,
@@ -356,11 +355,11 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'irest': 0,
             'orest': 0,
             'coorfmt': 2,
-            'dields':  2,
+            'dields': 2,
             'cubeoutput': 1,
             'fvdw': 0.8,
             'carmip': 1,
-            'tipatmip' : "'OW'"
+            'tipatmip': "'OW'"
         }
     elif execution_type == 'mip_neu':
         grid_dict = params_grid(grid_type=execution_type, readgrid=2)
@@ -371,11 +370,11 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'irest': 0,
             'orest': 0,
             'coorfmt': 2,
-            'dields':  2,
+            'dields': 2,
             'cubeoutput': 1,
             'fvdw': 0.8,
             'carmip': 0,
-            'tipatmip' : "'OW'"
+            'tipatmip': "'OW'"
         }
     elif execution_type == 'mip_neg':
         grid_dict = params_grid(grid_type=execution_type, readgrid=2)
@@ -386,13 +385,13 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'irest': 0,
             'orest': 0,
             'coorfmt': 2,
-            'dields':  2,
+            'dields': 2,
             'cubeoutput': 1,
             'fvdw': 0.8,
             'carmip': -1,
-            'tipatmip' : "'OW'"
+            'tipatmip': "'OW'"
         }
-#TODO 'carmip': 1,
+    # TODO 'carmip': 1,
     # wat: tipcalc: 1 + titration: 'inifoc': 2, 'cutfoc': -0.5, 'focus': 1, 'ninter': 10,
     elif execution_type == 'solvation':
         grid_dict = params_grid(grid_type=execution_type, readgrid=2, perfill=0.2,
@@ -404,13 +403,13 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'irest': 0,
             'orest': 0,
             'coorfmt': 2,
-            'cubeoutput': 1, 'vdw': 0,  'pbelec': 1,
+            'cubeoutput': 1, 'vdw': 0, 'pbelec': 1,
             'novdwgrid': 1, 'solvenergy': 1, 'dielc': 1, 'dielsol': 80
         }
 
     elif execution_type == 'pb_interaction_energy':
-        grid_dict = params_grid(grid_type=execution_type, readgrid= 2)
-        probe_grid_dict = probe_params_grid(probe_id= 0, readgrid= 2, pbfocus= 1, perfill= 0.6,
+        grid_dict = params_grid(grid_type=execution_type, readgrid=2)
+        probe_grid_dict = probe_params_grid(probe_id=0, readgrid=2, pbfocus=1, perfill=0.6,
                                             grid_int=(1.5, 1.5, 1.5))
 
         # TODO Check for external box file or parameters
@@ -425,7 +424,7 @@ def params_preset(execution_type: str) -> Dict[str, str]:
         }
 
     elif execution_type == 'docking':
-        grid_dict = params_grid(grid_type=execution_type, readgrid= 2)
+        grid_dict = params_grid(grid_type=execution_type, readgrid=2)
 
         params_dict = {
             'title': 'Docking Mehler Solmajer dielectric',
@@ -474,7 +473,8 @@ def read_params_file(input_params_path: str) -> Dict[str, str]:
         params_dict['title']: input_params_file.readline()
         for line in input_params_file:
             line = line.replace(' ', '')
-            if line.startswith('&'): continue
+            if line.startswith('&'):
+                continue
             param_list = line.split(',')
             for param in param_list:
                 param_key, param_value = param.split("=")
@@ -504,13 +504,13 @@ def read_params_file(input_params_path: str) -> Dict[str, str]:
 def write_params_file(output_params_path: str, params_dict: Mapping[str, str]) -> str:
     with open(output_params_path, 'w') as output_params_file:
         output_params_file.write(f"{params_dict.pop('title', 'Untitled')}\n")
-        output_params_file.write(f"&cntrl\n")
+        output_params_file.write("&cntrl\n")
         for params_key, params_value in params_dict.items():
             if params_key in ['grid_int', 'grid_cen', 'grid_dim', 'grid_int0', 'grid_cen0', 'grid_dim0']:
                 output_params_file.write(f" {params_value}\n")
             else:
                 output_params_file.write(f" {params_key} = {params_value}\n")
-        output_params_file.write(f"&end\n")
+        output_params_file.write("&end\n")
     return output_params_path
 
 
@@ -539,6 +539,7 @@ def create_params_file(output_params_path: str, input_params_path: str = None,
 
     return write_params_file(output_params_path, params_dict)
 
+
 def mark_residues(residue_list: Sequence[str], input_cmip_pdb_path: str, output_cmip_pdb_path: str, out_log: logging.Logger = None, global_log: logging.Logger = None) -> None:
     """Marks using an "X" before the atom type all the residues in *residue_list* and writes the result in *output_cmip_pdb_path*.
 
@@ -548,7 +549,7 @@ def mark_residues(residue_list: Sequence[str], input_cmip_pdb_path: str, output_
             global_log (:obj:`logging.Logger`): global log object.
         """
     if not residue_list:
-        fu.log(f"Empty residue_list all residues will be marked", out_log, global_log)
+        fu.log("Empty residue_list all residues will be marked", out_log, global_log)
     else:
         fu.log(f"Residue list: {residue_list}", out_log, global_log)
 
@@ -572,10 +573,12 @@ def mark_residues(residue_list: Sequence[str], input_cmip_pdb_path: str, output_
             if unused_residues:
                 fu.log(f"The following residues where present in the residue_list and have not been marked: {unused_residues}", out_log, global_log)
 
+
 def _mark_pdb_atom(line: str) -> str:
     line = list(line)
     line.insert(64, 'X')
     return ''.join(line)
+
 
 def _get_residue_code_in_list(input_residue, residue_list):
     if not residue_list:
@@ -597,11 +600,14 @@ def _get_residue_code_in_list(input_residue, residue_list):
 def _get_residue_code(line: str) -> str:
     return _get_chain(line)+":"+_get_resnum(line)
 
+
 def _get_chain(line: str) -> str:
     return line[21].upper()
 
+
 def _get_resnum(line: str) -> str:
     return line[22:27].strip()
+
 
 def _is_atom(line: str) -> str:
     return line[0:6].strip().upper() in ["ATOM", "HETATM"]

@@ -3,7 +3,6 @@ from biobb_cmip.cmip.cmip_run import cmip_run
 import pytest
 
 
-
 # class TestCmipMipSingularity():
 
 #     def setup_class(self):

@@ -75,7 +75,7 @@ class CmipIgnoreResidues(BiobbObject):
             return 0
 
         if not self.ignore_all and not self.residue_list:
-            fu.log(f"Residue_list is empty and ignore_all is false nothing will be done.", self.out_log, self.global_log)
+            fu.log("Residue_list is empty and ignore_all is false nothing will be done.", self.out_log, self.global_log)
             shutil.copyfile(self.io_dict["in"]["input_cmip_pdb_path"], self.io_dict["out"]["output_cmip_pdb_path"])
             return self.return_code
 

@@ -13,7 +13,20 @@ Command:
 ```python
 cmip_prepare_pdb -h
 ```
-    /bin/sh: cmip_prepare_pdb: command not found
+    usage: cmip_prepare_pdb [-h] [-c CONFIG] -i INPUT_PDB_PATH -o OUTPUT_CMIP_PDB_PATH
+    
+    Model the missing atoms in the backbone of a PDB structure.
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c CONFIG, --config CONFIG
+                            This file can be a YAML file, JSON file or JSON string
+    
+    required arguments:
+      -i INPUT_PDB_PATH, --input_pdb_path INPUT_PDB_PATH
+                            Input PDB file name
+      -o OUTPUT_CMIP_PDB_PATH, --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
+                            Output PDB file name
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -63,7 +76,20 @@ Command:
 ```python
 cmip_ignore_residues -h
 ```
-    /bin/sh: cmip_ignore_residues: command not found
+    usage: cmip_ignore_residues [-h] [-c CONFIG] -i INPUT_CMIP_PDB_PATH -o OUTPUT_CMIP_PDB_PATH
+    
+    Mark residues which charges will be ignored in the CMIP potential calculations.
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c CONFIG, --config CONFIG
+                            This file can be a YAML file, JSON file or JSON string
+    
+    required arguments:
+      -i INPUT_CMIP_PDB_PATH, --input_cmip_pdb_path INPUT_CMIP_PDB_PATH
+                            Input PDB file name
+      -o OUTPUT_CMIP_PDB_PATH, --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
+                            Output PDB file name
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -112,7 +138,20 @@ Command:
 ```python
 cmip_titration -h
 ```
-    /bin/sh: cmip_titration: command not found
+    usage: cmip_titration [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --output_pdb_path OUTPUT_PDB_PATH [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH]
+    
+    Wrapper of the CMIP Titration module.
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c CONFIG, --config CONFIG
+                            This file can be a YAML file, JSON file or JSON string
+      --input_vdw_params_path INPUT_VDW_PARAMS_PATH
+      --input_params_path INPUT_PARAMS_PATH
+    
+    required arguments:
+      --input_pdb_path INPUT_PDB_PATH
+      --output_pdb_path OUTPUT_PDB_PATH
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -214,7 +253,30 @@ Command:
 ```python
 cmip_run -h
 ```
-    /bin/sh: cmip_run: command not found
+    usage: cmip_run [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH [--input_probe_pdb_path INPUT_PROBE_PDB_PATH] [--output_pdb_path OUTPUT_PDB_PATH] [--output_grd_path OUTPUT_GRD_PATH] [--output_cube_path OUTPUT_CUBE_PATH] [--output_rst_path OUTPUT_RST_PATH] [--output_byat_path OUTPUT_BYAT_PATH] [--output_log_path OUTPUT_LOG_PATH] [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH] [--output_json_box_path OUTPUT_JSON_BOX_PATH] [--output_json_external_box_path OUTPUT_JSON_EXTERNAL_BOX_PATH] [--input_json_box_path INPUT_JSON_BOX_PATH] [--input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH]
+    
+    Wrapper of the CMIP cmip module.
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c CONFIG, --config CONFIG
+                            This file can be a YAML file, JSON file or JSON string
+      --input_probe_pdb_path INPUT_PROBE_PDB_PATH
+      --output_pdb_path OUTPUT_PDB_PATH
+      --output_grd_path OUTPUT_GRD_PATH
+      --output_cube_path OUTPUT_CUBE_PATH
+      --output_rst_path OUTPUT_RST_PATH
+      --output_byat_path OUTPUT_BYAT_PATH
+      --output_log_path OUTPUT_LOG_PATH
+      --input_vdw_params_path INPUT_VDW_PARAMS_PATH
+      --input_params_path INPUT_PARAMS_PATH
+      --output_json_box_path OUTPUT_JSON_BOX_PATH
+      --output_json_external_box_path OUTPUT_JSON_EXTERNAL_BOX_PATH
+      --input_json_box_path INPUT_JSON_BOX_PATH
+      --input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH
+    
+    required arguments:
+      --input_pdb_path INPUT_PDB_PATH
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -325,7 +387,19 @@ Command:
 ```python
 cmip_prepare_structure -h
 ```
-    /bin/sh: cmip_prepare_structure: command not found
+    usage: cmip_prepare_structure [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH [--input_topology_path INPUT_TOPOLOGY_PATH]
+    
+    Wrapper of the cmip prepare_structure module.
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c CONFIG, --config CONFIG
+                            This file can be a YAML file, JSON file or JSON string
+      --input_topology_path INPUT_TOPOLOGY_PATH
+    
+    required arguments:
+      --input_pdb_path INPUT_PDB_PATH
+      --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 

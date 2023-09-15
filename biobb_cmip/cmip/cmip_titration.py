@@ -3,13 +3,11 @@
 """Module containing the Titration class and the command line interface."""
 import os
 import argparse
-import shutil
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.configuration import settings
 from biobb_common.tools import file_utils as fu
 from biobb_common.tools.file_utils import launchlogger
-from biobb_common.command_wrapper import cmd_wrapper
 from biobb_cmip.cmip.common import create_params_file
 from biobb_cmip.cmip.common import params_preset
 from biobb_cmip.cmip.common import get_pdb_total_charge

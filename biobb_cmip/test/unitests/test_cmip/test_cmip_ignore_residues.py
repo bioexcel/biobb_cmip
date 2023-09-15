@@ -14,5 +14,3 @@ class TestCmipIgnoreResidues():
         cmip_ignore_residues(properties=self.properties, **self.paths)
         assert fx.not_empty(self.paths['output_cmip_pdb_path'])
         assert fx.equal(self.paths['output_cmip_pdb_path'], self.paths['ref_output_ignore_residues_pdb_path'])
-
-

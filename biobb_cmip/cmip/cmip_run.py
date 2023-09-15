@@ -114,7 +114,6 @@ class CmipRun(BiobbObject):
     @launchlogger
     def launch(self) -> int:
         """Execute the :class:`Cmip <cmip.cmip.Cmip>` object."""
-        tmp_files = []
 
         # Setup Biobb
         if self.check_restart():
