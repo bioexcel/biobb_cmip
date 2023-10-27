@@ -14,7 +14,7 @@ setuptools.setup(
     keywords="Bioinformatics Workflows BioExcel Compatibility",
     url="https://github.com/bioexcel/biobb_cmip",
     project_urls={
-        "Documentation": "http://biobb_cmip.readthedocs.io/en/latest/",
+        "Documentation": "http://biobb-cmip.readthedocs.io/en/latest/",
         "Bioexcel": "https://bioexcel.eu/"
     },
     packages=setuptools.find_packages(exclude=['docs', 'test']),
