@@ -1,5 +1,8 @@
 # Biobb CMIP changelog
 
+## What's new in version [4.1.1](https://github.com/bioexcel/biobb_cmip/releases/tag/4.1.1)?
+Fixed command line paths.
+
 ## What's new in version [4.1.0](https://github.com/bioexcel/biobb_cmip/releases/tag/v4.1.0)?
 In version 4.1.0 the dependency biobb_common has been updated to 4.1.0 version.
 
@@ -8,7 +11,7 @@ In version 4.1.0 the dependency biobb_common has been updated to 4.1.0 version.
 * Update to biobb_common 4.1.0 (general)
 
 ## What's new in version [4.0.0](https://github.com/bioexcel/biobb_cmip/releases/tag/4.0.0)?
-All inputs/outputs are now cheked.
+All inputs/outputs are now checked.
 
 ## What's new in version [3.9.0](https://github.com/bioexcel/biobb_cmip/releases/tag/3.9.0)?
 All operations are now sandboxed

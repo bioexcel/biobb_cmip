@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="biobb_cmip",
-    version="4.1.0",
+    version="4.1.1",
     author="Biobb developers",
     author_email="pau.andrio@bsc.es",
     description="biobb_cmip is the Biobb module collection to compute classical molecular interaction potentials.",
@@ -27,11 +27,11 @@ setuptools.setup(
     python_requires='>=3.8',
     entry_points={
         "console_scripts": [
-            "cmip_run = biobb_cmip.cmip.cmip:main",
-            "cmip_titration = biobb_cmip.cmip.titration:main",
-            "cmip_prepare_structure = biobb_cmip.cmip.prepare_structure:main",
-            "cmip_prepare_pdb = biobb_cmip.cmip.prepare_pdb:main",
-            "cmip_ignore_residues = biobb_cmip.cmip.ignore_residues:main"
+            "cmip_run = biobb_cmip.cmip.cmip_run:main",
+            "cmip_titration = biobb_cmip.cmip.cmip_titration:main",
+            "cmip_prepare_structure = biobb_cmip.cmip.cmip_prepare_structure:main",
+            "cmip_prepare_pdb = biobb_cmip.cmip.cmip_prepare_pdb:main",
+            "cmip_ignore_residues = biobb_cmip.cmip.cmip_ignore_residues:main"
         ]
     },
     classifiers=(
