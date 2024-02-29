@@ -2,624 +2,769 @@
 <html>
   <head>
     <meta charset="utf-8"/>
-    <title>report.html</title>
-    <link href="assets/style.css" rel="stylesheet" type="text/css"/></head>
-  <body onLoad="init()">
-    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this file,
- * You can obtain one at http://mozilla.org/MPL/2.0/. */
-
-
-function toArray(iter) {
-    if (iter === null) {
-        return null;
-    }
-    return Array.prototype.slice.call(iter);
-}
-
-function find(selector, elem) { // eslint-disable-line no-redeclare
-    if (!elem) {
-        elem = document;
-    }
-    return elem.querySelector(selector);
-}
-
-function findAll(selector, elem) {
-    if (!elem) {
-        elem = document;
-    }
-    return toArray(elem.querySelectorAll(selector));
-}
-
-function sortColumn(elem) {
-    toggleSortStates(elem);
-    const colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
-    let key;
-    if (elem.classList.contains('result')) {
-        key = keyResult;
-    } else if (elem.classList.contains('links')) {
-        key = keyLink;
-    } else {
-        key = keyAlpha;
-    }
-    sortTable(elem, key(colIndex));
-}
-
-function showAllExtras() { // eslint-disable-line no-unused-vars
-    findAll('.col-result').forEach(showExtras);
-}
-
-function hideAllExtras() { // eslint-disable-line no-unused-vars
-    findAll('.col-result').forEach(hideExtras);
-}
-
-function showExtras(colresultElem) {
-    const extras = colresultElem.parentNode.nextElementSibling;
-    const expandcollapse = colresultElem.firstElementChild;
-    extras.classList.remove('collapsed');
-    expandcollapse.classList.remove('expander');
-    expandcollapse.classList.add('collapser');
-}
-
-function hideExtras(colresultElem) {
-    const extras = colresultElem.parentNode.nextElementSibling;
-    const expandcollapse = colresultElem.firstElementChild;
-    extras.classList.add('collapsed');
-    expandcollapse.classList.remove('collapser');
-    expandcollapse.classList.add('expander');
-}
-
-function showFilters() {
-    let visibleString = getQueryParameter('visible') || 'all';
-    visibleString = visibleString.toLowerCase();
-    const checkedItems = visibleString.split(',');
-
-    const filterItems = document.getElementsByClassName('filter');
-    for (let i = 0; i < filterItems.length; i++) {
-        filterItems[i].hidden = false;
-
-        if (visibleString != 'all') {
-            filterItems[i].checked = checkedItems.includes(filterItems[i].getAttribute('data-test-result'));
-            filterTable(filterItems[i]);
-        }
-    }
-}
-
-function addCollapse() {
-    // Add links for show/hide all
-    const resulttable = find('table#results-table');
-    const showhideall = document.createElement('p');
-    showhideall.innerHTML = '<a href="javascript:showAllExtras()">Show all details</a> / ' +
-                            '<a href="javascript:hideAllExtras()">Hide all details</a>';
-    resulttable.parentElement.insertBefore(showhideall, resulttable);
-
-    // Add show/hide link to each result
-    findAll('.col-result').forEach(function(elem) {
-        const collapsed = getQueryParameter('collapsed') || 'Passed';
-        const extras = elem.parentNode.nextElementSibling;
-        const expandcollapse = document.createElement('span');
-        if (extras.classList.contains('collapsed')) {
-            expandcollapse.classList.add('expander');
-        } else if (collapsed.includes(elem.innerHTML)) {
-            extras.classList.add('collapsed');
-            expandcollapse.classList.add('expander');
-        } else {
-            expandcollapse.classList.add('collapser');
-        }
-        elem.appendChild(expandcollapse);
-
-        elem.addEventListener('click', function(event) {
-            if (event.currentTarget.parentNode.nextElementSibling.classList.contains('collapsed')) {
-                showExtras(event.currentTarget);
-            } else {
-                hideExtras(event.currentTarget);
-            }
-        });
-    });
-}
-
-function getQueryParameter(name) {
-    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-}
-
-function init () { // eslint-disable-line no-unused-vars
-    resetSortHeaders();
-
-    addCollapse();
-
-    showFilters();
-
-    sortColumn(find('.initial-sort'));
-
-    findAll('.sortable').forEach(function(elem) {
-        elem.addEventListener('click',
-            function() {
-                sortColumn(elem);
-            }, false);
-    });
-}
-
-function sortTable(clicked, keyFunc) {
-    const rows = findAll('.results-table-row');
-    const reversed = !clicked.classList.contains('asc');
-    const sortedRows = sort(rows, keyFunc, reversed);
-    /* Whole table is removed here because browsers acts much slower
-     * when appending existing elements.
-     */
-    const thead = document.getElementById('results-table-head');
-    document.getElementById('results-table').remove();
-    const parent = document.createElement('table');
-    parent.id = 'results-table';
-    parent.appendChild(thead);
-    sortedRows.forEach(function(elem) {
-        parent.appendChild(elem);
-    });
-    document.getElementsByTagName('BODY')[0].appendChild(parent);
-}
-
-function sort(items, keyFunc, reversed) {
-    const sortArray = items.map(function(item, i) {
-        return [keyFunc(item), i];
-    });
-
-    sortArray.sort(function(a, b) {
-        const keyA = a[0];
-        const keyB = b[0];
-
-        if (keyA == keyB) return 0;
-
-        if (reversed) {
-            return keyA < keyB ? 1 : -1;
-        } else {
-            return keyA > keyB ? 1 : -1;
-        }
-    });
-
-    return sortArray.map(function(item) {
-        const index = item[1];
-        return items[index];
-    });
-}
-
-function keyAlpha(colIndex) {
-    return function(elem) {
-        return elem.childNodes[1].childNodes[colIndex].firstChild.data.toLowerCase();
-    };
-}
-
-function keyLink(colIndex) {
-    return function(elem) {
-        const dataCell = elem.childNodes[1].childNodes[colIndex].firstChild;
-        return dataCell == null ? '' : dataCell.innerText.toLowerCase();
-    };
-}
-
-function keyResult(colIndex) {
-    return function(elem) {
-        const strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
-            'Skipped', 'Passed'];
-        return strings.indexOf(elem.childNodes[1].childNodes[colIndex].firstChild.data);
-    };
-}
-
-function resetSortHeaders() {
-    findAll('.sort-icon').forEach(function(elem) {
-        elem.parentNode.removeChild(elem);
-    });
-    findAll('.sortable').forEach(function(elem) {
-        const icon = document.createElement('div');
-        icon.className = 'sort-icon';
-        icon.textContent = 'vvv';
-        elem.insertBefore(icon, elem.firstChild);
-        elem.classList.remove('desc', 'active');
-        elem.classList.add('asc', 'inactive');
-    });
-}
-
-function toggleSortStates(elem) {
-    //if active, toggle between asc and desc
-    if (elem.classList.contains('active')) {
-        elem.classList.toggle('asc');
-        elem.classList.toggle('desc');
-    }
-
-    //if inactive, reset all other functions and add ascending active
-    if (elem.classList.contains('inactive')) {
-        resetSortHeaders();
-        elem.classList.remove('inactive');
-        elem.classList.add('active');
-    }
-}
-
-function isAllRowsHidden(value) {
-    return value.hidden == false;
-}
-
-function filterTable(elem) { // eslint-disable-line no-unused-vars
-    const outcomeAtt = 'data-test-result';
-    const outcome = elem.getAttribute(outcomeAtt);
-    const classOutcome = outcome + ' results-table-row';
-    const outcomeRows = document.getElementsByClassName(classOutcome);
-
-    for(let i = 0; i < outcomeRows.length; i++){
-        outcomeRows[i].hidden = !elem.checked;
-    }
-
-    const rows = findAll('.results-table-row').filter(isAllRowsHidden);
-    const allRowsHidden = rows.length == 0 ? true : false;
-    const notFoundMessage = document.getElementById('not-found-message');
-    notFoundMessage.hidden = !allRowsHidden;
-}
-</script>
-    <h1>report.html</h1>
-    <p>Report generated on 15-Sep-2023 at 13:32:02 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
-    <h2>Summary</h2>
-    <p>4 tests ran in 26.58 seconds. </p>
-    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">4 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
-    <h2>Results</h2>
+    <title id="head-title">report.html</title>
+      <link href="assets/style.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body>
+    <h1 id="title">report.html</h1>
+    <p>Report generated on 29-Feb-2024 at 14:11:16 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
+        v4.1.1</p>
+    <div id="environment-header">
+      <h2>Environment</h2>
+    </div>
+    <table id="environment"></table>
+    <!-- TEMPLATES -->
+      <template id="template_environment_row">
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+    </template>
+    <template id="template_results-table__body--empty">
+      <tbody class="results-table-row">
+        <tr id="not-found-message">
+          <td colspan="4">No results found. Check the filters.</th>
+        </tr>
+    </template>
+    <template id="template_results-table__tbody">
+      <tbody class="results-table-row">
+        <tr class="collapsible">
+        </tr>
+        <tr class="extras-row">
+          <td class="extra" colspan="4">
+            <div class="extraHTML"></div>
+            <div class="media">
+              <div class="media-container">
+                  <div class="media-container__nav--left"><</div>
+                  <div class="media-container__viewport">
+                    <img src="" />
+                    <video controls>
+                      <source src="" type="video/mp4">
+                    </video>
+                  </div>
+                  <div class="media-container__nav--right">></div>
+                </div>
+                <div class="media__name"></div>
+                <div class="media__counter"></div>
+            </div>
+            <div class="logwrapper">
+              <div class="logexpander"></div>
+              <div class="log"></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </template>
+    <!-- END TEMPLATES -->
+    <div class="summary">
+      <div class="summary__data">
+        <h2>Summary</h2>
+        <div class="additional-summary prefix">
+        </div>
+        <p class="run-count">4 tests took 00:00:26.</p>
+        <p class="filter">(Un)check the boxes to filter the results.</p>
+        <div class="summary__reload">
+          <div class="summary__reload__button hidden" onclick="location.reload()">
+            <div>There are still tests running. <br />Reload this page to get the latest results!</div>
+          </div>
+        </div>
+        <div class="summary__spacer"></div>
+        <div class="controls">
+          <div class="filters">
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="failed" disabled/>
+            <span class="failed">0 Failed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="passed" />
+            <span class="passed">4 Passed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="skipped" disabled/>
+            <span class="skipped">0 Skipped,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xfailed" disabled/>
+            <span class="xfailed">0 Expected failures,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xpassed" disabled/>
+            <span class="xpassed">0 Unexpected passes,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="error" disabled/>
+            <span class="error">0 Errors,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="rerun" disabled/>
+            <span class="rerun">0 Reruns</span>
+          </div>
+          <div class="collapse">
+            <button id="show_all_details">Show all details</button>&nbsp;/&nbsp;<button id="hide_all_details">Hide all details</button>
+          </div>
+        </div>
+      </div>
+      <div class="additional-summary summary">
+      </div>
+      <div class="additional-summary postfix">
+      </div>
+    </div>
     <table id="results-table">
       <thead id="results-table-head">
         <tr>
-          <th class="sortable result initial-sort" col="result">Result</th>
-          <th class="sortable" col="name">Test</th>
-          <th class="sortable" col="duration">Duration</th>
-          <th class="sortable links" col="links">Links</th></tr>
-        <tr hidden="true" id="not-found-message">
-          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
-          <td class="col-name">biobb_cmip/test/unitests/test_cmip/test_cmip_ignore_residues.py::TestCmipIgnoreResidues::test_cmip_ignore_residues</td>
-          <td class="col-duration">0.31</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>Checking if empty file: /tmp/biobb/unitests_11/cmip_ignore_residues/ignore_residues_output.pdb
-Checking RMSD between:
-     PDB_A: /tmp/biobb/unitests_11/cmip_ignore_residues/ignore_residues_output.pdb
-     PDB_B: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/reference/cmip/ignore_res_gln3.pdb
-     Ignoring HETAMT in RMSD
-     Ignoring Hydrogen atoms in RMSD
-     Atoms ALIGNED in PDB_A: 3173
-     Atoms ALIGNED in PDB_B: 3173
-     RMS: 1.0024822746830985e-14
-     RMS_CUTOFF: 1
-<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_ignore_residues Version: 4.1.0
-INFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 Residue list: [&#x27;:3&#x27;]
-INFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 17 residues have been marked
-INFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 Removed: []<br/> ----------------------------Captured stdout teardown---------------------------- <br/>
-Removing: /tmp/biobb/unitests_11
-<br/></div></td></tr></tbody>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
-          <td class="col-name">biobb_cmip/test/unitests/test_cmip/test_cmip_prepare_pdb.py::TestCmipPreparePDB::test_cmip_prepare_pdb</td>
-          <td class="col-duration">0.67</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>Checking if empty file: /tmp/biobb/unitests_11/cmip_prepare_pdb/1aki_cmip.pdb
-Checking RMSD between:
-     PDB_A: /tmp/biobb/unitests_11/cmip_prepare_pdb/1aki_cmip.pdb
-     PDB_B: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/reference/cmip/1aki_cmip.pdb
-     Ignoring HETAMT in RMSD
-     Ignoring Hydrogen atoms in RMSD
-     Atoms ALIGNED in PDB_A: 1001
-     Atoms ALIGNED in PDB_B: 1001
-     RMS: 1.4828848083881487e-14
-     RMS_CUTOFF: 1
-<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_prepare_pdb Version: 4.1.0
-INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:file_utils.py:390 Copy: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/1aki.pdb to /tmp/biobb/unitests_11/cmip_prepare_pdb/807d8b82-84c1-404d-8db5-a5fce4538d3c
-INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:cmd_wrapper.py:33 check_structure -v -i /tmp/biobb/unitests_11/cmip_prepare_pdb/807d8b82-84c1-404d-8db5-a5fce4538d3c/1aki.pdb -o /tmp/biobb/unitests_11/cmip_prepare_pdb/807d8b82-84c1-404d-8db5-a5fce4538d3c/1aki_cmip.pdb --output_format cmip --non_interactive command_list --list &#x27;water --remove yes; backbone --add_caps none; fixside --fix All; add_hydrogen --add_mode auto --add_charges CMIP&#x27;
+          <th class="sortable" data-column-type="result">Result</th>
+          <th class="sortable" data-column-type="testId">Test</th>
+          <th class="sortable" data-column-type="duration">Duration</th>
+          <th>Links</th>
+        </tr>
+      </thead>
+    </table>
+  </body>
+  <footer>
+    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.10.13&#34;, &#34;Platform&#34;: &#34;Linux-5.4.0-159-generic-x86_64-with-glibc2.31&#34;, &#34;Packages&#34;: {&#34;pytest&#34;: &#34;8.0.2&#34;, &#34;pluggy&#34;: &#34;1.4.0&#34;}, &#34;Plugins&#34;: {&#34;cov&#34;: &#34;4.1.0&#34;, &#34;metadata&#34;: &#34;3.1.1&#34;, &#34;html&#34;: &#34;4.1.1&#34;}, &#34;CI&#34;: &#34;true&#34;}, &#34;tests&#34;: {&#34;biobb_cmip/test/unitests/test_cmip/test_cmip_ignore_residues.py::TestCmipIgnoreResidues::test_cmip_ignore_residues&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;biobb_cmip/test/unitests/test_cmip/test_cmip_ignore_residues.py::TestCmipIgnoreResidues::test_cmip_ignore_residues&#34;, &#34;duration&#34;: &#34;389 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;biobb_cmip/test/unitests/test_cmip/test_cmip_ignore_residues.py::TestCmipIgnoreResidues::test_cmip_ignore_residues&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;389 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\nChecking if empty file: /tmp/biobb/unitests_11/cmip_ignore_residues/ignore_residues_output.pdb\nChecking RMSD between:\n     PDB_A: /tmp/biobb/unitests_11/cmip_ignore_residues/ignore_residues_output.pdb\n     PDB_B: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/reference/cmip/ignore_res_gln3.pdb\n     Ignoring HETAMT in RMSD\n     Ignoring Hydrogen atoms in RMSD\n     Atoms ALIGNED in PDB_A: 3173\n     Atoms ALIGNED in PDB_B: 3173\n     RMS: 1.0024822746830985e-14\n     RMS_CUTOFF: 1\n\n------------------------------ Captured log call -------------------------------\nINFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_ignore_residues Version: 4.1.1\nINFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 Residue list: [&amp;#x27;:3&amp;#x27;]\nINFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 17 residues have been marked\nINFO     /tmp/biobb/unitests_11/cmip_ignore_residues/cmip_ignore_residues_log.out:file_utils.py:390 Removed: []\n\n--------------------------- Captured stdout teardown ---------------------------\n\nRemoving: /tmp/biobb/unitests_11\n&#34;}], &#34;biobb_cmip/test/unitests/test_cmip/test_cmip_prepare_pdb.py::TestCmipPreparePDB::test_cmip_prepare_pdb&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;biobb_cmip/test/unitests/test_cmip/test_cmip_prepare_pdb.py::TestCmipPreparePDB::test_cmip_prepare_pdb&#34;, &#34;duration&#34;: &#34;744 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;biobb_cmip/test/unitests/test_cmip/test_cmip_prepare_pdb.py::TestCmipPreparePDB::test_cmip_prepare_pdb&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;744 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\nChecking if empty file: /tmp/biobb/unitests_11/cmip_prepare_pdb/1aki_cmip.pdb\nChecking RMSD between:\n     PDB_A: /tmp/biobb/unitests_11/cmip_prepare_pdb/1aki_cmip.pdb\n     PDB_B: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/reference/cmip/1aki_cmip.pdb\n     Ignoring HETAMT in RMSD\n     Ignoring Hydrogen atoms in RMSD\n     Atoms ALIGNED in PDB_A: 1001\n     Atoms ALIGNED in PDB_B: 1001\n     RMS: 1.4828848083881487e-14\n     RMS_CUTOFF: 1\n\n------------------------------ Captured log call -------------------------------\nINFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_prepare_pdb Version: 4.1.1\nINFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:file_utils.py:390 Copy: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/1aki.pdb to /tmp/biobb/unitests_11/cmip_prepare_pdb/83c328af-bfd2-4c30-8edc-f9a28f580726\nINFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:cmd_wrapper.py:33 check_structure -v -i /tmp/biobb/unitests_11/cmip_prepare_pdb/83c328af-bfd2-4c30-8edc-f9a28f580726/1aki.pdb -o /tmp/biobb/unitests_11/cmip_prepare_pdb/83c328af-bfd2-4c30-8edc-f9a28f580726/1aki_cmip.pdb --output_format cmip --non_interactive command_list --list &amp;#x27;water --remove yes; backbone --add_caps none; fixside --fix All; add_hydrogen --add_mode auto --add_charges CMIP&amp;#x27;\n\nINFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:cmd_wrapper.py:50 Exit code 0\n\nINFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:cmd_wrapper.py:52 ================================================================================\n=                   BioBB structure checking utility v3.13.4                   =\n=            P. Andrio, A. Hospital, G. Bayarri, J.L. Gelpi 2018-23            =\n================================================================================\n\nWarning: sequence features may not be available, use --sequence for  external fasta input\nStructure /tmp/biobb/unitests_11/cmip_prepare_pdb/83c328af-bfd2-4c30-8edc-f9a28f580726/1aki.pdb loaded\n PDB id: 1AKI \n Title: the structure of the orthorhombic form of hen egg-white lysozyme at 1.5 angstroms resolution\n Experimental method: x-ray diffraction\n Keywords: hydrolase, glycosidase\n Resolution (A): 1.5\n\n Num. models: 1\n Num. chains: 1 (A: Protein)\n Num. residues:  207\n Num. residues with ins. codes:  0\n Num. residues with H atoms: 0\n Num. HETATM residues:  78\n Num. ligands or modified residues:  0\n Num. water mol.:  78\n Num. atoms:  1079\n\nStep 1: water --remove yes\nRunning water. Options: --remove yes\nDetected 78 Water molecules\nRemoved 78 Water molecules\n\nStep 2:  backbone --add_caps none\nRunning backbone. Options: --add_caps none\nFound No residues with missing backbone atoms\nNo backbone breaks\nNo unexpected backbone links\nCapping terminal ends\nTrue terminal residues: A1,A129\nNothing to do\nNo caps added\n\nStep 3:  fixside --fix All\nRunning fixside. Options: --fix All\nFound no residues with missing or unknown side chain atoms\n\nStep 4:  add_hydrogen --add_mode auto --add_charges CMIP\nRunning add_hydrogen. Options: --add_mode auto --add_charges CMIP\nFound 38 Residues requiring selection on adding H atoms\n CYS A6,A30,A64,A76,A80,A94,A115,A127\n ASP A18,A48,A52,A66,A87,A101,A119\n GLU A7,A35\n HIS A15\n LYS A1,A13,A33,A96,A97,A116\n ARG A5,A14,A21,A45,A61,A68,A73,A112,A114,A125,A128\n TYR A20,A23,A53\nWARNING: fixing side chains, override with --no_fix_side\nRunning fixside. Options: --fix all\nFound no residues with missing or unknown side chain atoms\nSelection: auto\nReplacing HIS A15 by HIE\nUpdating partial charges and atom types\nTotal assigned charge:       8.00\nCommand list completed\nFinal Num. models: 1\nFinal Num. chains: 1 (A: Protein)\nFinal Num. residues:  129\nFinal Num. residues with ins. codes:  0\nFinal Num. residues with H atoms: 129 (total 967 H atoms)\nFinal Num. HETATM residues:  0\nFinal Num. ligands or modified residues:  0\nFinal Num. water mol.:  0\nFinal Num. atoms:  1968\nStructure saved on /tmp/biobb/unitests_11/cmip_prepare_pdb/83c328af-bfd2-4c30-8edc-f9a28f580726/1aki_cmip.pdb\n\nINFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:file_utils.py:390 Removed: [&amp;#x27;/tmp/biobb/unitests_11/cmip_prepare_pdb/83c328af-bfd2-4c30-8edc-f9a28f580726&amp;#x27;]\n\n--------------------------- Captured stdout teardown ---------------------------\n\nRemoving: /tmp/biobb/unitests_11\n&#34;}], &#34;biobb_cmip/test/unitests/test_cmip/test_cmip_prepare_structure.py::TestCmipPrepareStructureTopology::test_cmip_prepare_structure_Topology&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;biobb_cmip/test/unitests/test_cmip/test_cmip_prepare_structure.py::TestCmipPrepareStructureTopology::test_cmip_prepare_structure_Topology&#34;, &#34;duration&#34;: &#34;00:00:08&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;biobb_cmip/test/unitests/test_cmip/test_cmip_prepare_structure.py::TestCmipPrepareStructureTopology::test_cmip_prepare_structure_Topology&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:08&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\nChecking if empty file: /tmp/biobb/unitests_11/cmip_prepare_structure_topology/prepare_structure_topology_output.pdb\nChecking RMSD between:\n     PDB_A: /tmp/biobb/unitests_11/cmip_prepare_structure_topology/prepare_structure_topology_output.pdb\n     PDB_B: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/reference/cmip/egfr_cmip.pdb\n     Ignoring Hydrogen atoms in RMSD\n     Atoms ALIGNED in PDB_A: 2872\n     Atoms ALIGNED in PDB_B: 2872\n     RMS: 1.1126217417895259e-14\n     RMS_CUTOFF: 1\n\n------------------------------ Captured log call -------------------------------\nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_prepare_structure Version: 4.1.1\nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:171 Extracting: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/egfr_topology.zip\nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:172 to:\nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:173 [&amp;#x27;10237633-efcb-4bd8-bbe2-f98c2151c4b8/pdb2gmx_p2g.top&amp;#x27;, &amp;#x27;10237633-efcb-4bd8-bbe2-f98c2151c4b8/pdb2gmx_posre.itp&amp;#x27;]\nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:251 Unzipping: \nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:252 /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/egfr_topology.zip\nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:253 To: \nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:255 10237633-efcb-4bd8-bbe2-f98c2151c4b8/pdb2gmx_p2g.top\nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:255 10237633-efcb-4bd8-bbe2-f98c2151c4b8/pdb2gmx_posre.itp\nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Reading: 10237633-efcb-4bd8-bbe2-f98c2151c4b8/pdb2gmx_p2g.top to extract charges\nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Reading: 10237633-efcb-4bd8-bbe2-f98c2151c4b8/pdb2gmx_p2g.top to extract elements\nINFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Removed: [&amp;#x27;10237633-efcb-4bd8-bbe2-f98c2151c4b8&amp;#x27;]\n\n--------------------------- Captured stdout teardown ---------------------------\n\nRemoving: /tmp/biobb/unitests_11\n&#34;}], &#34;biobb_cmip/test/unitests/test_cmip/test_cmip_run.py::TestCmipRunEnergy::test_cmip_run_energy&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;biobb_cmip/test/unitests/test_cmip/test_cmip_run.py::TestCmipRunEnergy::test_cmip_run_energy&#34;, &#34;duration&#34;: &#34;00:00:18&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;biobb_cmip/test/unitests/test_cmip/test_cmip_run.py::TestCmipRunEnergy::test_cmip_run_energy&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:18&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;----------------------------- Captured stdout call -----------------------------\nChecking if empty file: /tmp/biobb/unitests_11/cmip_run/output_byat.out\n\n------------------------------ Captured log call -------------------------------\nINFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_run Version: 4.1.1\nINFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/RBD-hACE2.hACE2.cmip.pdb to /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4\nINFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/RBD-hACE2.RBD.cmip.pdb to /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4\nINFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: /home/user/micromamba/envs/test_environment/share/cmip/dat/vdwprm to /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4\nINFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: ca60002c-34db-458f-9b20-7a2c77878acb/params to /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4\nINFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:cmd_wrapper.py:33 cmip -i /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4/params -vdw /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4/vdwprm -hs /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4/RBD-hACE2.hACE2.cmip.pdb -pr /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4/RBD-hACE2.RBD.cmip.pdb -byat /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4/output_byat.out\n\nINFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:cmd_wrapper.py:50 Exit code 0\n\nINFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:cmd_wrapper.py:52  =================================================\n =                                               =\n =                C M I P  (2.7.0)               =\n =          J. Ll. Gelpi, A. Morreale,           =\n =            F. J. Luque, M.Orozco              =\n =      Dept. Biochemistry. Univ. Barcelona      =\n =                  1999-2021                    =\n =================================================\n\n  Code for ASA calculation by Juan F. Recio       \n\n#T Run started at   14:10:58 h on 29- 2-2024\n SIZES\n -----\n MAXTIP:           100\n MAXATH:            80000\n MAXATP x MAXCONF: 100000\n\n INPUT FILES\n -----------\n    Calc. settings: /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4/params                                                                           \n VdW Parameters:      /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4/vdwprm                                                                           \n PDB Host:            /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4/RBD-hACE2.hACE2.cmip.pdb                                                         \n PDB Guest:           /tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4/RBD-hACE2.RBD.cmip.pdb                                                           \n Conf. energies:      energies                                                                                                                                              \n\n OUTPUT FILES\n ------------\n LOG file:            output                                                                                                                                                \n Grid Out:            gridout                                                                                                                                               \n Output PDB coords:          outpdb                                                                                                                                                \n\n Parameters\n ----------\nDocking Interaction energy calculation. PB electrostatics                       \n&amp;amp;cntrl                                                                          \n tipcalc = 3                                                                    \n calcgrid = 1                                                                   \n irest = 0                                                                      \n orest = 0                                                                      \n coorfmt = 2                                                                    \n fvdw = 0.8                                                                     \n pbelec = 1                                                                     \n pbinic = 2                                                                     \n wgp = 0                                                                        \n ebyatom = 1                                                                    \n readgrid = 2                                                                   \n CENX=0.0,CENY=0.0,CENZ=0.0                                                     \n DIMX=64,DIMY=64,DIMZ=64                                                        \n INTX0=1.5,INTY0=1.5,INTZ0=1.5                                                  \n readgrid0 = 2                                                                  \n perfill0 = 0.6                                                                 \n pbfocus = 1                                                                    \n IREST = 0                                                                      \n&amp;amp;end                                                                            \n\n 18 VdW parameters loaded successfully\n\n Host:      9519 atoms loaded, charge   -27.000\n\n TYPE OF CALCULATION: DOCKING\n Single point\n\n Guest: 3000 atom(s), charge -11.145,    1 conformation(s) loaded\n\n PB Focussing requested\n AUTOMATIC OUTER GRID\n --------------------\n Fill:    0.600\nAutomatic Outer Grid                                                                                                                \n Grid Size:      96.000 138.000 108.000  90.000  90.000  90.000\n Grid density:    64   92   72\n Grid units:      1.500   1.500   1.500\n Grid origin:    23.610  -1.245   2.315\n Grid center:    71.610  67.755  56.315\n     441285 Grid points\n\n AUTOMATIC GRID\n --------------\n Fill:    0.800\nAutomatic Grid                                                                                                                      \n Grid Size:      72.000 103.000  81.500  90.000  90.000  90.000\n Grid density:   144  206  163\n Grid units:      0.500   0.500   0.500\n Grid origin:    35.610  16.255  15.565\n Grid center:    71.610  67.755  56.315\n    4922460 Grid points\n\n All input data read succesfully\n\n Warning: Dielectric grid computed at double density\n Mapping host molecule to outer grid\n   Total charge            :   -27.0000248    \n   Low diel. grid points   :                230941 (   97428.2344     A3)\n   High diel. grid points  :               3229484\n   I Str=0 grid points     :                441285\n   Boundary grid points    :                 57064\n Mapping host molecule to grid\n   Total charge            :   -27.0000019    \n   Low diel. grid points   :               5855067 (   91485.4219      A3)\n   High diel. grid points  :              33174672\n   I Str=0 grid points     :               4922460\n   Boundary grid points    :                550671\n\n CLHOST=           0\n EXTERNAL CUTOFF=   999999.000    \n Checking potentials to calculate...\n - Vdw: C   \n - Vdw: N   \n - Vdw: S   \n - Vdw: HO  \n - Vdw: HN  \n - Vdw: H   \n - Vdw: O   \n - Electrostatic \n     Dielectric type    :            0\n     Dielectric constant:    2.00000000    \n Vdw energies:\n  -C    -2.15     0.254E+21\n  -N    -2.73     0.266E+21\n  -S    -3.82     0.557E+21\n  -HO    0.00      0.00    \n  -HN  -0.344     0.116E+18\n  -H   -0.860     0.268E+20\n  -O    -2.87     0.169E+21\n     Poisson-Boltzmann calculation requested\n     Focussing          :            1\n     Initial potentials :            2\n     Solute  Dielectric :    2.00000000    \n     Solvent Dielectric :    79.8000031    \n     Solvent radius     :    1.39999998    \n     Convergence crit.  :    9.99999975E-05\n     Ionic strength     :    0.00000000    \n Outer grid\n          20  0.147574857       14.6699677    \n          40   2.98345201E-02   3.29004049    \n          60   6.40256703E-03  0.731274426    \n          80   1.45485543E-03  0.142998144    \n         100   3.45115230E-04   1.70538854E-02\n         120   8.32114893E-05   2.48031784E-03\n         140   1.97770350E-05   8.39115703E-04\n Converged at   158 iterations (Mean:       0.502E-05, Max:      0.893E-04)\n Potentials:   -145.994   169.029\n Inner Grid limits\n Potentials:   -128.467   156.689\n          20  0.879424930       44.1415787    \n          40  0.403403550       18.3190784    \n          60  0.196925774       11.3940735    \n          80   9.77351665E-02   6.85034132    \n         100   4.82290052E-02   3.02071881    \n         120   2.38220431E-02   1.71308899    \n         140   1.16539253E-02  0.880087018    \n         160   5.68585889E-03  0.497510761    \n         180   2.73818872E-03  0.352287740    \n         200   1.29158655E-03  0.225940481    \n         220   5.93769306E-04  0.123246640    \n         240   2.68899108E-04   4.76521030E-02\n         260   1.19742173E-04   1.82277150E-02\n         280   5.35836407E-05   5.74293640E-03\n         300   2.40421195E-05   2.54223286E-03\n         320   1.08285112E-05   9.91822104E-04\n         340   4.89719423E-06   3.85549298E-04\n         360   2.26003590E-06   1.73829438E-04\n Converged at   376 iterations (Mean:       0.125E-05, Max:      0.963E-04)\n Potentials:   -739.519  1051.831\n Internal:        4.20389539E-42  kcal/mol\n Van der Waals:         Infinity  kcal/mol\n Electrostatic:   90.0759048     kcal/mol\n Total Energy :         Infinity kcal/mol\n\n#T Run finished at  14:11:16 h on 29- 2-2024\n\n#T       T I M I N G S \n#T       ---------------\n#T         Input:     0.156 s,   0.90%\n#T         Setup:     2.469 s,  14.18%\n#T         Grids:    14.781 s,  84.92%\n#T        Energy:     0.000 s,   0.00%\n#T        Output:     0.000 s,   0.00%\n ----------------------------------\n#T         TOTAL:    17.406 s ( 0.00 h)\n\nINFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Removed: [&amp;#x27;/tmp/biobb/unitests_11/cmip_run/a500a463-d032-4037-a3bd-187afdff57a4&amp;#x27;, &amp;#x27;ca60002c-34db-458f-9b20-7a2c77878acb&amp;#x27;]\n\n--------------------------- Captured stdout teardown ---------------------------\n\nRemoving: /tmp/biobb/unitests_11\n&#34;}]}, &#34;renderCollapsed&#34;: [&#34;passed&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;report.html&#34;}"></div>
+    <script>
+      (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const { getCollapsedCategory, setCollapsedIds } = require('./storage.js')
 
-INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:cmd_wrapper.py:50 Exit code 0
+class DataManager {
+    setManager(data) {
+        const collapsedCategories = [...getCollapsedCategory(data.renderCollapsed)]
+        const collapsedIds = []
+        const tests = Object.values(data.tests).flat().map((test, index) => {
+            const collapsed = collapsedCategories.includes(test.result.toLowerCase())
+            const id = `test_${index}`
+            if (collapsed) {
+                collapsedIds.push(id)
+            }
+            return {
+                ...test,
+                id,
+                collapsed,
+            }
+        })
+        const dataBlob = { ...data, tests }
+        this.data = { ...dataBlob }
+        this.renderData = { ...dataBlob }
+        setCollapsedIds(collapsedIds)
+    }
 
-INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:cmd_wrapper.py:52 ================================================================================
-=                   BioBB structure checking utility v3.13.4                   =
-=            P. Andrio, A. Hospital, G. Bayarri, J.L. Gelpi 2018-23            =
-================================================================================
+    get allData() {
+        return { ...this.data }
+    }
 
-Warning: sequence features may not be available, use --sequence for  external fasta input
-Structure /tmp/biobb/unitests_11/cmip_prepare_pdb/807d8b82-84c1-404d-8db5-a5fce4538d3c/1aki.pdb loaded
- PDB id: 1AKI 
- Title: the structure of the orthorhombic form of hen egg-white lysozyme at 1.5 angstroms resolution
- Experimental method: x-ray diffraction
- Keywords: hydrolase, glycosidase
- Resolution (A): 1.5
+    resetRender() {
+        this.renderData = { ...this.data }
+    }
 
- Num. models: 1
- Num. chains: 1 (A: Protein)
- Num. residues:  207
- Num. residues with ins. codes:  0
- Num. residues with H atoms: 0
- Num. HETATM residues:  78
- Num. ligands or modified residues:  0
- Num. water mol.:  78
- Num. atoms:  1079
+    setRender(data) {
+        this.renderData.tests = [...data]
+    }
 
-Step 1: water --remove yes
-Running water. Options: --remove yes
-Detected 78 Water molecules
-Removed 78 Water molecules
+    toggleCollapsedItem(id) {
+        this.renderData.tests = this.renderData.tests.map((test) =>
+            test.id === id ? { ...test, collapsed: !test.collapsed } : test,
+        )
+    }
 
-Step 2:  backbone --add_caps none
-Running backbone. Options: --add_caps none
-Found No residues with missing backbone atoms
-No backbone breaks
-No unexpected backbone links
-Capping terminal ends
-True terminal residues: A1,A129
-Nothing to do
-No caps added
+    set allCollapsed(collapsed) {
+        this.renderData = { ...this.renderData, tests: [...this.renderData.tests.map((test) => (
+            { ...test, collapsed }
+        ))] }
+    }
 
-Step 3:  fixside --fix All
-Running fixside. Options: --fix All
-Found no residues with missing or unknown side chain atoms
+    get testSubset() {
+        return [...this.renderData.tests]
+    }
 
-Step 4:  add_hydrogen --add_mode auto --add_charges CMIP
-Running add_hydrogen. Options: --add_mode auto --add_charges CMIP
-Found 38 Residues requiring selection on adding H atoms
- CYS A6,A30,A64,A76,A80,A94,A115,A127
- ASP A18,A48,A52,A66,A87,A101,A119
- GLU A7,A35
- HIS A15
- LYS A1,A13,A33,A96,A97,A116
- ARG A5,A14,A21,A45,A61,A68,A73,A112,A114,A125,A128
- TYR A20,A23,A53
-WARNING: fixing side chains, override with --no_fix_side
-Running fixside. Options: --fix all
-Found no residues with missing or unknown side chain atoms
-Selection: auto
-Replacing HIS A15 by HIE
-Updating partial charges and atom types
-Total assigned charge:       8.00
-Command list completed
-Final Num. models: 1
-Final Num. chains: 1 (A: Protein)
-Final Num. residues:  129
-Final Num. residues with ins. codes:  0
-Final Num. residues with H atoms: 129 (total 967 H atoms)
-Final Num. HETATM residues:  0
-Final Num. ligands or modified residues:  0
-Final Num. water mol.:  0
-Final Num. atoms:  1968
-Structure saved on /tmp/biobb/unitests_11/cmip_prepare_pdb/807d8b82-84c1-404d-8db5-a5fce4538d3c/1aki_cmip.pdb
+    get environment() {
+        return this.renderData.environment
+    }
 
-INFO     /tmp/biobb/unitests_11/cmip_prepare_pdb/cmip_prepare_pdb_log.out:file_utils.py:390 Removed: [&#x27;/tmp/biobb/unitests_11/cmip_prepare_pdb/807d8b82-84c1-404d-8db5-a5fce4538d3c&#x27;]<br/> ----------------------------Captured stdout teardown---------------------------- <br/>
-Removing: /tmp/biobb/unitests_11
-<br/></div></td></tr></tbody>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
-          <td class="col-name">biobb_cmip/test/unitests/test_cmip/test_cmip_prepare_structure.py::TestCmipPrepareStructureTopology::test_cmip_prepare_structure_Topology</td>
-          <td class="col-duration">7.38</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>Checking if empty file: /tmp/biobb/unitests_11/cmip_prepare_structure_topology/prepare_structure_topology_output.pdb
-Checking RMSD between:
-     PDB_A: /tmp/biobb/unitests_11/cmip_prepare_structure_topology/prepare_structure_topology_output.pdb
-     PDB_B: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/reference/cmip/egfr_cmip.pdb
-     Ignoring Hydrogen atoms in RMSD
-     Atoms ALIGNED in PDB_A: 2872
-     Atoms ALIGNED in PDB_B: 2872
-     RMS: 1.1126217417895259e-14
-     RMS_CUTOFF: 1
-<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_prepare_structure Version: 4.1.0
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:171 Extracting: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/egfr_topology.zip
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:172 to:
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:173 [&#x27;c1e63e52-a341-4c46-89b4-4fa698da0734/pdb2gmx_p2g.top&#x27;, &#x27;c1e63e52-a341-4c46-89b4-4fa698da0734/pdb2gmx_posre.itp&#x27;]
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:251 Unzipping: 
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:252 /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/egfr_topology.zip
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:253 To: 
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:255 c1e63e52-a341-4c46-89b4-4fa698da0734/pdb2gmx_p2g.top
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:255 c1e63e52-a341-4c46-89b4-4fa698da0734/pdb2gmx_posre.itp
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Reading: c1e63e52-a341-4c46-89b4-4fa698da0734/pdb2gmx_p2g.top to extract charges
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Reading: c1e63e52-a341-4c46-89b4-4fa698da0734/pdb2gmx_p2g.top to extract elements
-INFO     /tmp/biobb/unitests_11/cmip_prepare_structure_topology/cmip_prepare_structure_topology_log.out:file_utils.py:390 Removed: [&#x27;c1e63e52-a341-4c46-89b4-4fa698da0734&#x27;]<br/> ----------------------------Captured stdout teardown---------------------------- <br/>
-Removing: /tmp/biobb/unitests_11
-<br/></div></td></tr></tbody>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
-          <td class="col-name">biobb_cmip/test/unitests/test_cmip/test_cmip_run.py::TestCmipRunEnergy::test_cmip_run_energy</td>
-          <td class="col-duration">17.57</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>Checking if empty file: /tmp/biobb/unitests_11/cmip_run/output_byat.out
-<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Executing biobb_cmip.cmip.cmip_run Version: 4.1.0
-INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/RBD-hACE2.hACE2.cmip.pdb to /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760
-INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: /home/user/actions-runner/_work/biobb_cmip/biobb_cmip/biobb_cmip/test/data/cmip/RBD-hACE2.RBD.cmip.pdb to /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760
-INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: /home/user/micromamba/envs/test_environment/share/cmip/dat/vdwprm to /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760
-INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Copy: 1a151e8c-eb93-4918-b0b3-0dd9e1ac819a/params to /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760
-INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:cmd_wrapper.py:33 cmip -i /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760/params -vdw /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760/vdwprm -hs /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760/RBD-hACE2.hACE2.cmip.pdb -pr /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760/RBD-hACE2.RBD.cmip.pdb -byat /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760/output_byat.out
+    get initialSort() {
+        return this.data.initialSort
+    }
+}
 
-INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:cmd_wrapper.py:50 Exit code 0
+module.exports = {
+    manager: new DataManager(),
+}
 
-INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:cmd_wrapper.py:52  =================================================
- =                                               =
- =                C M I P  (2.7.0)               =
- =          J. Ll. Gelpi, A. Morreale,           =
- =            F. J. Luque, M.Orozco              =
- =      Dept. Biochemistry. Univ. Barcelona      =
- =                  1999-2021                    =
- =================================================
+},{"./storage.js":8}],2:[function(require,module,exports){
+const mediaViewer = require('./mediaviewer.js')
+const templateEnvRow = document.getElementById('template_environment_row')
+const templateResult = document.getElementById('template_results-table__tbody')
 
-  Code for ASA calculation by Juan F. Recio       
+function htmlToElements(html) {
+    const temp = document.createElement('template')
+    temp.innerHTML = html
+    return temp.content.childNodes
+}
 
-#T Run started at   13:31:44 h on 15- 9-2023
- SIZES
- -----
- MAXTIP:           100
- MAXATH:            80000
- MAXATP x MAXCONF: 100000
+const find = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return elem.querySelector(selector)
+}
 
- INPUT FILES
- -----------
-    Calc. settings: /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760/params                                                                           
- VdW Parameters:      /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760/vdwprm                                                                           
- PDB Host:            /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760/RBD-hACE2.hACE2.cmip.pdb                                                         
- PDB Guest:           /tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760/RBD-hACE2.RBD.cmip.pdb                                                           
- Conf. energies:      energies                                                                                                                                              
+const findAll = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return [...elem.querySelectorAll(selector)]
+}
 
- OUTPUT FILES
- ------------
- LOG file:            output                                                                                                                                                
- Grid Out:            gridout                                                                                                                                               
- Output PDB coords:          outpdb                                                                                                                                                
+const dom = {
+    getStaticRow: (key, value) => {
+        const envRow = templateEnvRow.content.cloneNode(true)
+        const isObj = typeof value === 'object' && value !== null
+        const values = isObj ? Object.keys(value).map((k) => `${k}: ${value[k]}`) : null
 
- Parameters
- ----------
-Docking Interaction energy calculation. PB electrostatics                       
-&amp;cntrl                                                                          
- tipcalc = 3                                                                    
- calcgrid = 1                                                                   
- irest = 0                                                                      
- orest = 0                                                                      
- coorfmt = 2                                                                    
- fvdw = 0.8                                                                     
- pbelec = 1                                                                     
- pbinic = 2                                                                     
- wgp = 0                                                                        
- ebyatom = 1                                                                    
- readgrid = 2                                                                   
- CENX=0.0,CENY=0.0,CENZ=0.0                                                     
- DIMX=64,DIMY=64,DIMZ=64                                                        
- INTX0=1.5,INTY0=1.5,INTZ0=1.5                                                  
- readgrid0 = 2                                                                  
- perfill0 = 0.6                                                                 
- pbfocus = 1                                                                    
- IREST = 0                                                                      
-&amp;end                                                                            
+        const valuesElement = htmlToElements(
+            values ? `<ul>${values.map((val) => `<li>${val}</li>`).join('')}<ul>` : `<div>${value}</div>`)[0]
+        const td = findAll('td', envRow)
+        td[0].textContent = key
+        td[1].appendChild(valuesElement)
 
- 18 VdW parameters loaded successfully
+        return envRow
+    },
+    getResultTBody: ({ testId, id, log, extras, resultsTableRow, tableHtml, result, collapsed }) => {
+        const resultBody = templateResult.content.cloneNode(true)
+        resultBody.querySelector('tbody').classList.add(result.toLowerCase())
+        resultBody.querySelector('tbody').id = testId
+        resultBody.querySelector('.collapsible').dataset.id = id
 
- Host:      9519 atoms loaded, charge   -27.000
+        resultsTableRow.forEach((html) => {
+            const t = document.createElement('template')
+            t.innerHTML = html
+            resultBody.querySelector('.collapsible').appendChild(t.content)
+        })
 
- TYPE OF CALCULATION: DOCKING
- Single point
+        if (log) {
+            // Wrap lines starting with "E" with span.error to color those lines red
+            const wrappedLog = log.replace(/^E.*$/gm, (match) => `<span class="error">${match}</span>`)
+            resultBody.querySelector('.log').innerHTML = wrappedLog
+        } else {
+            resultBody.querySelector('.log').remove()
+        }
 
- Guest: 3000 atom(s), charge -11.145,    1 conformation(s) loaded
+        if (collapsed) {
+            resultBody.querySelector('.collapsible > td')?.classList.add('collapsed')
+            resultBody.querySelector('.extras-row').classList.add('hidden')
+        } else {
+            resultBody.querySelector('.collapsible > td')?.classList.remove('collapsed')
+        }
 
- PB Focussing requested
- AUTOMATIC OUTER GRID
- --------------------
- Fill:    0.600
-Automatic Outer Grid                                                                                                                
- Grid Size:      96.000 138.000 108.000  90.000  90.000  90.000
- Grid density:    64   92   72
- Grid units:      1.500   1.500   1.500
- Grid origin:    23.610  -1.245   2.315
- Grid center:    71.610  67.755  56.315
-     441285 Grid points
+        const media = []
+        extras?.forEach(({ name, format_type, content }) => {
+            if (['image', 'video'].includes(format_type)) {
+                media.push({ path: content, name, format_type })
+            }
 
- AUTOMATIC GRID
- --------------
- Fill:    0.800
-Automatic Grid                                                                                                                      
- Grid Size:      72.000 103.000  81.500  90.000  90.000  90.000
- Grid density:   144  206  163
- Grid units:      0.500   0.500   0.500
- Grid origin:    35.610  16.255  15.565
- Grid center:    71.610  67.755  56.315
-    4922460 Grid points
+            if (format_type === 'html') {
+                resultBody.querySelector('.extraHTML').insertAdjacentHTML('beforeend', `<div>${content}</div>`)
+            }
+        })
+        mediaViewer.setup(resultBody, media)
 
- All input data read succesfully
+        // Add custom html from the pytest_html_results_table_html hook
+        tableHtml?.forEach((item) => {
+            resultBody.querySelector('td[class="extra"]').insertAdjacentHTML('beforeend', item)
+        })
 
- Warning: Dielectric grid computed at double density
- Mapping host molecule to outer grid
-   Total charge            :   -27.0000248    
-   Low diel. grid points   :                230941 (   97428.2344     A3)
-   High diel. grid points  :               3229484
-   I Str=0 grid points     :                441285
-   Boundary grid points    :                 57064
- Mapping host molecule to grid
-   Total charge            :   -27.0000019    
-   Low diel. grid points   :               5855067 (   91485.4219      A3)
-   High diel. grid points  :              33174672
-   I Str=0 grid points     :               4922460
-   Boundary grid points    :                550671
+        return resultBody
+    },
+}
 
- CLHOST=           0
- EXTERNAL CUTOFF=   999999.000    
- Checking potentials to calculate...
- - Vdw: C   
- - Vdw: N   
- - Vdw: S   
- - Vdw: HO  
- - Vdw: HN  
- - Vdw: H   
- - Vdw: O   
- - Electrostatic 
-     Dielectric type    :            0
-     Dielectric constant:    2.00000000    
- Vdw energies:
-  -C    -2.15     0.254E+21
-  -N    -2.73     0.266E+21
-  -S    -3.82     0.557E+21
-  -HO    0.00      0.00    
-  -HN  -0.344     0.116E+18
-  -H   -0.860     0.268E+20
-  -O    -2.87     0.169E+21
-     Poisson-Boltzmann calculation requested
-     Focussing          :            1
-     Initial potentials :            2
-     Solute  Dielectric :    2.00000000    
-     Solvent Dielectric :    79.8000031    
-     Solvent radius     :    1.39999998    
-     Convergence crit.  :    9.99999975E-05
-     Ionic strength     :    0.00000000    
- Outer grid
-          20  0.147574857       14.6699677    
-          40   2.98345201E-02   3.29004049    
-          60   6.41392125E-03  0.731274426    
-          80   1.45815278E-03  0.143001437    
-         100   3.44780128E-04   1.77933965E-02
-         120   8.32517399E-05   2.50784075E-03
-         140   2.00004142E-05   8.51931283E-04
- Converged at   158 iterations (Mean:       0.516E-05, Max:      0.910E-04)
- Potentials:   -145.994   169.029
- Inner Grid limits
- Potentials:   -128.467   156.689
-          20  0.879424989       44.1415787    
-          40  0.403403640       18.3190784    
-          60  0.196925774       11.3940735    
-          80   9.77351665E-02   6.85034132    
-         100   4.82290089E-02   3.02071881    
-         120   2.38220468E-02   1.71308899    
-         140   1.16539253E-02  0.880087018    
-         160   5.68585843E-03  0.497510761    
-         180   2.73818849E-03  0.352287740    
-         200   1.29186665E-03  0.225940496    
-         220   5.93950739E-04  0.123246640    
-         240   2.69010867E-04   4.76482585E-02
-         260   1.19791999E-04   1.82344895E-02
-         280   5.35966064E-05   5.74939372E-03
-         300   2.40469890E-05   2.51911674E-03
-         320   1.08288314E-05   9.81772435E-04
-         340   4.89418107E-06   3.82507744E-04
-         360   2.25628901E-06   1.72914908E-04
- Converged at   376 iterations (Mean:       0.125E-05, Max:      0.967E-04)
- Potentials:   -739.519  1051.831
- Internal:        4.20389539E-42  kcal/mol
- Van der Waals:         Infinity  kcal/mol
- Electrostatic:   90.0758896     kcal/mol
- Total Energy :         Infinity kcal/mol
+module.exports = {
+    dom,
+    htmlToElements,
+    find,
+    findAll,
+}
 
-#T Run finished at  13:32: 2 h on 15- 9-2023
+},{"./mediaviewer.js":6}],3:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const storageModule = require('./storage.js')
 
-#T       T I M I N G S 
-#T       ---------------
-#T         Input:     0.188 s,   1.07%
-#T         Setup:     2.438 s,  13.93%
-#T         Grids:    14.875 s,  85.00%
-#T        Energy:     0.000 s,   0.00%
-#T        Output:     0.000 s,   0.00%
- ----------------------------------
-#T         TOTAL:    17.500 s ( 0.00 h)
+const getFilteredSubSet = (filter) =>
+    manager.allData.tests.filter(({ result }) => filter.includes(result.toLowerCase()))
 
-INFO     /tmp/biobb/unitests_11/cmip_run/cmip_run_log.out:file_utils.py:390 Removed: [&#x27;/tmp/biobb/unitests_11/cmip_run/3ff4952f-7778-40ac-a22f-5375352eb760&#x27;, &#x27;1a151e8c-eb93-4918-b0b3-0dd9e1ac819a&#x27;]<br/> ----------------------------Captured stdout teardown---------------------------- <br/>
-Removing: /tmp/biobb/unitests_11
-<br/></div></td></tr></tbody></table></body></html>
+const doInitFilter = () => {
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+}
+
+const doFilter = (type, show) => {
+    if (show) {
+        storageModule.showCategory(type)
+    } else {
+        storageModule.hideCategory(type)
+    }
+
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+
+    const sortColumn = storageModule.getSort()
+    doSort(sortColumn, true)
+}
+
+module.exports = {
+    doFilter,
+    doInitFilter,
+}
+
+},{"./datamanager.js":1,"./sort.js":7,"./storage.js":8}],4:[function(require,module,exports){
+const { redraw, bindEvents, renderStatic } = require('./main.js')
+const { doInitFilter } = require('./filter.js')
+const { doInitSort } = require('./sort.js')
+const { manager } = require('./datamanager.js')
+const data = JSON.parse(document.getElementById('data-container').dataset.jsonblob)
+
+function init() {
+    manager.setManager(data)
+    doInitFilter()
+    doInitSort()
+    renderStatic()
+    redraw()
+    bindEvents()
+}
+
+init()
+
+},{"./datamanager.js":1,"./filter.js":3,"./main.js":5,"./sort.js":7}],5:[function(require,module,exports){
+const { dom, find, findAll } = require('./dom.js')
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const { doFilter } = require('./filter.js')
+const {
+    getVisible,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    getSortDirection,
+    possibleFilters,
+} = require('./storage.js')
+
+const removeChildren = (node) => {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild)
+    }
+}
+
+const renderStatic = () => {
+    const renderEnvironmentTable = () => {
+        const environment = manager.environment
+        const rows = Object.keys(environment).map((key) => dom.getStaticRow(key, environment[key]))
+        const table = document.getElementById('environment')
+        removeChildren(table)
+        rows.forEach((row) => table.appendChild(row))
+    }
+    renderEnvironmentTable()
+}
+
+const addItemToggleListener = (elem) => {
+    elem.addEventListener('click', ({ target }) => {
+        const id = target.parentElement.dataset.id
+        manager.toggleCollapsedItem(id)
+
+        const collapsedIds = getCollapsedIds()
+        if (collapsedIds.includes(id)) {
+            const updated = collapsedIds.filter((item) => item !== id)
+            setCollapsedIds(updated)
+        } else {
+            collapsedIds.push(id)
+            setCollapsedIds(collapsedIds)
+        }
+        redraw()
+    })
+}
+
+const renderContent = (tests) => {
+    const sortAttr = getSort(manager.initialSort)
+    const sortAsc = JSON.parse(getSortDirection())
+    const rows = tests.map(dom.getResultTBody)
+    const table = document.getElementById('results-table')
+    const tableHeader = document.getElementById('results-table-head')
+
+    const newTable = document.createElement('table')
+    newTable.id = 'results-table'
+
+    // remove all sorting classes and set the relevant
+    findAll('.sortable', tableHeader).forEach((elem) => elem.classList.remove('asc', 'desc'))
+    tableHeader.querySelector(`.sortable[data-column-type="${sortAttr}"]`)?.classList.add(sortAsc ? 'desc' : 'asc')
+    newTable.appendChild(tableHeader)
+
+    if (!rows.length) {
+        const emptyTable = document.getElementById('template_results-table__body--empty').content.cloneNode(true)
+        newTable.appendChild(emptyTable)
+    } else {
+        rows.forEach((row) => {
+            if (!!row) {
+                findAll('.collapsible td:not(.col-links', row).forEach(addItemToggleListener)
+                find('.logexpander', row).addEventListener('click',
+                    (evt) => evt.target.parentNode.classList.toggle('expanded'),
+                )
+                newTable.appendChild(row)
+            }
+        })
+    }
+
+    table.replaceWith(newTable)
+}
+
+const renderDerived = () => {
+    const currentFilter = getVisible()
+    possibleFilters.forEach((result) => {
+        const input = document.querySelector(`input[data-test-result="${result}"]`)
+        input.checked = currentFilter.includes(result)
+    })
+}
+
+const bindEvents = () => {
+    const filterColumn = (evt) => {
+        const { target: element } = evt
+        const { testResult } = element.dataset
+
+        doFilter(testResult, element.checked)
+        const collapsedIds = getCollapsedIds()
+        const updated = manager.renderData.tests.map((test) => {
+            return {
+                ...test,
+                collapsed: collapsedIds.includes(test.id),
+            }
+        })
+        manager.setRender(updated)
+        redraw()
+    }
+
+    const header = document.getElementById('environment-header')
+    header.addEventListener('click', () => {
+        const table = document.getElementById('environment')
+        table.classList.toggle('hidden')
+        header.classList.toggle('collapsed')
+    })
+
+    findAll('input[name="filter_checkbox"]').forEach((elem) => {
+        elem.addEventListener('click', filterColumn)
+    })
+
+    findAll('.sortable').forEach((elem) => {
+        elem.addEventListener('click', (evt) => {
+            const { target: element } = evt
+            const { columnType } = element.dataset
+            doSort(columnType)
+            redraw()
+        })
+    })
+
+    document.getElementById('show_all_details').addEventListener('click', () => {
+        manager.allCollapsed = false
+        setCollapsedIds([])
+        redraw()
+    })
+    document.getElementById('hide_all_details').addEventListener('click', () => {
+        manager.allCollapsed = true
+        const allIds = manager.renderData.tests.map((test) => test.id)
+        setCollapsedIds(allIds)
+        redraw()
+    })
+}
+
+const redraw = () => {
+    const { testSubset } = manager
+
+    renderContent(testSubset)
+    renderDerived()
+}
+
+module.exports = {
+    redraw,
+    bindEvents,
+    renderStatic,
+}
+
+},{"./datamanager.js":1,"./dom.js":2,"./filter.js":3,"./sort.js":7,"./storage.js":8}],6:[function(require,module,exports){
+class MediaViewer {
+    constructor(assets) {
+        this.assets = assets
+        this.index = 0
+    }
+
+    nextActive() {
+        this.index = this.index === this.assets.length - 1 ? 0 : this.index + 1
+        return [this.activeFile, this.index]
+    }
+
+    prevActive() {
+        this.index = this.index === 0 ? this.assets.length - 1 : this.index -1
+        return [this.activeFile, this.index]
+    }
+
+    get currentIndex() {
+        return this.index
+    }
+
+    get activeFile() {
+        return this.assets[this.index]
+    }
+}
+
+
+const setup = (resultBody, assets) => {
+    if (!assets.length) {
+        resultBody.querySelector('.media').classList.add('hidden')
+        return
+    }
+
+    const mediaViewer = new MediaViewer(assets)
+    const container = resultBody.querySelector('.media-container')
+    const leftArrow = resultBody.querySelector('.media-container__nav--left')
+    const rightArrow = resultBody.querySelector('.media-container__nav--right')
+    const mediaName = resultBody.querySelector('.media__name')
+    const counter = resultBody.querySelector('.media__counter')
+    const imageEl = resultBody.querySelector('img')
+    const sourceEl = resultBody.querySelector('source')
+    const videoEl = resultBody.querySelector('video')
+
+    const setImg = (media, index) => {
+        if (media?.format_type === 'image') {
+            imageEl.src = media.path
+
+            imageEl.classList.remove('hidden')
+            videoEl.classList.add('hidden')
+        } else if (media?.format_type === 'video') {
+            sourceEl.src = media.path
+
+            videoEl.classList.remove('hidden')
+            imageEl.classList.add('hidden')
+        }
+
+        mediaName.innerText = media?.name
+        counter.innerText = `${index + 1} / ${assets.length}`
+    }
+    setImg(mediaViewer.activeFile, mediaViewer.currentIndex)
+
+    const moveLeft = () => {
+        const [media, index] = mediaViewer.prevActive()
+        setImg(media, index)
+    }
+    const doRight = () => {
+        const [media, index] = mediaViewer.nextActive()
+        setImg(media, index)
+    }
+    const openImg = () => {
+        window.open(mediaViewer.activeFile.path, '_blank')
+    }
+    if (assets.length === 1) {
+        container.classList.add('media-container--fullscreen')
+    } else {
+        leftArrow.addEventListener('click', moveLeft)
+        rightArrow.addEventListener('click', doRight)
+    }
+    imageEl.addEventListener('click', openImg)
+}
+
+module.exports = {
+    setup,
+}
+
+},{}],7:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const storageModule = require('./storage.js')
+
+const genericSort = (list, key, ascending, customOrder) => {
+    let sorted
+    if (customOrder) {
+        sorted = list.sort((a, b) => {
+            const aValue = a.result.toLowerCase()
+            const bValue = b.result.toLowerCase()
+
+            const aIndex = customOrder.findIndex((item) => item.toLowerCase() === aValue)
+            const bIndex = customOrder.findIndex((item) => item.toLowerCase() === bValue)
+
+            // Compare the indices to determine the sort order
+            return aIndex - bIndex
+        })
+    } else {
+        sorted = list.sort((a, b) => a[key] === b[key] ? 0 : a[key] > b[key] ? 1 : -1)
+    }
+
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const durationSort = (list, ascending) => {
+    const parseDuration = (duration) => {
+        if (duration.includes(':')) {
+            // If it's in the format "HH:mm:ss"
+            const [hours, minutes, seconds] = duration.split(':').map(Number)
+            return (hours * 3600 + minutes * 60 + seconds) * 1000
+        } else {
+            // If it's in the format "nnn ms"
+            return parseInt(duration)
+        }
+    }
+    const sorted = list.sort((a, b) => parseDuration(a['duration']) - parseDuration(b['duration']))
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const doInitSort = () => {
+    const type = storageModule.getSort(manager.initialSort)
+    const ascending = storageModule.getSortDirection()
+    const list = manager.testSubset
+    const initialOrder = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed', 'Skipped', 'Passed']
+
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    if (type?.toLowerCase() === 'original') {
+        manager.setRender(list)
+    } else {
+        let sortedList
+        switch (type) {
+        case 'duration':
+            sortedList = durationSort(list, ascending)
+            break
+        case 'result':
+            sortedList = genericSort(list, type, ascending, initialOrder)
+            break
+        default:
+            sortedList = genericSort(list, type, ascending)
+            break
+        }
+        manager.setRender(sortedList)
+    }
+}
+
+const doSort = (type, skipDirection) => {
+    const newSortType = storageModule.getSort(manager.initialSort) !== type
+    const currentAsc = storageModule.getSortDirection()
+    let ascending
+    if (skipDirection) {
+        ascending = currentAsc
+    } else {
+        ascending = newSortType ? false : !currentAsc
+    }
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    const list = manager.testSubset
+    const sortedList = type === 'duration' ? durationSort(list, ascending) : genericSort(list, type, ascending)
+    manager.setRender(sortedList)
+}
+
+module.exports = {
+    doInitSort,
+    doSort,
+}
+
+},{"./datamanager.js":1,"./storage.js":8}],8:[function(require,module,exports){
+const possibleFilters = [
+    'passed',
+    'skipped',
+    'failed',
+    'error',
+    'xfailed',
+    'xpassed',
+    'rerun',
+]
+
+const getVisible = () => {
+    const url = new URL(window.location.href)
+    const settings = new URLSearchParams(url.search).get('visible')
+    const lower = (item) => {
+        const lowerItem = item.toLowerCase()
+        if (possibleFilters.includes(lowerItem)) {
+            return lowerItem
+        }
+        return null
+    }
+    return settings === null ?
+        possibleFilters :
+        [...new Set(settings?.split(',').map(lower).filter((item) => item))]
+}
+
+const hideCategory = (categoryToHide) => {
+    const url = new URL(window.location.href)
+    const visibleParams = new URLSearchParams(url.search).get('visible')
+    const currentVisible = visibleParams ? visibleParams.split(',') : [...possibleFilters]
+    const settings = [...new Set(currentVisible)].filter((f) => f !== categoryToHide).join(',')
+
+    url.searchParams.set('visible', settings)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const showCategory = (categoryToShow) => {
+    if (typeof window === 'undefined') {
+        return
+    }
+    const url = new URL(window.location.href)
+    const currentVisible = new URLSearchParams(url.search).get('visible')?.split(',').filter(Boolean) ||
+        [...possibleFilters]
+    const settings = [...new Set([categoryToShow, ...currentVisible])]
+    const noFilter = possibleFilters.length === settings.length || !settings.length
+
+    noFilter ? url.searchParams.delete('visible') : url.searchParams.set('visible', settings.join(','))
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getSort = (initialSort) => {
+    const url = new URL(window.location.href)
+    let sort = new URLSearchParams(url.search).get('sort')
+    if (!sort) {
+        sort = initialSort || 'result'
+    }
+    return sort
+}
+
+const setSort = (type) => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('sort', type)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getCollapsedCategory = (renderCollapsed) => {
+    let categories
+    if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href)
+        const collapsedItems = new URLSearchParams(url.search).get('collapsed')
+        switch (true) {
+        case !renderCollapsed && collapsedItems === null:
+            categories = ['passed']
+            break
+        case collapsedItems?.length === 0 || /^["']{2}$/.test(collapsedItems):
+            categories = []
+            break
+        case /^all$/.test(collapsedItems) || collapsedItems === null && /^all$/.test(renderCollapsed):
+            categories = [...possibleFilters]
+            break
+        default:
+            categories = collapsedItems?.split(',').map((item) => item.toLowerCase()) || renderCollapsed
+            break
+        }
+    } else {
+        categories = []
+    }
+    return categories
+}
+
+const getSortDirection = () => JSON.parse(sessionStorage.getItem('sortAsc')) || false
+const setSortDirection = (ascending) => sessionStorage.setItem('sortAsc', ascending)
+
+const getCollapsedIds = () => JSON.parse(sessionStorage.getItem('collapsedIds')) || []
+const setCollapsedIds = (list) => sessionStorage.setItem('collapsedIds', JSON.stringify(list))
+
+module.exports = {
+    getVisible,
+    hideCategory,
+    showCategory,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    setSort,
+    getSortDirection,
+    setSortDirection,
+    getCollapsedCategory,
+    possibleFilters,
+}
+
+},{}]},{},[4]);
+    </script>
+  </footer>
+</html>
