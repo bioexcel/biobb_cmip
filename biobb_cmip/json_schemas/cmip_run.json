@@ -119,7 +119,7 @@
         "input_rst_path": {
             "type": "string",
             "description": "Path to the input restart file",
-            "filetype": "output",
+            "filetype": "input",
             "sample": null,
             "enum": [
                 ".*\\.txt$"
