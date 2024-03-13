@@ -1,0 +1,38 @@
+{
+  "@context": "http://schema.org",
+  "@id": "https://github.com/bioexcel/biobb_cmip",
+  "@type": "ItemList",
+  "name": "biobb_cmip",
+  "itemListElement":[
+    {
+      "@type": "SoftwareApplication",
+      "description": "The CMIP performs a series of analysis centered in the obtention of molecular interaction potentials using classic formalisms.",
+      "name": "Classical molecular interaction potentials",
+      "url": "https://mmb.irbbarcelona.org/gitlab/gelpi/CMIP",
+      "applicationCategory": "Computational Biology tool",
+      "citation": "https://onlinelibrary.wiley.com/doi/10.1002/prot.1159",
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "softwareVersion": "2.7.0"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "description": "MDAnalysis is an object-oriented Python library to analyze trajectories from molecular dynamics (MD) simulations in many popular formats.",
+      "name": "MDAnalysis",
+      "url": "https://www.mdanalysis.org/",
+      "applicationCategory": "Computational Biology tool",
+      "citation": "https://dx.doi.org/10.1002/jcc.21787",
+      "license": "https://www.gnu.org/licenses/lgpl-3.0.en.html",
+      "softwareVersion": "2.0.0"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "description": "Biobb_structure_checking provides a series of functions to check the quality of a 3D structure intended to facilitate the setup of a molecular dynamics simulation of protein or nucleic acids systems.",
+      "name": "Biobb structure checking ",
+      "url": "https://github.com/bioexcel/biobb_structure_checking",
+      "applicationCategory": "Computational Biology tool",
+      "citation": null,
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "softwareVersion": "3.13.4"
+    }
+  ]
+}
