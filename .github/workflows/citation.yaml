@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
-          repository: bioexcel/biobb_analysis
+          repository: bioexcel/biobb_cmip
           path: ./
 
       - name: Download file using wget
