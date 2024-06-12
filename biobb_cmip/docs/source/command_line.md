@@ -287,7 +287,7 @@ Config input / output arguments for this building block:
 * **output_grd_path** (*string*): Path to the output grid file in GRD format. File type: output. [Sample file](None). Accepted formats: GRD
 * **output_cube_path** (*string*): Path to the output grid file in cube format. File type: output. [Sample file](None). Accepted formats: CUBE
 * **output_rst_path** (*string*): Path to the output restart file. File type: output. [Sample file](None). Accepted formats: TXT
-* **input_rst_path** (*string*): Path to the input restart file. File type: output. [Sample file](None). Accepted formats: TXT
+* **input_rst_path** (*string*): Path to the input restart file. File type: input. [Sample file](None). Accepted formats: TXT
 * **output_byat_path** (*string*): Path to the output atom by atom energy file. File type: output. [Sample file](None). Accepted formats: TXT, OUT
 * **output_log_path** (*string*): Path to the output CMIP log file LOG. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_cmip.log). Accepted formats: LOG
 * **input_vdw_params_path** (*string*): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. [Sample file](None). Accepted formats: TXT
@@ -340,7 +340,7 @@ properties:
 ```
 #### Command line
 ```python
-cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
+cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
 ```
 ### JSON
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run.json)
@@ -377,7 +377,7 @@ cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_
 ```
 #### Command line
 ```python
-cmip_run --config config_cmip_run.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path output.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
+cmip_run --config config_cmip_run.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
 ```
 
 ## Cmip_prepare_structure
