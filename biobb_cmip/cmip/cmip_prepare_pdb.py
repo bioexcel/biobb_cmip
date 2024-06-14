@@ -24,6 +24,7 @@ class CmipPreparePDB(BiobbObject):
             * **fix_backbone_atoms** (*bool*) - (True) Add missing O, OXT backbone atoms.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
             * **restart** (*bool*) - (False) [WF property] Do not execute if output files exist.
+            * **sandbox_path** (*str*) - ("./") [WF property] Parent path to the sandbox directory.
 
 
     Examples:

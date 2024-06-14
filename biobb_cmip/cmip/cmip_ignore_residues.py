@@ -24,6 +24,7 @@ class CmipIgnoreResidues(BiobbObject):
             * **ignore_all** (*bool*) - (False) Mark all the residues in the PDB file.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
             * **restart** (*bool*) - (False) [WF property] Do not execute if output files exist.
+            * **sandbox_path** (*str*) - ("./") [WF property] Parent path to the sandbox directory.
 
 
     Examples:
