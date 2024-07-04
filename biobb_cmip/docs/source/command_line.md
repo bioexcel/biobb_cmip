@@ -44,6 +44,7 @@ Config parameters for this building block:
 * **fix_backbone_atoms** (*boolean*): (True) Add missing O, OXT backbone atoms..
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
 ### YAML
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_pdb.yml)
 ```python
@@ -104,6 +105,7 @@ Config parameters for this building block:
 * **ignore_all** (*boolean*): (False) Mark all the residues in the PDB file..
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
 ### YAML
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_ignore_residues.yml)
 ```python
@@ -173,6 +175,7 @@ Config parameters for this building block:
 * **binary_path** (*string*): (titration) Path to the CMIP Titration executable binary..
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
 * **container_path** (*string*): (None) Path to the binary executable of your container..
 * **container_image** (*string*): (cmip/cmip:latest) Container Image identifier..
 * **container_volume_path** (*string*): (/data) Path to an internal directory in the container..
@@ -305,6 +308,7 @@ Config parameters for this building block:
 * **binary_path** (*string*): (cmip) Path to the CMIP cmip executable binary..
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
 * **container_path** (*string*): (None) Path to the binary executable of your container..
 * **container_image** (*string*): (cmip/cmip:latest) Container Image identifier..
 * **container_volume_path** (*string*): (/data) Path to an internal directory in the container..
@@ -413,6 +417,7 @@ Syntax: input_parameter (datatype) - (default_value) Definition
 Config parameters for this building block:
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
 * **container_path** (*string*): (None) Path to the binary executable of your container..
 * **container_image** (*string*): (cmip/cmip:latest) Container Image identifier..
 * **container_volume_path** (*string*): (/data) Path to an internal directory in the container..
