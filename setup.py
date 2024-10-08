@@ -35,7 +35,7 @@ setuptools.setup(
             "cmip_ignore_residues = biobb_cmip.cmip.cmip_ignore_residues:main"
         ]
     },
-    classifiers=(
+    classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
@@ -44,5 +44,5 @@ setuptools.setup(
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX",
         "Operating System :: Unix"
-    ),
+    ],
 )

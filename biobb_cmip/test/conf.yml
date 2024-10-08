@@ -1,5 +1,5 @@
 global_properties:
-  can_write_console_log: False
+  can_write_console_log: True
   working_dir_path: /tmp/biobb/unitests
 
 cmip_titration:

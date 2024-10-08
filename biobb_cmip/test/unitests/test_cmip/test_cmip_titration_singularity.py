@@ -1,3 +1,4 @@
+# type: ignore
 from biobb_common.tools import test_fixtures as fx
 from biobb_cmip.cmip.cmip_titration import cmip_titration
 import pytest

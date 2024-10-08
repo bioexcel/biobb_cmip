@@ -117,3 +117,6 @@ traj_comp.xtc
 
 # Pytest
 .pytest_cache
+
+# MyPy
+.mypy_cache
