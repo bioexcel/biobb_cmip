@@ -3,6 +3,7 @@
 """Module containing the Titration class and the command line interface."""
 import os
 import argparse
+from typing import Optional
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.configuration import settings
@@ -63,8 +64,8 @@ class CmipTitration(BiobbObject):
     """
 
     def __init__(self, input_pdb_path: str, output_pdb_path: str,
-                 input_vdw_params_path: str = None, input_params_path: str = None,
-                 properties: dict = None, **kwargs) -> None:
+                 input_vdw_params_path: Optional[str] = None, input_params_path: Optional[str] = None,
+                 properties: Optional[dict] = None, **kwargs) -> None:
         properties = properties or {}
 
         # Call parent class constructor
@@ -162,8 +163,8 @@ class CmipTitration(BiobbObject):
 
 
 def cmip_titration(input_pdb_path: str, output_pdb_path: str,
-                   input_vdw_params_path: str = None, input_params_path: str = None,
-                   properties: dict = None, **kwargs) -> int:
+                   input_vdw_params_path: Optional[str] = None, input_params_path: Optional[str] = None,
+                   properties: Optional[dict] = None, **kwargs) -> int:
     """Create :class:`Titration <cmip.titration.Titration>` class and
     execute the :meth:`launch() <cmip.titration.Titration.launch>` method."""
 

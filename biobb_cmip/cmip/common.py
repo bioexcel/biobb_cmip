@@ -3,15 +3,15 @@ import os
 import re
 import json
 from pathlib import Path
-from typing import List, Dict, Mapping, Union, Tuple, Sequence
-import MDAnalysis as mda
-from MDAnalysis.topology.guessers import guess_atom_element
+from typing import Union, Any, Optional
+import MDAnalysis as mda  # type: ignore
+from MDAnalysis.topology.guessers import guess_atom_element  # type: ignore
 import uuid
 import logging
 import biobb_common.tools.file_utils as fu
 
 
-def get_grid(cmip_log_path: Union[str, Path], external: bool = False) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+def get_grid(cmip_log_path: Union[str, Path], external: bool = False) -> tuple[tuple[float, float, float], tuple[float, float, float], dict[str, tuple[float, float, float]]]:
     with open(cmip_log_path) as log_file:
         first_line = log_file.readline().strip()
     if first_line.startswith("titleParam"):
@@ -21,7 +21,7 @@ def get_grid(cmip_log_path: Union[str, Path], external: bool = False) -> Tuple[T
     return _get_grid_from_text(cmip_log_path, external)
 
 
-def _get_grid_from_box_file(cmip_box_path: Union[str, Path]) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+def _get_grid_from_box_file(cmip_box_path: Union[str, Path]) -> tuple[tuple[float, float, float], tuple[float, float, float], dict[str, tuple[float, float, float]]]:
     with open(cmip_box_path) as json_file:
         grid_dict = json.load(json_file)
     origin = grid_dict['origin']['x'], grid_dict['origin']['y'], grid_dict['origin']['z']
@@ -29,10 +29,10 @@ def _get_grid_from_box_file(cmip_box_path: Union[str, Path]) -> Tuple[Tuple[floa
     return origin, size, grid_dict['params']
 
 
-def _get_grid_from_text(cmip_log_path: Union[str, Path], external: bool = False) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+def _get_grid_from_text(cmip_log_path: Union[str, Path], external: bool = False) -> tuple[tuple[float, float, float], tuple[float, float, float], dict[str, tuple[float, float, float]]]:
     origin = None
     size = None
-    grid_params = {"CEN": None, "DIM": None, "INT": None}
+    grid_params: dict[str, Any] = {"CEN": None, "DIM": None, "INT": None}
     grid_locators_list = ["AUTOMATIC GRID", "MANUAL GRID"]
     if external:
         grid_locators_list = ["AUTOMATIC OUTER GRID", "MANUAL OUTER GRID"]
@@ -60,13 +60,13 @@ def _get_grid_from_text(cmip_log_path: Union[str, Path], external: bool = False)
                     grid_params['DIM'] = int(dim_match.group(1)), int(dim_match.group(2)), int(dim_match.group(3))
                 if origin and size and grid_params['INT'] and grid_params['CEN'] and grid_params['DIM']:
                     break
-    return origin, size, grid_params
+    return origin, size, grid_params  # type: ignore
 
 
-def _get_grid_from_key_value(cmip_log_path: Union[str, Path], external: bool = False) -> Tuple[Tuple[float, float, float], Tuple[float, float, float], Mapping[str, Tuple[float, float, float]]]:
+def _get_grid_from_key_value(cmip_log_path: Union[str, Path], external: bool = False) -> tuple[tuple[float, float, float], tuple[float, float, float], dict[str, tuple[float, float, float]]]:
     origin = None
     size = None
-    grid_params = {"CEN": None, "DIM": None, "INT": None}
+    grid_params: dict[str, Any] = {"CEN": None, "DIM": None, "INT": None}
     grid_locators_list = ["AUTOMATIC GRID", "MANUAL GRID"]
     if external:
         grid_locators_list = ["AUTOMATIC OUTER GRID", "MANUAL OUTER GRID"]
@@ -94,12 +94,12 @@ def _get_grid_from_key_value(cmip_log_path: Union[str, Path], external: bool = F
                     grid_params['DIM'] = int(dim_match.group(1)), int(dim_match.group(2)), int(dim_match.group(3))
                 if origin and size and grid_params['INT'] and grid_params['CEN'] and grid_params['DIM']:
                     break
-    return origin, size, grid_params
+    return origin, size, grid_params  # type: ignore
 
 
-def create_unique_file_path(parent_dir: Union[str, Path] = None, extension: str = None) -> str:
+def create_unique_file_path(parent_dir: Optional[Union[str, Path]] = None, extension: Optional[str] = None) -> str:
     if not parent_dir:
-        parent_dir = Path.cwd
+        parent_dir = Path.cwd()
     if not extension:
         extension = ''
     while True:
@@ -120,7 +120,7 @@ def write_cmip_pdb(input_pdb_path, output_pdb_path, charges_list, elements_list)
             index += 1
 
 
-def get_topology_cmip_elements_canonical(input_topology_filename: str) -> List:
+def get_topology_cmip_elements_canonical(input_topology_filename: str) -> list:
     """
     This function also accepts pdb files
     Args:
@@ -158,7 +158,7 @@ def get_topology_cmip_elements_canonical(input_topology_filename: str) -> List:
     return mda_atom_types
 
 
-def get_topology_charges(input_topology_filename: str) -> List:
+def get_topology_charges(input_topology_filename: str) -> list:
     """ Given a topology which includes charges
     Extract those charges and save them in a list to be returned
     Supported formats (tested): prmtop, top, psf
@@ -208,7 +208,7 @@ class ResiduesDataLib:
             return {}
 
 
-def get_pdb_charges(input_pdb_filename: str, residue_library_path: str = None) -> List:
+def get_pdb_charges(input_pdb_filename: str, residue_library_path: Optional[str] = None) -> list:
     if not residue_library_path:
         residue_library_path = str(Path(__file__).parent.joinpath("dat", "aa.lib").resolve())
 
@@ -245,7 +245,7 @@ def get_pdb_charges(input_pdb_filename: str, residue_library_path: str = None) -
         return charges_list
 
 
-def get_pdb_cmip_elements_canonical(input_pdb_filename: str, residue_library_path: str = None) -> List:
+def get_pdb_cmip_elements_canonical(input_pdb_filename: str, residue_library_path: Optional[str] = None) -> list:
     if not residue_library_path:
         residue_library_path = str(Path(__file__).parent.joinpath("dat", "aa.lib").resolve())
 
@@ -282,10 +282,10 @@ def get_pdb_cmip_elements_canonical(input_pdb_filename: str, residue_library_pat
         return elements_list
 
 
-def get_pdb_total_charge(pdb_file_path: str):
+def get_pdb_total_charge(pdb_file_path: str) -> float:
     # Biopython 1.9 does not capture charge of atoms in CMIP format
     # Should do it by hand
-    total_charge = 0
+    total_charge: float = 0.0
     with open(pdb_file_path) as pdb_file:
         for line in pdb_file:
             if line[0:6].strip().upper() in ["ATOM", "HETATM"] and len(line) > 63:
@@ -294,7 +294,7 @@ def get_pdb_total_charge(pdb_file_path: str):
 
 
 def probe_params_grid(probe_id: int = 0, readgrid: int = 2, pbfocus: int = 1, perfill: float = 0.6,
-                      grid_int: Sequence[float] = (0.5, 0.5, 0.5)) -> Dict[str, str]:
+                      grid_int: tuple[float, float, float] = (0.5, 0.5, 0.5)) -> dict[str, str]:
     grid_dict = {}
     grid_dict[f"readgrid{probe_id}"] = f"{readgrid}"
     grid_dict[f"perfill{probe_id}"] = f"{perfill}"
@@ -305,9 +305,9 @@ def probe_params_grid(probe_id: int = 0, readgrid: int = 2, pbfocus: int = 1, pe
 
 
 def params_grid(grid_type: str, readgrid: int = 0, perfill: float = 0.8,
-                grid_int: Sequence[float] = (0.5, 0.5, 0.5),
-                grid_dim: Sequence[float] = (64, 64, 64),
-                grid_cen: Sequence[float] = (0.0, 0.0, 0.0)) -> Dict[str, str]:
+                grid_int: tuple[float, float, float] = (0.5, 0.5, 0.5),
+                grid_dim: tuple[float, float, float] = (64, 64, 64),
+                grid_cen: tuple[float, float, float] = (0.0, 0.0, 0.0)) -> dict[str, str]:
     # grid_type older readgrid equivalences:
     #     2 proteina dist minima pecentatge, 4 distancia minima prot, 5 distancia al centre de masses
     #     1
@@ -328,7 +328,7 @@ def params_grid(grid_type: str, readgrid: int = 0, perfill: float = 0.8,
     return grid_dict
 
 
-def params_preset(execution_type: str) -> Dict[str, str]:
+def params_preset(execution_type: str) -> dict[str, str]:
     params_dict = {}
     grid_dict = {}
     probe_grid_dict = {}
@@ -464,13 +464,13 @@ def params_preset(execution_type: str) -> Dict[str, str]:
             'fvdw': 0.8
         }
 
-    return {**params_dict, **grid_dict, **probe_grid_dict}
+    return {**params_dict, **grid_dict, **probe_grid_dict}  # type: ignore
 
 
-def read_params_file(input_params_path: str) -> Dict[str, str]:
+def read_params_file(input_params_path: str) -> dict[str, str]:
     params_dict = {}
     with open(input_params_path) as input_params_file:
-        params_dict['title']: input_params_file.readline()
+        params_dict['title'] = input_params_file.readline()
         for line in input_params_file:
             line = line.replace(' ', '')
             if line.startswith('&'):
@@ -501,7 +501,7 @@ def read_params_file(input_params_path: str) -> Dict[str, str]:
     return params_dict
 
 
-def write_params_file(output_params_path: str, params_dict: Mapping[str, str]) -> str:
+def write_params_file(output_params_path: str, params_dict: dict[str, str]) -> str:
     with open(output_params_path, 'w') as output_params_file:
         output_params_file.write(f"{params_dict.pop('title', 'Untitled')}\n")
         output_params_file.write("&cntrl\n")
@@ -514,8 +514,8 @@ def write_params_file(output_params_path: str, params_dict: Mapping[str, str]) -
     return output_params_path
 
 
-def create_params_file(output_params_path: str, input_params_path: str = None,
-                       params_preset_dict: Mapping = None, params_properties_dict: Mapping = None) -> str:
+def create_params_file(output_params_path: str, input_params_path: Optional[str] = None,
+                       params_preset_dict: Optional[dict] = None, params_properties_dict: Optional[dict] = None) -> str:
     """ Gets a params dictionary and a presset and returns the path of the created params file for cmip.
 
     Args:
@@ -540,7 +540,7 @@ def create_params_file(output_params_path: str, input_params_path: str = None,
     return write_params_file(output_params_path, params_dict)
 
 
-def mark_residues(residue_list: Sequence[str], input_cmip_pdb_path: str, output_cmip_pdb_path: str, out_log: logging.Logger = None, global_log: logging.Logger = None) -> None:
+def mark_residues(residue_list: list[str], input_cmip_pdb_path: str, output_cmip_pdb_path: str, out_log: Optional[logging.Logger] = None, global_log: Optional[logging.Logger] = None) -> None:
     """Marks using an "X" before the atom type all the residues in *residue_list* and writes the result in *output_cmip_pdb_path*.
 
         Args:
@@ -575,9 +575,9 @@ def mark_residues(residue_list: Sequence[str], input_cmip_pdb_path: str, output_
 
 
 def _mark_pdb_atom(line: str) -> str:
-    line = list(line)
-    line.insert(64, 'X')
-    return ''.join(line)
+    newline = list(line)
+    newline.insert(64, 'X')
+    return ''.join(newline)
 
 
 def _get_residue_code_in_list(input_residue, residue_list):
@@ -609,5 +609,5 @@ def _get_resnum(line: str) -> str:
     return line[22:27].strip()
 
 
-def _is_atom(line: str) -> str:
+def _is_atom(line: str) -> bool:
     return line[0:6].strip().upper() in ["ATOM", "HETATM"]

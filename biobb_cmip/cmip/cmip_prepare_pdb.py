@@ -2,6 +2,7 @@
 
 """Module containing the PreparePDB class and the command line interface."""
 import argparse
+from typing import Optional
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.configuration import settings
 from biobb_common.tools.file_utils import launchlogger
@@ -46,7 +47,7 @@ class CmipPreparePDB(BiobbObject):
             * schema: http://edamontology.org/EDAM.owl
     """
 
-    def __init__(self, input_pdb_path: str, output_cmip_pdb_path: str, properties: dict = None, **kwargs) -> None:
+    def __init__(self, input_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> None:
         properties = properties or {}
 
         # Call parent class constructor
@@ -118,7 +119,7 @@ class CmipPreparePDB(BiobbObject):
         return self.return_code
 
 
-def cmip_prepare_pdb(input_pdb_path: str, output_cmip_pdb_path: str, properties: dict = None, **kwargs) -> int:
+def cmip_prepare_pdb(input_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> int:
     """Create :class:`PreparePDB <cmip.prepare_pdb.PreparePDB>` class and
     execute the :meth:`launch() <cmip.prepare_pdb.PreparePDB.launch>` method."""
     return CmipPreparePDB(input_pdb_path=input_pdb_path,

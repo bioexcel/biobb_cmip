@@ -1,15 +1,15 @@
 """ Representation functions for package biobb_cmip.cmip """
 from biobb_cmip.cmip.common import get_grid
 from pathlib import Path
-from MDAnalysis.lib.util import inverse_aa_codes
-from typing import List, Dict, Union, Tuple
+from MDAnalysis.lib.util import inverse_aa_codes  # type: ignore
+from typing import Union
 
 
-def get_energies_byat(cmip_energies_byat_out: Union[str, Path], cutoff: float = 100.0) -> Tuple[List[str], Dict[str, List[float]]]:
+def get_energies_byat(cmip_energies_byat_out: Union[str, Path], cutoff: float = 100.0) -> tuple[list[str], dict[str, list[float]]]:
 
     with open(cmip_energies_byat_out, 'r') as energies_file:
         atom_list = []
-        energy_dict = {"ES": [], "VDW": [], "ES&VDW": []}
+        energy_dict: dict[str, list] = {"ES": [], "VDW": [], "ES&VDW": []}
         for line in energies_file:
             atom_list.append(line[6:12].strip())
             vdw = float(line[42:53]) if float(line[42:53]) < cutoff else 0.0
@@ -23,9 +23,9 @@ def get_energies_byat(cmip_energies_byat_out: Union[str, Path], cutoff: float = 
     return atom_list, energy_dict
 
 
-def get_energies_byres(cmip_energies_byat_out: Union[str, Path], cutoff: float = 100.0) -> Tuple[List[str], Dict[str, List[float]]]:
-    residues = []
-    energy_dict = {"ES": [], "VDW": [], "ES&VDW": []}
+def get_energies_byres(cmip_energies_byat_out: Union[str, Path], cutoff: float = 100.0) -> tuple[list[str], dict[str, list[float]]]:
+    residues: list = []
+    energy_dict: dict[str, list] = {"ES": [], "VDW": [], "ES&VDW": []}
     with open(cmip_energies_byat_out, 'r') as energies_file:
         for line in energies_file:
             chain = line[21:22].strip()
@@ -62,7 +62,7 @@ def get_energies_byres(cmip_energies_byat_out: Union[str, Path], cutoff: float =
         return residues, energy_dict
 
 
-def create_box_representation(cmip_log_path: Union[str, Path], cmip_pdb_path: Union[str, Path]) -> Tuple[str, List[List[str]]]:
+def create_box_representation(cmip_log_path: Union[str, Path], cmip_pdb_path: Union[str, Path]) -> tuple[str, list[list[str]]]:
     return _create_box_representation_file(cmip_log_path, cmip_pdb_path), _get_atom_pair()
 
 
@@ -84,7 +84,7 @@ def _create_box_representation_file(cmip_log_path: Union[str, Path], cmip_pdb_pa
     return str(boxed_pdb_path)
 
 
-def _get_vertex_list(cmip_log_path: Union[str, Path]) -> List[str]:
+def _get_vertex_list(cmip_log_path: Union[str, Path]) -> list[str]:
     origin, size, _ = get_grid(cmip_log_path)
     return [
         _pdb_coord_formatter(origin[0]) + _pdb_coord_formatter(origin[1]) + _pdb_coord_formatter(origin[2]),
@@ -102,7 +102,7 @@ def _pdb_coord_formatter(coordinate: float) -> str:
     return str(round(coordinate, 3)).rjust(8)
 
 
-def _get_atom_pair() -> List[List[str]]:
+def _get_atom_pair() -> list[list[str]]:
     return [["9999:Z.ZN0", "9999:Z.ZN1"],
             ["9999:Z.ZN0", "9999:Z.ZN2"],
             ["9999:Z.ZN0", "9999:Z.ZN3"],

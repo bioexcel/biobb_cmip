@@ -2,6 +2,7 @@
 
 """Module containing the PrepareStructure class and the command line interface."""
 import argparse
+from typing import Optional
 import warnings
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
@@ -60,7 +61,7 @@ class CmipPrepareStructure(BiobbObject):
             * schema: http://edamontology.org/EDAM.owl
     """
 
-    def __init__(self, input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: str = None, properties: dict = None, **kwargs) -> None:
+    def __init__(self, input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: Optional[str] = None, properties: Optional[dict] = None, **kwargs) -> None:
         properties = properties or {}
 
         # Call parent class constructor
@@ -122,8 +123,8 @@ class CmipPrepareStructure(BiobbObject):
         return 0
 
 
-def cmip_prepare_structure(input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: str = None,
-                           properties: dict = None, **kwargs) -> int:
+def cmip_prepare_structure(input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: Optional[str] = None,
+                           properties: Optional[dict] = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.PrepareStructure>` class and
     execute the :meth:`launch() <cmip.cmip.PrepareStructure.launch>` method."""
 

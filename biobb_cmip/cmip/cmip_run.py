@@ -4,6 +4,7 @@
 import os
 import json
 import argparse
+from typing import Optional
 import shutil
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
@@ -72,12 +73,12 @@ class CmipRun(BiobbObject):
             * schema: http://edamontology.org/EDAM.owl
     """
 
-    def __init__(self, input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,
-                 output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
-                 input_rst_path: str = None, output_byat_path: str = None, output_log_path: str = None,
-                 input_vdw_params_path: str = None, input_params_path: str = None, output_json_box_path: str = None,
-                 output_json_external_box_path: str = None, input_json_box_path: str = None,
-                 input_json_external_box_path: str = None, properties: dict = None, **kwargs) -> None:
+    def __init__(self, input_pdb_path: str, input_probe_pdb_path: Optional[str] = None, output_pdb_path: Optional[str] = None,
+                 output_grd_path: Optional[str] = None, output_cube_path: Optional[str] = None, output_rst_path: Optional[str] = None,
+                 input_rst_path: Optional[str] = None, output_byat_path: Optional[str] = None, output_log_path: Optional[str] = None,
+                 input_vdw_params_path: Optional[str] = None, input_params_path: Optional[str] = None, output_json_box_path: Optional[str] = None,
+                 output_json_external_box_path: Optional[str] = None, input_json_box_path: Optional[str] = None,
+                 input_json_external_box_path: Optional[str] = None, properties: Optional[dict] = None, **kwargs) -> None:
 
         properties = properties or {}
 
@@ -293,12 +294,12 @@ class CmipRun(BiobbObject):
         return self.return_code
 
 
-def cmip_run(input_pdb_path: str, input_probe_pdb_path: str = None, output_pdb_path: str = None,
-             output_grd_path: str = None, output_cube_path: str = None, output_rst_path: str = None,
-             output_byat_path: str = None, output_log_path: str = None,
-             input_vdw_params_path: str = None, input_params_path: str = None, output_json_box_path: str = None,
-             output_json_external_box_path: str = None, input_json_box_path: str = None,
-             input_json_external_box_path: str = None, properties: dict = None, **kwargs) -> int:
+def cmip_run(input_pdb_path: str, input_probe_pdb_path: Optional[str] = None, output_pdb_path: Optional[str] = None,
+             output_grd_path: Optional[str] = None, output_cube_path: Optional[str] = None, output_rst_path: Optional[str] = None,
+             output_byat_path: Optional[str] = None, output_log_path: Optional[str] = None,
+             input_vdw_params_path: Optional[str] = None, input_params_path: Optional[str] = None, output_json_box_path: Optional[str] = None,
+             output_json_external_box_path: Optional[str] = None, input_json_box_path: Optional[str] = None,
+             input_json_external_box_path: Optional[str] = None, properties: Optional[dict] = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.Cmip>` class and
     execute the :meth:`launch() <cmip.cmip.Cmip.launch>` method."""
 

@@ -2,6 +2,7 @@
 
 """Module containing the IgnoreResidues class and the command line interface."""
 import argparse
+from typing import Optional
 import shutil
 from biobb_cmip.cmip.common import mark_residues
 from biobb_common.generic.biobb_object import BiobbObject
@@ -46,7 +47,7 @@ class CmipIgnoreResidues(BiobbObject):
             * schema: http://edamontology.org/EDAM.owl
     """
 
-    def __init__(self, input_cmip_pdb_path: str, output_cmip_pdb_path: str, properties: dict = None, **kwargs) -> None:
+    def __init__(self, input_cmip_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> None:
         properties = properties or {}
 
         # Call parent class constructor
@@ -105,7 +106,7 @@ class CmipIgnoreResidues(BiobbObject):
         return self.return_code
 
 
-def cmip_ignore_residues(input_cmip_pdb_path: str, output_cmip_pdb_path: str, properties: dict = None, **kwargs) -> int:
+def cmip_ignore_residues(input_cmip_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> int:
     """Create :class:`IgnoreResidues <cmip.ignore_residues.IgnoreResidues>` class and
     execute the :meth:`launch() <cmip.ignore_residues.IgnoreResidues.launch>` method."""
     return CmipIgnoreResidues(input_cmip_pdb_path=input_cmip_pdb_path,
