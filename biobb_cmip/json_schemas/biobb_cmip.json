@@ -4,58 +4,58 @@
     "github": "https://github.com/bioexcel/biobb_cmip",
     "readthedocs": "https://biobb-cmip.readthedocs.io/en/latest/",
     "conda": "https://anaconda.org/bioconda/biobb_cmip",
-    "docker": "https://quay.io/biocontainers/biobb_cmip:4.2.0--pyhdfd78af_0",
-    "singularity": "https://depot.galaxyproject.org/singularity/biobb_cmip:4.2.0--pyhdfd78af_0",
-    "version": "4.2.0",
-    "tools" : [
+    "docker": "https://quay.io/biocontainers/biobb_cmip:5.0.0--pyhdfd78af_0",
+    "singularity": "https://depot.galaxyproject.org/singularity/biobb_cmip:5.0.0--pyhdfd78af_0",
+    "version": "5.0.0",
+    "tools": [
         {
-            "block" : "CmipRun",
-            "tool" : "CMIP cmip",
-            "desc" : "CMIP cmip module compute classical molecular interaction potentials.",
-            "exec" : "cmip_run",
+            "block": "CmipRun",
+            "tool": "CMIP cmip",
+            "desc": "CMIP cmip module compute classical molecular interaction potentials.",
+            "exec": "cmip_run",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_run"
         },
         {
-            "block" : "CmipTitration",
-            "tool" : "CMIP titration",
-            "desc" : "CMIP cmip module compute classical molecular interaction potentials.",
-            "exec" : "cmip_titration",
+            "block": "CmipTitration",
+            "tool": "CMIP titration",
+            "desc": "CMIP cmip module compute classical molecular interaction potentials.",
+            "exec": "cmip_titration",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_titration"
         },
         {
-            "block" : "CmipPrepareStructure",
-            "tool" : "Prepare Structure",
-            "desc" : "Creates a CMIP suitable PDB from an standar structure file",
-            "exec" : "cmip_prepare_structure",
+            "block": "CmipPrepareStructure",
+            "tool": "Prepare Structure",
+            "desc": "Creates a CMIP suitable PDB from an standar structure file",
+            "exec": "cmip_prepare_structure",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_structure"
         },
         {
-            "block" : "CmipPreparePDB",
-            "tool" : "Prepare PDB",
-            "desc" : "Creates a CMIP suitable PDB from an standar PDB file",
-            "exec" : "cmip_prepare_pdb",
+            "block": "CmipPreparePDB",
+            "tool": "Prepare PDB",
+            "desc": "Creates a CMIP suitable PDB from an standar PDB file",
+            "exec": "cmip_prepare_pdb",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_pdb"
         },
         {
-            "block" : "CmipIgnoreResidues",
-            "tool" : "Ignore Residues",
-            "desc" : "Mark residues which charges will be ignored in the CMIP potential calculations.",
-            "exec" : "cmip_ignore_residues",
+            "block": "CmipIgnoreResidues",
+            "tool": "Ignore Residues",
+            "desc": "Mark residues which charges will be ignored in the CMIP potential calculations.",
+            "exec": "cmip_ignore_residues",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_ignore_residues"
         }
     ],
-    "dep_pypi" : [
-        "install_requires=['biobb_common==4.2.0', 'mdanalysis', 'biobb_structure_checking==3.13.4']",
-        "python_requires='>=3.8'"
+    "dep_pypi": [
+        "install_requires=['biobb_common==5.0.0', 'mdanalysis', 'biobb_structure_checking==3.13.5']",
+        "python_requires='>=3.9'"
     ],
-    "dep_conda" : [
-        "python >=3.8",
-        "biobb_common ==4.2.0",
+    "dep_conda": [
+        "python >=3.9",
+        "biobb_common ==5.0.0",
         "cmip ==2.7.0",
         "mdanalysis >=2.0.0",
-        "biobb_structure_checking==3.13.4"
+        "biobb_structure_checking==3.13.5"
     ],
-    "keywords" : [
+    "keywords": [
         "classical",
         "molecular",
         "interaction",
