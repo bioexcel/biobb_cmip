@@ -146,7 +146,7 @@ def get_topology_cmip_elements_canonical(input_topology_filename: str) -> list:
     # mda_charges = [round(val, 4) for val in u.atoms.charges]
     # mda_atom_types = list(guess_types(u.atoms.names))
     mda_atom_types = []
-    for atom in u.atoms:
+    for atom in u.atoms:  # type: ignore
         atom_element = guess_atom_element(atom.name)
         if atom_element == 'H':
             bonded_atom_element = guess_atom_element(atom.bonded_atoms[0].name)
@@ -178,7 +178,7 @@ def get_topology_charges(input_topology_filename: str) -> list:
         os.unlink(top_file)
     else:
         u = mda.Universe(input_topology_filename)
-    return [round(val, 4) for val in u.atoms.charges]
+    return [round(val, 4) for val in u.atoms.charges]  # type: ignore
 
 
 class Residue:
@@ -241,7 +241,7 @@ def get_pdb_charges(input_pdb_filename: str, residue_library_path: Optional[str]
                 print(f"WARNING replacing {nomr[:-1]}:{line[23:27]} by {nomr}")
             ######################################################
             parms = aaLib.getParams(nomr, nomat)
-            charges_list.append(parms.charg)
+            charges_list.append(parms.charg)  # type: ignore
         return charges_list
 
 
@@ -278,7 +278,7 @@ def get_pdb_cmip_elements_canonical(input_pdb_filename: str, residue_library_pat
                 print(f"WARNING replacing {nomr[:-1]}:{line[23:27]} by {nomr}")
             ######################################################
             parms = aaLib.getParams(nomr, nomat)
-            elements_list.append(parms.atType)
+            elements_list.append(parms.atType)  # type: ignore
         return elements_list
 
 

@@ -4,6 +4,7 @@
 import os
 import argparse
 from typing import Optional
+from typing import Any
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.configuration import settings
@@ -88,7 +89,7 @@ class CmipTitration(BiobbObject):
         self.output_params_path = properties.get('output_params_path', 'params')
         if not self.io_dict['in'].get('input_vdw_params_path'):
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
-        self.params = {k: str(v) for k, v in properties.get('params', dict()).items()}
+        self.params: dict[str, Any] = {k: str(v) for k, v in properties.get('params', dict()).items()}
         self.energy_cutoff = properties.get('energy_cutoff', 9999.9)
 
         # Check the properties
@@ -155,7 +156,7 @@ class CmipTitration(BiobbObject):
         self.copy_to_host()
 
         # remove temporary folder(s)
-        self.tmp_files.extend([self.stage_io_dict.get("unique_dir"), combined_params_dir])
+        self.tmp_files.extend([self.stage_io_dict.get("unique_dir", ""), combined_params_dir])
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)

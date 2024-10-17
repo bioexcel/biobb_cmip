@@ -5,6 +5,7 @@ import os
 import json
 import argparse
 from typing import Optional
+from typing import Any
 import shutil
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
@@ -130,7 +131,7 @@ class CmipRun(BiobbObject):
                 raise ValueError(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']})"
                                  f"name must end in .pdb and not contain underscores")
 
-        params_preset_dict = params_preset(execution_type=self.execution_type)
+        params_preset_dict: dict[str, Any] = params_preset(execution_type=self.execution_type)
         if self.io_dict['in']["input_json_external_box_path"]:
             params_preset_dict["readgrid0"] = 0
             origin, size, grid_params = get_grid(self.io_dict['in']["input_json_external_box_path"])
@@ -159,7 +160,7 @@ class CmipRun(BiobbObject):
 
         # Restart OUT
         if self.io_dict["out"].get("output_rst_path"):
-            params_preset_dict['FULLRST'] = 1
+            params_preset_dict['FULLRST'] = 1  # type: ignore
             params_preset_dict['OREST'] = 1
 
         # Restart IN
@@ -187,7 +188,7 @@ class CmipRun(BiobbObject):
                     '-hs', self.stage_io_dict['in']['input_pdb_path']]
 
         if self.stage_io_dict["in"].get("input_probe_pdb_path") and Path(
-                self.io_dict["in"].get("input_probe_pdb_path")).exists():
+                self.io_dict["in"].get("input_probe_pdb_path", "")).exists():
             self.cmd.append('-pr')
             self.cmd.append(self.stage_io_dict["in"].get("input_probe_pdb_path"))
 
@@ -225,17 +226,17 @@ class CmipRun(BiobbObject):
         # CMIP removes or adds a .pdb extension from pdb output name
         # manual copy_to_host or unstage
         if self.io_dict['out'].get('output_pdb_path'):
-            output_pdb_path = str(Path(self.stage_io_dict["unique_dir"]).joinpath(Path(self.io_dict['out'].get('output_pdb_path')).name))
+            output_pdb_path = str(Path(self.stage_io_dict["unique_dir"]).joinpath(Path(self.io_dict['out'].get('output_pdb_path', '')).name))
             if Path(output_pdb_path[:-4]).exists():
-                shutil.move(output_pdb_path[:-4], self.io_dict['out'].get('output_pdb_path'))
+                shutil.move(output_pdb_path[:-4], self.io_dict['out'].get('output_pdb_path', ''))
             elif Path(output_pdb_path + ".pdb").exists():
-                shutil.move(output_pdb_path + ".pdb", self.io_dict['out'].get('output_pdb_path'))
+                shutil.move(output_pdb_path + ".pdb", self.io_dict['out'].get('output_pdb_path', ''))
             elif not Path(output_pdb_path).exists():
                 fu.log(f"WARNING: File not found output_pdb_path: {output_pdb_path}", self.out_log, self.global_log)
 
         # Replace "ATOMTM" tag for "ATOM  "
 
-        output_pdb_path = self.io_dict['out'].get('output_pdb_path')
+        output_pdb_path = self.io_dict['out'].get('output_pdb_path', '')
         if output_pdb_path:
             if Path(output_pdb_path).exists():
                 with open(output_pdb_path) as pdb_file:
@@ -261,7 +262,7 @@ class CmipRun(BiobbObject):
             grid_dict = {'origin': origin_dict,
                          'size': size_dict,
                          'params': grid_params}
-            with open(self.io_dict['out'].get('output_json_box_path'), 'w') as json_file:
+            with open(self.io_dict['out'].get('output_json_box_path', ''), 'w') as json_file:
                 json_file.write(json.dumps(grid_dict, indent=4))
 
         # Create external_json_box_path file from CMIP log file
@@ -279,14 +280,14 @@ class CmipRun(BiobbObject):
             grid_dict = {'origin': origin_dict,
                          'size': size_dict,
                          'params': grid_params}
-            with open(self.io_dict['out'].get('output_json_external_box_path'), 'w') as json_file:
+            with open(self.io_dict['out'].get('output_json_external_box_path', ''), 'w') as json_file:
                 json_file.write(json.dumps(grid_dict, indent=4))
 
         # Copy files to host
         self.copy_to_host()
 
         # remove temporary folder(s)
-        self.tmp_files.extend([self.stage_io_dict.get("unique_dir"), combined_params_dir])
+        self.tmp_files.extend([self.stage_io_dict.get("unique_dir", ""), combined_params_dir])
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)
