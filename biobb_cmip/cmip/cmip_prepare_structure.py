@@ -132,6 +132,8 @@ def cmip_prepare_structure(input_pdb_path: str, output_cmip_pdb_path: str, input
                                 input_topology_path=input_topology_path, properties=properties,
                                 **kwargs).launch()
 
+    cmip_prepare_structure.__doc__ = CmipPrepareStructure.__doc__
+
 
 def main():
     parser = argparse.ArgumentParser(description="Wrapper of the cmip prepare_structure module.",

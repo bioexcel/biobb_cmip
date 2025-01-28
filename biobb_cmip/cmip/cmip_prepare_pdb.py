@@ -111,7 +111,7 @@ class CmipPreparePDB(BiobbObject):
         self.copy_to_host()
 
         # remove temporary folder(s)
-        self.tmp_files.extend([self.stage_io_dict.get("unique_dir", "")])
+        # self.tmp_files.extend([self.stage_io_dict.get("unique_dir", "")])
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)
@@ -125,6 +125,8 @@ def cmip_prepare_pdb(input_pdb_path: str, output_cmip_pdb_path: str, properties:
     return CmipPreparePDB(input_pdb_path=input_pdb_path,
                           output_cmip_pdb_path=output_cmip_pdb_path,
                           properties=properties, **kwargs).launch()
+
+    cmip_prepare_pdb.__doc__ = CmipPreparePDB.__doc__
 
 
 def main():

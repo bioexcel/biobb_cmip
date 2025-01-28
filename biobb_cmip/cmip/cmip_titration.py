@@ -156,7 +156,10 @@ class CmipTitration(BiobbObject):
         self.copy_to_host()
 
         # remove temporary folder(s)
-        self.tmp_files.extend([self.stage_io_dict.get("unique_dir", ""), combined_params_dir])
+        self.tmp_files.extend([
+            # self.stage_io_dict.get("unique_dir", ""),
+            combined_params_dir
+        ])
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)
@@ -172,6 +175,8 @@ def cmip_titration(input_pdb_path: str, output_pdb_path: str,
     return CmipTitration(input_pdb_path=input_pdb_path, output_pdb_path=output_pdb_path,
                          input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
                          properties=properties, **kwargs).launch()
+
+    cmip_titration.__doc__ = CmipTitration.__doc__
 
 
 def main():

@@ -287,7 +287,10 @@ class CmipRun(BiobbObject):
         self.copy_to_host()
 
         # remove temporary folder(s)
-        self.tmp_files.extend([self.stage_io_dict.get("unique_dir", ""), combined_params_dir])
+        self.tmp_files.extend([
+            # self.stage_io_dict.get("unique_dir", ""),
+            combined_params_dir
+        ])
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)
@@ -311,6 +314,8 @@ def cmip_run(input_pdb_path: str, input_probe_pdb_path: Optional[str] = None, ou
                    output_json_box_path=output_json_box_path, output_json_external_box_path=output_json_external_box_path,
                    input_json_box_path=input_json_box_path, input_json_external_box_path=input_json_external_box_path,
                    properties=properties, **kwargs).launch()
+
+    cmip_run.__doc__ = CmipRun.__doc__
 
 
 def main():

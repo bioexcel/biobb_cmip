@@ -113,6 +113,8 @@ def cmip_ignore_residues(input_cmip_pdb_path: str, output_cmip_pdb_path: str, pr
                               output_cmip_pdb_path=output_cmip_pdb_path,
                               properties=properties, **kwargs).launch()
 
+    cmip_ignore_residues.__doc__ = CmipIgnoreResidues.__doc__
+
 
 def main():
     parser = argparse.ArgumentParser(description="Mark residues which charges will be ignored in the CMIP potential calculations.",
