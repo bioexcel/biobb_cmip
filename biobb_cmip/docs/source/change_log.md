@@ -1,5 +1,11 @@
 # Biobb CMIP changelog
 
+## What's new in version [5.1.0](https://github.com/bioexcel/biobb_cmip/releases/tag/v5.1.0)?
+
+### Changes
+
+* [UPDATE] * Update to biobb_common 5.1.0 (general)
+
 ## What's new in version [5.0.0](https://github.com/bioexcel/biobb_cmip/releases/tag/v5.0.0)?
 
 ### Changes
