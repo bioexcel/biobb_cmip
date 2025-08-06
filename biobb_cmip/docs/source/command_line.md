@@ -6,6 +6,69 @@ biobb_command [-h] --config CONFIG --input_file(s) <input_file(s)> --output_file
 -----------------
 
 
+## Cmip_ignore_residues
+Class to ignore residues in CMIP potential calculations.
+### Get help
+Command:
+```python
+cmip_ignore_residues -h
+```
+    usage: cmip_ignore_residues [-h] [-c CONFIG] -i INPUT_CMIP_PDB_PATH -o OUTPUT_CMIP_PDB_PATH
+    
+    Mark residues which charges will be ignored in the CMIP potential calculations.
+    
+    options:
+      -h, --help            show this help message and exit
+      -c CONFIG, --config CONFIG
+                            This file can be a YAML file, JSON file or JSON string
+    
+    required arguments:
+      -i INPUT_CMIP_PDB_PATH, --input_cmip_pdb_path INPUT_CMIP_PDB_PATH
+                            Input PDB file name
+      -o OUTPUT_CMIP_PDB_PATH, --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
+                            Output PDB file name
+### I / O Arguments
+Syntax: input_argument (datatype) : Definition
+
+Config input / output arguments for this building block:
+* **input_cmip_pdb_path** (*string*): Input PDB file path. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/input_ignore_res.pdb). Accepted formats: PDB
+* **output_cmip_pdb_path** (*string*): Output PDB file path. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ignore_res_gln3.pdb). Accepted formats: PDB
+### Config
+Syntax: input_parameter (datatype) - (default_value) Definition
+
+Config parameters for this building block:
+* **residue_list** (*string*): (None) Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. If no chain is provided all the residues in the pdb file will be market. ie: "A:3"..
+* **ignore_all** (*boolean*): (False) Mark all the residues in the PDB file..
+* **remove_tmp** (*boolean*): (True) Remove temporal files..
+* **restart** (*boolean*): (False) Do not execute if output files exist..
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
+### YAML
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_ignore_residues.yml)
+```python
+properties:
+  remove_tmp: true
+  residue_list: 3
+
+```
+#### Command line
+```python
+cmip_ignore_residues --config config_cmip_ignore_residues.yml --input_cmip_pdb_path input_ignore_res.pdb --output_cmip_pdb_path ignore_res_gln3.pdb
+```
+### JSON
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_ignore_residues.json)
+```python
+{
+  "properties": {
+    "residue_list": 3,
+    "remove_tmp": true
+  }
+}
+```
+#### Command line
+```python
+cmip_ignore_residues --config config_cmip_ignore_residues.json --input_cmip_pdb_path input_ignore_res.pdb --output_cmip_pdb_path ignore_res_gln3.pdb
+```
+
 ## Cmip_prepare_pdb
 Class to add CMIP charges and atom types.
 ### Get help
@@ -17,7 +80,7 @@ cmip_prepare_pdb -h
     
     Model the missing atoms in the backbone of a PDB structure.
     
-    optional arguments:
+    options:
       -h, --help            show this help message and exit
       -c CONFIG, --config CONFIG
                             This file can be a YAML file, JSON file or JSON string
@@ -70,109 +133,37 @@ cmip_prepare_pdb --config config_cmip_prepare_pdb.yml --input_pdb_path 1aki.pdb 
 cmip_prepare_pdb --config config_cmip_prepare_pdb.json --input_pdb_path 1aki.pdb --output_cmip_pdb_path egfr_cmip.pdb
 ```
 
-## Cmip_ignore_residues
-Class to ignore residues in CMIP potential calculations.
+## Cmip_prepare_structure
+Generate a CMIP suitable PDB input.
 ### Get help
 Command:
 ```python
-cmip_ignore_residues -h
+cmip_prepare_structure -h
 ```
-    usage: cmip_ignore_residues [-h] [-c CONFIG] -i INPUT_CMIP_PDB_PATH -o OUTPUT_CMIP_PDB_PATH
+    usage: cmip_prepare_structure [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH [--input_topology_path INPUT_TOPOLOGY_PATH]
     
-    Mark residues which charges will be ignored in the CMIP potential calculations.
+    Wrapper of the cmip prepare_structure module.
     
-    optional arguments:
+    options:
       -h, --help            show this help message and exit
       -c CONFIG, --config CONFIG
                             This file can be a YAML file, JSON file or JSON string
-    
-    required arguments:
-      -i INPUT_CMIP_PDB_PATH, --input_cmip_pdb_path INPUT_CMIP_PDB_PATH
-                            Input PDB file name
-      -o OUTPUT_CMIP_PDB_PATH, --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
-                            Output PDB file name
-### I / O Arguments
-Syntax: input_argument (datatype) : Definition
-
-Config input / output arguments for this building block:
-* **input_cmip_pdb_path** (*string*): Input PDB file path. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/input_ignore_res.pdb). Accepted formats: PDB
-* **output_cmip_pdb_path** (*string*): Output PDB file path. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ignore_res_gln3.pdb). Accepted formats: PDB
-### Config
-Syntax: input_parameter (datatype) - (default_value) Definition
-
-Config parameters for this building block:
-* **residue_list** (*string*): (None) Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. If no chain is provided all the residues in the pdb file will be market. ie: "A:3"..
-* **ignore_all** (*boolean*): (False) Mark all the residues in the PDB file..
-* **remove_tmp** (*boolean*): (True) Remove temporal files..
-* **restart** (*boolean*): (False) Do not execute if output files exist..
-* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
-### YAML
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_ignore_residues.yml)
-```python
-properties:
-  remove_tmp: true
-  residue_list: 3
-
-```
-#### Command line
-```python
-cmip_ignore_residues --config config_cmip_ignore_residues.yml --input_cmip_pdb_path input_ignore_res.pdb --output_cmip_pdb_path ignore_res_gln3.pdb
-```
-### JSON
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_ignore_residues.json)
-```python
-{
-  "properties": {
-    "residue_list": 3,
-    "remove_tmp": true
-  }
-}
-```
-#### Command line
-```python
-cmip_ignore_residues --config config_cmip_ignore_residues.json --input_cmip_pdb_path input_ignore_res.pdb --output_cmip_pdb_path ignore_res_gln3.pdb
-```
-
-## Cmip_titration
-Wrapper class for the CMIP titration module.
-### Get help
-Command:
-```python
-cmip_titration -h
-```
-    usage: cmip_titration [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --output_pdb_path OUTPUT_PDB_PATH [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH]
-    
-    Wrapper of the CMIP Titration module.
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -c CONFIG, --config CONFIG
-                            This file can be a YAML file, JSON file or JSON string
-      --input_vdw_params_path INPUT_VDW_PARAMS_PATH
-      --input_params_path INPUT_PARAMS_PATH
+      --input_topology_path INPUT_TOPOLOGY_PATH
     
     required arguments:
       --input_pdb_path INPUT_PDB_PATH
-      --output_pdb_path OUTPUT_PDB_PATH
+      --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
 Config input / output arguments for this building block:
-* **input_pdb_path** (*string*): Path to the input PDB file. File type: input. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/1kim_h.pdb). Accepted formats: PDB
-* **output_pdb_path** (*string*): Path to the output PDB file. File type: output. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/1kim_neutral.pdb). Accepted formats: PDB
-* **input_vdw_params_path** (*string*): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. [Sample file](None). Accepted formats: TXT
-* **input_params_path** (*string*): Path to the CMIP input parameters file. File type: input. [Sample file](None). Accepted formats: TXT
+* **input_pdb_path** (*string*): Path to the input PDB file. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr.pdb). Accepted formats: PDB
+* **input_topology_path** (*string*): Path to the input topology path. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr_topology.zip). Accepted formats: ZIP, TOP, PSF, PRMTOP
+* **output_cmip_pdb_path** (*string*): Path to the output PDB file. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/egfr_cmip.pdb). Accepted formats: PDB
 ### Config
 Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
-* **params** (*object*): ({}) CMIP options specification..
-* **energy_cutoff** (*number*): (9999.9) Energy cutoff, extremely hight value to enable the addition of all the ions and waters before reaching the cutoff..
-* **num_wats** (*integer*): (10) Number of water molecules to be added..
-* **neutral** (*boolean*): (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account..
-* **num_positive_ions** (*integer*): (10) Number of positive ions to be added (Tipatom IP=Na+)..
-* **num_negative_ions** (*integer*): (10) Number of negative ions to be added (Tipatom IM=Cl-)..
-* **binary_path** (*string*): (titration) Path to the CMIP Titration executable binary..
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
 * **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
@@ -183,70 +174,28 @@ Config parameters for this building block:
 * **container_user_id** (*string*): (None) User number id to be mapped inside the container..
 * **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
 ### YAML
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration.yml)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_structure.yml)
 ```python
 properties:
-  neutral: true
-  remove_tmp: false
-
-```
-#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_docker.yml)
-```python
-properties:
-  container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
-  container_path: docker
-  container_volume_path: /inout
-  neutral: true
-
-```
-#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_singularity.yml)
-```python
-properties:
-  container_image: cmip.simg
-  container_path: singularity
-  container_volume_path: /inout
-  neutral: true
+  remove_tmp: true
 
 ```
 #### Command line
 ```python
-cmip_titration --config config_cmip_titration.yml --input_pdb_path 1kim_h.pdb --output_pdb_path 1kim_neutral.pdb --input_vdw_params_path input.txt --input_params_path input.txt
+cmip_prepare_structure --config config_cmip_prepare_structure.yml --input_pdb_path egfr.pdb --input_topology_path egfr_topology.zip --output_cmip_pdb_path egfr_cmip.pdb
 ```
 ### JSON
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration.json)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_structure.json)
 ```python
 {
   "properties": {
-    "remove_tmp": false,
-    "neutral": true
-  }
-}
-```
-#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_docker.json)
-```python
-{
-  "properties": {
-    "neutral": true,
-    "container_path": "docker",
-    "container_image": "quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0",
-    "container_volume_path": "/inout"
-  }
-}
-```
-#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_singularity.json)
-```python
-{
-  "properties": {
-    "neutral": true,
-    "container_path": "singularity",
-    "container_image": "cmip.simg",
-    "container_volume_path": "/inout"
+    "remove_tmp": true
   }
 }
 ```
 #### Command line
 ```python
-cmip_titration --config config_cmip_titration.json --input_pdb_path 1kim_h.pdb --output_pdb_path 1kim_neutral.pdb --input_vdw_params_path input.txt --input_params_path input.txt
+cmip_prepare_structure --config config_cmip_prepare_structure.json --input_pdb_path egfr.pdb --input_topology_path egfr_topology.zip --output_cmip_pdb_path egfr_cmip.pdb
 ```
 
 ## Cmip_run
@@ -260,7 +209,7 @@ cmip_run -h
     
     Wrapper of the CMIP cmip module.
     
-    optional arguments:
+    options:
       -h, --help            show this help message and exit
       -c CONFIG, --config CONFIG
                             This file can be a YAML file, JSON file or JSON string
@@ -384,37 +333,46 @@ cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_
 cmip_run --config config_cmip_run.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
 ```
 
-## Cmip_prepare_structure
-Generate a CMIP suitable PDB input.
+## Cmip_titration
+Wrapper class for the CMIP titration module.
 ### Get help
 Command:
 ```python
-cmip_prepare_structure -h
+cmip_titration -h
 ```
-    usage: cmip_prepare_structure [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH [--input_topology_path INPUT_TOPOLOGY_PATH]
+    usage: cmip_titration [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --output_pdb_path OUTPUT_PDB_PATH [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH]
     
-    Wrapper of the cmip prepare_structure module.
+    Wrapper of the CMIP Titration module.
     
-    optional arguments:
+    options:
       -h, --help            show this help message and exit
       -c CONFIG, --config CONFIG
                             This file can be a YAML file, JSON file or JSON string
-      --input_topology_path INPUT_TOPOLOGY_PATH
+      --input_vdw_params_path INPUT_VDW_PARAMS_PATH
+      --input_params_path INPUT_PARAMS_PATH
     
     required arguments:
       --input_pdb_path INPUT_PDB_PATH
-      --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
+      --output_pdb_path OUTPUT_PDB_PATH
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
 Config input / output arguments for this building block:
-* **input_pdb_path** (*string*): Path to the input PDB file. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr.pdb). Accepted formats: PDB
-* **input_topology_path** (*string*): Path to the input topology path. File type: input. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/egfr_topology.zip). Accepted formats: ZIP, TOP, PSF, PRMTOP
-* **output_cmip_pdb_path** (*string*): Path to the output PDB file. File type: output. [Sample file](https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/egfr_cmip.pdb). Accepted formats: PDB
+* **input_pdb_path** (*string*): Path to the input PDB file. File type: input. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/1kim_h.pdb). Accepted formats: PDB
+* **output_pdb_path** (*string*): Path to the output PDB file. File type: output. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/1kim_neutral.pdb). Accepted formats: PDB
+* **input_vdw_params_path** (*string*): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. [Sample file](None). Accepted formats: TXT
+* **input_params_path** (*string*): Path to the CMIP input parameters file. File type: input. [Sample file](None). Accepted formats: TXT
 ### Config
 Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
+* **params** (*object*): ({}) CMIP options specification..
+* **energy_cutoff** (*number*): (9999.9) Energy cutoff, extremely hight value to enable the addition of all the ions and waters before reaching the cutoff..
+* **num_wats** (*integer*): (10) Number of water molecules to be added..
+* **neutral** (*boolean*): (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account..
+* **num_positive_ions** (*integer*): (10) Number of positive ions to be added (Tipatom IP=Na+)..
+* **num_negative_ions** (*integer*): (10) Number of negative ions to be added (Tipatom IM=Cl-)..
+* **binary_path** (*string*): (titration) Path to the CMIP Titration executable binary..
 * **remove_tmp** (*boolean*): (True) Remove temporal files..
 * **restart** (*boolean*): (False) Do not execute if output files exist..
 * **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
@@ -425,26 +383,68 @@ Config parameters for this building block:
 * **container_user_id** (*string*): (None) User number id to be mapped inside the container..
 * **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
 ### YAML
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_structure.yml)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration.yml)
 ```python
 properties:
-  remove_tmp: true
+  neutral: true
+  remove_tmp: false
+
+```
+#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_docker.yml)
+```python
+properties:
+  container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
+  container_path: docker
+  container_volume_path: /inout
+  neutral: true
+
+```
+#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_singularity.yml)
+```python
+properties:
+  container_image: cmip.simg
+  container_path: singularity
+  container_volume_path: /inout
+  neutral: true
 
 ```
 #### Command line
 ```python
-cmip_prepare_structure --config config_cmip_prepare_structure.yml --input_pdb_path egfr.pdb --input_topology_path egfr_topology.zip --output_cmip_pdb_path egfr_cmip.pdb
+cmip_titration --config config_cmip_titration.yml --input_pdb_path 1kim_h.pdb --output_pdb_path 1kim_neutral.pdb --input_vdw_params_path input.txt --input_params_path input.txt
 ```
 ### JSON
-#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_structure.json)
+#### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration.json)
 ```python
 {
   "properties": {
-    "remove_tmp": true
+    "remove_tmp": false,
+    "neutral": true
+  }
+}
+```
+#### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_docker.json)
+```python
+{
+  "properties": {
+    "neutral": true,
+    "container_path": "docker",
+    "container_image": "quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0",
+    "container_volume_path": "/inout"
+  }
+}
+```
+#### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_singularity.json)
+```python
+{
+  "properties": {
+    "neutral": true,
+    "container_path": "singularity",
+    "container_image": "cmip.simg",
+    "container_volume_path": "/inout"
   }
 }
 ```
 #### Command line
 ```python
-cmip_prepare_structure --config config_cmip_prepare_structure.json --input_pdb_path egfr.pdb --input_topology_path egfr_topology.zip --output_cmip_pdb_path egfr_cmip.pdb
+cmip_titration --config config_cmip_titration.json --input_pdb_path 1kim_h.pdb --output_pdb_path 1kim_neutral.pdb --input_vdw_params_path input.txt --input_params_path input.txt
 ```
