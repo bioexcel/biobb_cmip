@@ -7,41 +7,47 @@
     "docker": "https://quay.io/biocontainers/biobb_cmip:5.1.0--pyhdfd78af_0",
     "singularity": "https://depot.galaxyproject.org/singularity/biobb_cmip:5.1.0--pyhdfd78af_0",
     "version": "5.1.0",
+    "rest": true,
     "tools": [
         {
             "block": "CmipRun",
             "tool": "CMIP cmip",
             "desc": "CMIP cmip module compute classical molecular interaction potentials.",
             "exec": "cmip_run",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_run"
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_run",
+            "rest": true
         },
         {
             "block": "CmipTitration",
             "tool": "CMIP titration",
             "desc": "CMIP cmip module compute classical molecular interaction potentials.",
             "exec": "cmip_titration",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_titration"
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_titration",
+            "rest": true
         },
         {
             "block": "CmipPrepareStructure",
             "tool": "Prepare Structure",
             "desc": "Creates a CMIP suitable PDB from an standar structure file",
             "exec": "cmip_prepare_structure",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_structure"
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_structure",
+            "rest": true
         },
         {
             "block": "CmipPreparePDB",
             "tool": "Prepare PDB",
             "desc": "Creates a CMIP suitable PDB from an standar PDB file",
             "exec": "cmip_prepare_pdb",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_pdb"
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_pdb",
+            "rest": true
         },
         {
             "block": "CmipIgnoreResidues",
             "tool": "Ignore Residues",
             "desc": "Mark residues which charges will be ignored in the CMIP potential calculations.",
             "exec": "cmip_ignore_residues",
-            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_ignore_residues"
+            "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_ignore_residues",
+            "rest": true
         }
     ],
     "dep_pypi": [
