@@ -32,13 +32,13 @@ class CmipRun(BiobbObject):
         output_rst_path (str) (Optional): Path to the output restart file. File type: output. Accepted formats: txt (edam:format_2330).
         input_rst_path (str) (Optional): Path to the input restart file. File type: input. Accepted formats: txt (edam:format_2330).
         output_byat_path (str) (Optional): Path to the output atom by atom energy file. File type: output. Accepted formats: txt (edam:format_2330), out (edam:format_2330).
-        output_log_path (str) (Optional): Path to the output CMIP log file LOG. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_cmip.log>`_. Accepted formats: log (edam:format_2330).
+        output_log_path (str) (Optional): Path to the output CMIP log file LOG. File type: output. Accepted formats: log (edam:format_2330).
         input_vdw_params_path (str) (Optional): Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). File type: input. Accepted formats: txt (edam:format_2330).
         input_params_path (str) (Optional): Path to the CMIP input parameters file. File type: input. Accepted formats: txt (edam:format_2330).
-        output_json_box_path (str) (Optional): Path to the output CMIP box in JSON format. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json>`_. Accepted formats: json (edam:format_3464).
-        output_json_external_box_path (str) (Optional): Path to the output external CMIP box in JSON format. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json>`_. Accepted formats: json (edam:format_3464).
-        input_json_box_path (str) (Optional): Path to the input CMIP box in JSON format. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json>`_. Accepted formats: json (edam:format_3464).
-        input_json_external_box_path (str) (Optional): Path to the input CMIP box in JSON format. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json>`_. Accepted formats: json (edam:format_3464).
+        output_json_box_path (str) (Optional): Path to the output CMIP box in JSON format. File type: output. Accepted formats: json (edam:format_3464).
+        output_json_external_box_path (str) (Optional): Path to the output external CMIP box in JSON format. File type: output. Accepted formats: json (edam:format_3464).
+        input_json_box_path (str) (Optional): Path to the input CMIP box in JSON format. File type: input. Accepted formats: json (edam:format_3464).
+        input_json_external_box_path (str) (Optional): Path to the input CMIP box in JSON format. File type: input. Accepted formats: json (edam:format_3464).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **execution_type** (*str*) - ("mip_pos") Default options for the params file, each one creates a different params file. Values: check_only (Dry Run of CMIP), mip_pos (MIP O+  Mehler Solmajer dielectric), mip_neg (MIP O-  Mehler Solmajer dielectric), mip_neu (MIP Oxygen Mehler Solmajer dielectric), solvation (Solvation & MEP), pb_interaction_energy (Docking Interaction energy calculation. PB electrostatics), docking (Docking Mehler Solmajer dielectric), docking_rst (Docking from restart file).
             * **params** (*dict*) - ({}) CMIP options specification.

@@ -158,7 +158,7 @@
             "type": "string",
             "description": "Path to the output CMIP log file LOG",
             "filetype": "output",
-            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_cmip.log",
+            "sample": null,
             "enum": [
                 ".*\\.log$"
             ],
@@ -206,7 +206,7 @@
             "type": "string",
             "description": "Path to the output CMIP box in JSON format",
             "filetype": "output",
-            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json",
+            "sample": null,
             "enum": [
                 ".*\\.json$"
             ],
@@ -222,7 +222,7 @@
             "type": "string",
             "description": "Path to the output external CMIP box in JSON format",
             "filetype": "output",
-            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json",
+            "sample": null,
             "enum": [
                 ".*\\.json$"
             ],
@@ -238,7 +238,7 @@
             "type": "string",
             "description": "Path to the input CMIP box in JSON format",
             "filetype": "input",
-            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json",
+            "sample": null,
             "enum": [
                 ".*\\.json$"
             ],
@@ -254,7 +254,7 @@
             "type": "string",
             "description": "Path to the input CMIP box in JSON format",
             "filetype": "input",
-            "sample": "https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ref_box.json",
+            "sample": null,
             "enum": [
                 ".*\\.json$"
             ],
