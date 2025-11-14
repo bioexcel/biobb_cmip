@@ -31,7 +31,7 @@
             "desc": "Creates a CMIP suitable PDB from an standar structure file",
             "exec": "cmip_prepare_structure",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_structure",
-            "rest": true
+            "rest": false
         },
         {
             "block": "CmipPreparePDB",

@@ -234,7 +234,7 @@ Syntax: input_argument (datatype) : Definition
 
 Config input / output arguments for this building block:
 * **input_pdb_path** (*string*): Path to the input PDB file. File type: input. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/1kim_h.pdb). Accepted formats: PDB
-* **input_probe_pdb_path** (*string*): Path to the input probe file in PDB format. File type: input. [Sample file](None). Accepted formats: PDB
+* **input_probe_pdb_path** (*string*): Path to the input probe file in PDB format. File type: input. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/RBD-hACE2.RBD.cmip.pdb). Accepted formats: PDB
 * **output_pdb_path** (*string*): Path to the output PDB file. File type: output. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/1kim_neutral.pdb). Accepted formats: PDB
 * **output_grd_path** (*string*): Path to the output grid file in GRD format. File type: output. [Sample file](None). Accepted formats: GRD
 * **output_cube_path** (*string*): Path to the output grid file in cube format. File type: output. [Sample file](None). Accepted formats: CUBE

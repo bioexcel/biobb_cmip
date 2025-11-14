@@ -17,7 +17,8 @@
         }
     },
     "required": [
-        "input_pdb_path"
+        "input_pdb_path",
+        "input_probe_pdb_path"
     ],
     "properties": {
         "input_pdb_path": {
@@ -40,7 +41,7 @@
             "type": "string",
             "description": "Path to the input probe file in PDB format",
             "filetype": "input",
-            "sample": null,
+            "sample": "https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/RBD-hACE2.RBD.cmip.pdb",
             "enum": [
                 ".*\\.pdb$"
             ],
