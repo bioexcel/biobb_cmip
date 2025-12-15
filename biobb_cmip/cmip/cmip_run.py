@@ -288,7 +288,6 @@ class CmipRun(BiobbObject):
 
         # remove temporary folder(s)
         self.tmp_files.extend([
-            # self.stage_io_dict.get("unique_dir", ""),
             combined_params_dir
         ])
         self.remove_tmp_files()
