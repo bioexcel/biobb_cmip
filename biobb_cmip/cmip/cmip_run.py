@@ -3,13 +3,11 @@
 """Module containing the Cmip class and the command line interface."""
 import os
 import json
-import argparse
 from typing import Optional
 from typing import Any
 import shutil
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
-from biobb_common.configuration import settings
 from biobb_common.tools import file_utils as fu
 from biobb_common.tools.file_utils import launchlogger
 from biobb_cmip.cmip.common import create_params_file
@@ -305,54 +303,11 @@ def cmip_run(input_pdb_path: str, input_probe_pdb_path: Optional[str] = None, ou
              input_json_external_box_path: Optional[str] = None, properties: Optional[dict] = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.Cmip>` class and
     execute the :meth:`launch() <cmip.cmip.Cmip.launch>` method."""
-
-    return CmipRun(input_pdb_path=input_pdb_path, input_probe_pdb_path=input_probe_pdb_path,
-                   output_pdb_path=output_pdb_path, output_grd_path=output_grd_path, output_cube_path=output_cube_path,
-                   output_rst_path=output_rst_path, output_byat_path=output_byat_path, output_log_path=output_log_path,
-                   input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
-                   output_json_box_path=output_json_box_path, output_json_external_box_path=output_json_external_box_path,
-                   input_json_box_path=input_json_box_path, input_json_external_box_path=input_json_external_box_path,
-                   properties=properties, **kwargs).launch()
-
-    cmip_run.__doc__ = CmipRun.__doc__
+    return CmipRun(**dict(locals())).launch()
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Wrapper of the CMIP cmip module.",
-                                     formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=99999))
-    parser.add_argument('-c', '--config', required=False, help="This file can be a YAML file, JSON file or JSON string")
-
-    # Specific args of each building block
-    required_args = parser.add_argument_group('required arguments')
-    required_args.add_argument('--input_pdb_path', required=True)
-    parser.add_argument('--input_probe_pdb_path', required=False)
-    parser.add_argument('--output_pdb_path', required=False)
-    parser.add_argument('--output_grd_path', required=False)
-    parser.add_argument('--output_cube_path', required=False)
-    parser.add_argument('--output_rst_path', required=False)
-    parser.add_argument('--output_byat_path', required=False)
-    parser.add_argument('--output_log_path', required=False)
-    parser.add_argument('--input_vdw_params_path', required=False)
-    parser.add_argument('--input_params_path', required=False)
-    parser.add_argument('--output_json_box_path', required=False)
-    parser.add_argument('--output_json_external_box_path', required=False)
-    parser.add_argument('--input_json_box_path', required=False)
-    parser.add_argument('--input_json_external_box_path', required=False)
-
-    args = parser.parse_args()
-    config = args.config if args.config else None
-    properties = settings.ConfReader(config=config).get_prop_dic()
-
-    # Specific call of each building block
-    cmip_run(input_pdb_path=args.input_pdb_path, input_probe_pdb_path=args.input_probe_pdb_path,
-             output_pdb_path=args.output_pdb_path, output_grd_path=args.output_grd_path,
-             output_cube_path=args.output_cube_path, output_rst_path=args.output_rst_path,
-             output_byat_path=args.output_byat_path, output_log_path=args.output_log_path,
-             input_vdw_params_path=args.input_vdw_params_path, input_params_path=args.input_params_path,
-             output_json_box_path=args.output_json_box_path,
-             output_json_external_box_path=args.output_json_external_box_path, input_json_box_path=args.input_json_box_path,
-             input_json_external_box_path=args.input_json_external_box_path, properties=properties)
-
+cmip_run.__doc__ = CmipRun.__doc__
+main = CmipRun.get_main(cmip_run, "Wrapper of the CMIP cmip module.")
 
 if __name__ == '__main__':
     main()

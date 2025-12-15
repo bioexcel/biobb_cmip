@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 
 """Module containing the IgnoreResidues class and the command line interface."""
-import argparse
 from typing import Optional
 import shutil
 from biobb_cmip.cmip.common import mark_residues
 from biobb_common.generic.biobb_object import BiobbObject
-from biobb_common.configuration import settings
 from biobb_common.tools.file_utils import launchlogger
 import biobb_common.tools.file_utils as fu
 
@@ -109,32 +107,11 @@ class CmipIgnoreResidues(BiobbObject):
 def cmip_ignore_residues(input_cmip_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> int:
     """Create :class:`IgnoreResidues <cmip.ignore_residues.IgnoreResidues>` class and
     execute the :meth:`launch() <cmip.ignore_residues.IgnoreResidues.launch>` method."""
-    return CmipIgnoreResidues(input_cmip_pdb_path=input_cmip_pdb_path,
-                              output_cmip_pdb_path=output_cmip_pdb_path,
-                              properties=properties, **kwargs).launch()
-
-    cmip_ignore_residues.__doc__ = CmipIgnoreResidues.__doc__
+    return CmipIgnoreResidues(**dict(locals())).launch()
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Mark residues which charges will be ignored in the CMIP potential calculations.",
-                                     formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=99999))
-    parser.add_argument('-c', '--config', required=False, help="This file can be a YAML file, JSON file or JSON string")
-
-    # Specific args of each building block
-    required_args = parser.add_argument_group('required arguments')
-    required_args.add_argument('-i', '--input_cmip_pdb_path', required=True, help="Input PDB file name")
-    required_args.add_argument('-o', '--output_cmip_pdb_path', required=True, help="Output PDB file name")
-
-    args = parser.parse_args()
-    config = args.config if args.config else None
-    properties = settings.ConfReader(config=config).get_prop_dic()
-
-    # Specific call of each building block
-    cmip_ignore_residues(input_cmip_pdb_path=args.input_cmip_pdb_path,
-                         output_cmip_pdb_path=args.output_cmip_pdb_path,
-                         properties=properties)
-
+cmip_ignore_residues.__doc__ = CmipIgnoreResidues.__doc__
+main = CmipIgnoreResidues.get_main(cmip_ignore_residues, "Mark residues which charges will be ignored in the CMIP potential calculations.")
 
 if __name__ == '__main__':
     main()

@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
 """Module containing the PreparePDB class and the command line interface."""
-import argparse
 from typing import Optional
 from biobb_common.generic.biobb_object import BiobbObject
-from biobb_common.configuration import settings
 from biobb_common.tools.file_utils import launchlogger
 
 
@@ -121,32 +119,11 @@ class CmipPreparePDB(BiobbObject):
 def cmip_prepare_pdb(input_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> int:
     """Create :class:`PreparePDB <cmip.prepare_pdb.PreparePDB>` class and
     execute the :meth:`launch() <cmip.prepare_pdb.PreparePDB.launch>` method."""
-    return CmipPreparePDB(input_pdb_path=input_pdb_path,
-                          output_cmip_pdb_path=output_cmip_pdb_path,
-                          properties=properties, **kwargs).launch()
-
-    cmip_prepare_pdb.__doc__ = CmipPreparePDB.__doc__
+    return CmipPreparePDB(**dict(locals())).launch()
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Model the missing atoms in the backbone of a PDB structure.",
-                                     formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=99999))
-    parser.add_argument('-c', '--config', required=False, help="This file can be a YAML file, JSON file or JSON string")
-
-    # Specific args of each building block
-    required_args = parser.add_argument_group('required arguments')
-    required_args.add_argument('-i', '--input_pdb_path', required=True, help="Input PDB file name")
-    required_args.add_argument('-o', '--output_cmip_pdb_path', required=True, help="Output PDB file name")
-
-    args = parser.parse_args()
-    config = args.config if args.config else None
-    properties = settings.ConfReader(config=config).get_prop_dic()
-
-    # Specific call of each building block
-    cmip_prepare_pdb(input_pdb_path=args.input_pdb_path,
-                     output_cmip_pdb_path=args.output_cmip_pdb_path,
-                     properties=properties)
-
+cmip_prepare_pdb.__doc__ = CmipPreparePDB.__doc__
+main = CmipPreparePDB.get_main(cmip_prepare_pdb, "Model the missing atoms in the backbone of a PDB structure.")
 
 if __name__ == '__main__':
     main()
