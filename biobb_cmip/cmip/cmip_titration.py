@@ -154,9 +154,7 @@ class CmipTitration(BiobbObject):
         self.copy_to_host()
 
         # remove temporary folder(s)
-        self.tmp_files.extend([
-            combined_params_dir
-        ])
+        self.tmp_files.append(combined_params_dir)
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)
