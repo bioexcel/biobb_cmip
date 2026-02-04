@@ -17,8 +17,7 @@
         }
     },
     "required": [
-        "input_pdb_path",
-        "input_probe_pdb_path"
+        "input_pdb_path"
     ],
     "properties": {
         "input_pdb_path": {
