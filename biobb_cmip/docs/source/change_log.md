@@ -1,5 +1,11 @@
 # Biobb CMIP changelog
 
+## What's new in version [5.2.1](https://github.com/bioexcel/biobb_amber/releases/tag/v5.2.1)?
+
+### Changes
+
+* [UPDATE] Minor bug fixes in CmipRun
+
 ## What's new in version [5.2.0](https://github.com/bioexcel/biobb_amber/releases/tag/v5.2.0)?
 
 ### Changes
