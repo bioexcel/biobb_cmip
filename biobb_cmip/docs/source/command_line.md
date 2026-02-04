@@ -24,9 +24,9 @@ cmip_ignore_residues -h
     
     required arguments:
       -i INPUT_CMIP_PDB_PATH, --input_cmip_pdb_path INPUT_CMIP_PDB_PATH
-                            Input PDB file name
+                            Input PDB file path. Accepted formats: pdb.
       -o OUTPUT_CMIP_PDB_PATH, --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
-                            Output PDB file name
+                            Output PDB file path. Accepted formats: pdb.
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -87,9 +87,9 @@ cmip_prepare_pdb -h
     
     required arguments:
       -i INPUT_PDB_PATH, --input_pdb_path INPUT_PDB_PATH
-                            Input PDB file name
+                            Input PDB file path. Accepted formats: pdb.
       -o OUTPUT_CMIP_PDB_PATH, --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
-                            Output PDB file name
+                            Output PDB file path. Accepted formats: pdb.
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -140,7 +140,7 @@ Command:
 ```python
 cmip_prepare_structure -h
 ```
-    usage: cmip_prepare_structure [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH [--input_topology_path INPUT_TOPOLOGY_PATH]
+    usage: cmip_prepare_structure [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH [--input_topology_path INPUT_TOPOLOGY_PATH] -o OUTPUT_CMIP_PDB_PATH
     
     Wrapper of the cmip prepare_structure module.
     
@@ -148,11 +148,16 @@ cmip_prepare_structure -h
       -h, --help            show this help message and exit
       -c CONFIG, --config CONFIG
                             This file can be a YAML file, JSON file or JSON string
-      --input_topology_path INPUT_TOPOLOGY_PATH
     
     required arguments:
       --input_pdb_path INPUT_PDB_PATH
-      --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
+                            Path to the input PDB file. Accepted formats: pdb.
+      -o OUTPUT_CMIP_PDB_PATH, --output_cmip_pdb_path OUTPUT_CMIP_PDB_PATH
+                            Path to the output PDB file. Accepted formats: pdb.
+    
+    optional arguments:
+      --input_topology_path INPUT_TOPOLOGY_PATH
+                            Path to the input topology path. Accepted formats: zip, top, psf, prmtop.
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -205,7 +210,7 @@ Command:
 ```python
 cmip_run -h
 ```
-    usage: cmip_run [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH [--input_probe_pdb_path INPUT_PROBE_PDB_PATH] [--output_pdb_path OUTPUT_PDB_PATH] [--output_grd_path OUTPUT_GRD_PATH] [--output_cube_path OUTPUT_CUBE_PATH] [--output_rst_path OUTPUT_RST_PATH] [--output_byat_path OUTPUT_BYAT_PATH] [--output_log_path OUTPUT_LOG_PATH] [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH] [--output_json_box_path OUTPUT_JSON_BOX_PATH] [--output_json_external_box_path OUTPUT_JSON_EXTERNAL_BOX_PATH] [--input_json_box_path INPUT_JSON_BOX_PATH] [--input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH]
+    usage: cmip_run [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --input_probe_pdb_path INPUT_PROBE_PDB_PATH [--output_pdb_path OUTPUT_PDB_PATH] [--output_grd_path OUTPUT_GRD_PATH] [--output_cube_path OUTPUT_CUBE_PATH] [--output_rst_path OUTPUT_RST_PATH] [--input_rst_path INPUT_RST_PATH] [--output_byat_path OUTPUT_BYAT_PATH] [--output_log_path OUTPUT_LOG_PATH] [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH] [--output_json_box_path OUTPUT_JSON_BOX_PATH] [--output_json_external_box_path OUTPUT_JSON_EXTERNAL_BOX_PATH] [--input_json_box_path INPUT_JSON_BOX_PATH] [--input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH]
     
     Wrapper of the CMIP cmip module.
     
@@ -213,22 +218,40 @@ cmip_run -h
       -h, --help            show this help message and exit
       -c CONFIG, --config CONFIG
                             This file can be a YAML file, JSON file or JSON string
-      --input_probe_pdb_path INPUT_PROBE_PDB_PATH
-      --output_pdb_path OUTPUT_PDB_PATH
-      --output_grd_path OUTPUT_GRD_PATH
-      --output_cube_path OUTPUT_CUBE_PATH
-      --output_rst_path OUTPUT_RST_PATH
-      --output_byat_path OUTPUT_BYAT_PATH
-      --output_log_path OUTPUT_LOG_PATH
-      --input_vdw_params_path INPUT_VDW_PARAMS_PATH
-      --input_params_path INPUT_PARAMS_PATH
-      --output_json_box_path OUTPUT_JSON_BOX_PATH
-      --output_json_external_box_path OUTPUT_JSON_EXTERNAL_BOX_PATH
-      --input_json_box_path INPUT_JSON_BOX_PATH
-      --input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH
     
     required arguments:
       --input_pdb_path INPUT_PDB_PATH
+                            Path to the input PDB file. Accepted formats: pdb.
+      --input_probe_pdb_path INPUT_PROBE_PDB_PATH
+                            Path to the input probe file in PDB format. Accepted formats: pdb.
+    
+    optional arguments:
+      --output_pdb_path OUTPUT_PDB_PATH
+                            Path to the output PDB file. Accepted formats: pdb.
+      --output_grd_path OUTPUT_GRD_PATH
+                            Path to the output grid file in GRD format. Accepted formats: grd.
+      --output_cube_path OUTPUT_CUBE_PATH
+                            Path to the output grid file in cube format. Accepted formats: cube.
+      --output_rst_path OUTPUT_RST_PATH
+                            Path to the output restart file. Accepted formats: txt.
+      --input_rst_path INPUT_RST_PATH
+                            Path to the input restart file. Accepted formats: txt.
+      --output_byat_path OUTPUT_BYAT_PATH
+                            Path to the output atom by atom energy file. Accepted formats: txt, out.
+      --output_log_path OUTPUT_LOG_PATH
+                            Path to the output CMIP log file LOG. Accepted formats: log.
+      --input_vdw_params_path INPUT_VDW_PARAMS_PATH
+                            Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). Accepted formats: txt.
+      --input_params_path INPUT_PARAMS_PATH
+                            Path to the CMIP input parameters file. Accepted formats: txt.
+      --output_json_box_path OUTPUT_JSON_BOX_PATH
+                            Path to the output CMIP box in JSON format. Accepted formats: json.
+      --output_json_external_box_path OUTPUT_JSON_EXTERNAL_BOX_PATH
+                            Path to the output external CMIP box in JSON format. Accepted formats: json.
+      --input_json_box_path INPUT_JSON_BOX_PATH
+                            Path to the input CMIP box in JSON format. Accepted formats: json.
+      --input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH
+                            Path to the input CMIP box in JSON format. Accepted formats: json.
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
@@ -293,7 +316,7 @@ properties:
 ```
 #### Command line
 ```python
-cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
+cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path RBD-hACE2.RBD.cmip.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path output.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path output.json --output_json_external_box_path output.json --input_json_box_path input.json --input_json_external_box_path input.json
 ```
 ### JSON
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run.json)
@@ -330,7 +353,7 @@ cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_
 ```
 #### Command line
 ```python
-cmip_run --config config_cmip_run.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path input.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path ref_cmip.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path ref_box.json --output_json_external_box_path ref_box.json --input_json_box_path ref_box.json --input_json_external_box_path ref_box.json
+cmip_run --config config_cmip_run.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path RBD-hACE2.RBD.cmip.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path output.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path output.json --output_json_external_box_path output.json --input_json_box_path input.json --input_json_external_box_path input.json
 ```
 
 ## Cmip_titration
@@ -340,7 +363,7 @@ Command:
 ```python
 cmip_titration -h
 ```
-    usage: cmip_titration [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --output_pdb_path OUTPUT_PDB_PATH [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH]
+    usage: cmip_titration [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH -o OUTPUT_PDB_PATH [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH]
     
     Wrapper of the CMIP Titration module.
     
@@ -348,12 +371,18 @@ cmip_titration -h
       -h, --help            show this help message and exit
       -c CONFIG, --config CONFIG
                             This file can be a YAML file, JSON file or JSON string
-      --input_vdw_params_path INPUT_VDW_PARAMS_PATH
-      --input_params_path INPUT_PARAMS_PATH
     
     required arguments:
       --input_pdb_path INPUT_PDB_PATH
-      --output_pdb_path OUTPUT_PDB_PATH
+                            Path to the input PDB file. Accepted formats: pdb.
+      -o OUTPUT_PDB_PATH, --output_pdb_path OUTPUT_PDB_PATH
+                            Path to the output PDB file. Accepted formats: pdb.
+    
+    optional arguments:
+      --input_vdw_params_path INPUT_VDW_PARAMS_PATH
+                            Path to the CMIP input Van der Waals force parameters, if not provided the CMIP conda installation one is used ("$CONDA_PREFIX/share/cmip/dat/vdwprm"). Accepted formats: txt.
+      --input_params_path INPUT_PARAMS_PATH
+                            Path to the CMIP input parameters file. Accepted formats: txt.
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 

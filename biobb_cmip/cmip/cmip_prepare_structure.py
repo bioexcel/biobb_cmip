@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 
 """Module containing the PrepareStructure class and the command line interface."""
-import argparse
 from typing import Optional
 import warnings
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
-from biobb_common.configuration import settings
 from biobb_common.tools import file_utils as fu
 from biobb_common.tools.file_utils import launchlogger
 
@@ -127,35 +125,11 @@ def cmip_prepare_structure(input_pdb_path: str, output_cmip_pdb_path: str, input
                            properties: Optional[dict] = None, **kwargs) -> int:
     """Create :class:`Cmip <cmip.cmip.PrepareStructure>` class and
     execute the :meth:`launch() <cmip.cmip.PrepareStructure.launch>` method."""
-
-    return CmipPrepareStructure(input_pdb_path=input_pdb_path, output_cmip_pdb_path=output_cmip_pdb_path,
-                                input_topology_path=input_topology_path, properties=properties,
-                                **kwargs).launch()
-
-    cmip_prepare_structure.__doc__ = CmipPrepareStructure.__doc__
+    return CmipPrepareStructure(**dict(locals())).launch()
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Wrapper of the cmip prepare_structure module.",
-                                     formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=99999))
-    parser.add_argument('-c', '--config', required=False, help="This file can be a YAML file, JSON file or JSON string")
-
-    # Specific args of each building block
-    required_args = parser.add_argument_group('required arguments')
-    required_args.add_argument('--input_pdb_path', required=True)
-    required_args.add_argument('--output_cmip_pdb_path', required=True)
-    parser.add_argument('--input_topology_path', required=False)
-
-    args = parser.parse_args()
-    config = args.config if args.config else None
-    properties = settings.ConfReader(config=config).get_prop_dic()
-
-    # Specific call of each building block
-    cmip_prepare_structure(input_pdb_path=args.input_pdb_path,
-                           output_cmip_pdb_path=args.output_cmip_pdb_path,
-                           input_topology_path=args.input_topology_path,
-                           properties=properties)
-
+cmip_prepare_structure.__doc__ = CmipPrepareStructure.__doc__
+main = CmipPrepareStructure.get_main(cmip_prepare_structure, "Wrapper of the cmip prepare_structure module.")
 
 if __name__ == '__main__':
     main()
