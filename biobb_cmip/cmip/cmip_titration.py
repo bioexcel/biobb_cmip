@@ -4,7 +4,7 @@
 import os
 from typing import Optional
 from typing import Any
-from pathlib import Path
+from pathlib import Path, PurePath
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.tools import file_utils as fu
 from biobb_common.tools.file_utils import launchlogger
@@ -141,11 +141,14 @@ class CmipTitration(BiobbObject):
 
         self.stage_files()
 
-        self.cmd = [self.binary_path,
-                    '-i', self.stage_io_dict['in']['combined_params_path'],
-                    '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
-                    '-hs', self.stage_io_dict['in']['input_pdb_path'],
-                    '-outpdb', self.stage_io_dict['out']['output_pdb_path'][:-4]]
+        self.cmd = ["cd",
+                    self.stage_io_dict["unique_dir"],
+                    ";",
+                    self.binary_path,
+                    '-i', PurePath(self.stage_io_dict['in']['combined_params_path']).name,
+                    '-vdw', PurePath(self.stage_io_dict['in']['input_vdw_params_path']).name,
+                    '-hs', PurePath(self.stage_io_dict['in']['input_pdb_path']).name,
+                    '-outpdb', PurePath(self.stage_io_dict['out']['output_pdb_path'][:-4]).name]
 
         # Run Biobb block
         self.run_biobb()

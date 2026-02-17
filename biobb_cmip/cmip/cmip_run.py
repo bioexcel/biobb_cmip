@@ -6,7 +6,7 @@ import json
 from typing import Optional
 from typing import Any
 import shutil
-from pathlib import Path
+from pathlib import Path, PurePath
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.tools import file_utils as fu
 from biobb_common.tools.file_utils import launchlogger
@@ -180,43 +180,46 @@ class CmipRun(BiobbObject):
 
         self.stage_files()
 
-        self.cmd = [self.binary_path,
-                    '-i', self.stage_io_dict['in']['combined_params_path'],
-                    '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
-                    '-hs', self.stage_io_dict['in']['input_pdb_path']]
+        self.cmd = ["cd",
+                    self.stage_io_dict["unique_dir"],
+                    ";",
+                    self.binary_path,
+                    '-i', PurePath(self.stage_io_dict['in']['combined_params_path']).name,
+                    '-vdw', PurePath(self.stage_io_dict['in']['input_vdw_params_path']).name,
+                    '-hs', PurePath(self.stage_io_dict['in']['input_pdb_path']).name]
 
         if self.stage_io_dict["in"].get("input_probe_pdb_path") and Path(
                 self.io_dict["in"].get("input_probe_pdb_path", "")).exists():
             self.cmd.append('-pr')
-            self.cmd.append(self.stage_io_dict["in"].get("input_probe_pdb_path"))
+            self.cmd.append(PurePath(self.stage_io_dict["in"].get("input_probe_pdb_path")).name)
 
         if self.stage_io_dict["out"].get("output_pdb_path"):
             self.cmd.append('-outpdb')
-            self.cmd.append(self.stage_io_dict['out']['output_pdb_path'])
+            self.cmd.append(PurePath(self.stage_io_dict['out']['output_pdb_path']).name)
 
         if self.stage_io_dict["out"].get("output_grd_path"):
             self.cmd.append('-grdout')
-            self.cmd.append(self.stage_io_dict["out"]["output_grd_path"])
+            self.cmd.append(PurePath(self.stage_io_dict["out"]["output_grd_path"]).name)
 
         if self.stage_io_dict["out"].get("output_cube_path"):
             self.cmd.append('-cube')
-            self.cmd.append(self.stage_io_dict["out"]["output_cube_path"])
+            self.cmd.append(PurePath(self.stage_io_dict["out"]["output_cube_path"]).name)
 
         if self.stage_io_dict["out"].get("output_rst_path"):
             self.cmd.append('-rst')
-            self.cmd.append(self.stage_io_dict["out"]["output_rst_path"])
+            self.cmd.append(PurePath(self.stage_io_dict["out"]["output_rst_path"]).name)
 
         if self.stage_io_dict["out"].get("output_byat_path"):
             self.cmd.append('-byat')
-            self.cmd.append(self.stage_io_dict["out"]["output_byat_path"])
+            self.cmd.append(PurePath(self.stage_io_dict["out"]["output_byat_path"]).name)
 
         if self.stage_io_dict["out"].get("output_log_path"):
             self.cmd.append('-o')
-            self.cmd.append(self.stage_io_dict["out"]["output_log_path"])
+            self.cmd.append(PurePath(self.stage_io_dict["out"]["output_log_path"]).name)
 
         if self.stage_io_dict['out'].get('output_json_box_path') or self.stage_io_dict['out'].get('output_json_external_box_path'):
             self.cmd.append('-l')
-            self.cmd.append(self.stage_io_dict["out"]["key_value_log_path"])
+            self.cmd.append(PurePath(self.stage_io_dict["out"]["key_value_log_path"]).name)
 
         # Run Biobb block
         self.run_biobb()
