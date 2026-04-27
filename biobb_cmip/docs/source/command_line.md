@@ -37,11 +37,11 @@ Config input / output arguments for this building block:
 Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
-* **residue_list** (*string*): (None) Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. If no chain is provided all the residues in the pdb file will be market. ie: "A:3"..
-* **ignore_all** (*boolean*): (False) Mark all the residues in the PDB file..
-* **remove_tmp** (*boolean*): (True) Remove temporal files..
-* **restart** (*boolean*): (False) Do not execute if output files exist..
-* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
+* **residue_list** (*string*): (None) Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. If no chain is provided all the residues in the pdb file will be market. ie: "A:3".
+* **ignore_all** (*boolean*): (False) Mark all the residues in the PDB file.
+* **remove_tmp** (*boolean*): (True) Remove temporal files.
+* **restart** (*boolean*): (False) Do not execute if output files exist.
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory.
 ### YAML
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_ignore_residues.yml)
 ```python
@@ -100,14 +100,14 @@ Config input / output arguments for this building block:
 Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
-* **remove_water** (*boolean*): (True) Remove Water molecules..
-* **add_hydrogen** (*boolean*): (True) Add Hydrogen atoms to the structure..
-* **keep_hydrogen** (*boolean*): (False) If **add_hydrogen** is True. All hydrogen atoms will be removed before adding the new ones unless this option is set True..
-* **fix_sidechains** (*boolean*): (True) Complete side chains (heavy atoms, protein only)..
-* **fix_backbone_atoms** (*boolean*): (True) Add missing O, OXT backbone atoms..
-* **remove_tmp** (*boolean*): (True) Remove temporal files..
-* **restart** (*boolean*): (False) Do not execute if output files exist..
-* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
+* **remove_water** (*boolean*): (True) Remove Water molecules.
+* **add_hydrogen** (*boolean*): (True) Add Hydrogen atoms to the structure.
+* **keep_hydrogen** (*boolean*): (False) If **add_hydrogen** is True. All hydrogen atoms will be removed before adding the new ones unless this option is set True.
+* **fix_sidechains** (*boolean*): (True) Complete side chains (heavy atoms, protein only).
+* **fix_backbone_atoms** (*boolean*): (True) Add missing O, OXT backbone atoms.
+* **remove_tmp** (*boolean*): (True) Remove temporal files.
+* **restart** (*boolean*): (False) Do not execute if output files exist.
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory.
 ### YAML
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_pdb.yml)
 ```python
@@ -169,15 +169,15 @@ Config input / output arguments for this building block:
 Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
-* **remove_tmp** (*boolean*): (True) Remove temporal files..
-* **restart** (*boolean*): (False) Do not execute if output files exist..
-* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
-* **container_path** (*string*): (None) Path to the binary executable of your container..
-* **container_image** (*string*): (cmip/cmip:latest) Container Image identifier..
-* **container_volume_path** (*string*): (/data) Path to an internal directory in the container..
-* **container_working_dir** (*string*): (None) Path to the internal CWD in the container..
-* **container_user_id** (*string*): (None) User number id to be mapped inside the container..
-* **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
+* **remove_tmp** (*boolean*): (True) Remove temporal files.
+* **restart** (*boolean*): (False) Do not execute if output files exist.
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory.
+* **container_path** (*string*): (None) Path to the binary executable of your container.
+* **container_image** (*string*): (cmip/cmip:latest) Container Image identifier.
+* **container_volume_path** (*string*): (/data) Path to an internal directory in the container.
+* **container_working_dir** (*string*): (None) Path to the internal CWD in the container.
+* **container_user_id** (*string*): (None) User number id to be mapped inside the container.
+* **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell.
 ### YAML
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_structure.yml)
 ```python
@@ -210,7 +210,7 @@ Command:
 ```python
 cmip_run -h
 ```
-    usage: cmip_run [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH --input_probe_pdb_path INPUT_PROBE_PDB_PATH [--output_pdb_path OUTPUT_PDB_PATH] [--output_grd_path OUTPUT_GRD_PATH] [--output_cube_path OUTPUT_CUBE_PATH] [--output_rst_path OUTPUT_RST_PATH] [--input_rst_path INPUT_RST_PATH] [--output_byat_path OUTPUT_BYAT_PATH] [--output_log_path OUTPUT_LOG_PATH] [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH] [--output_json_box_path OUTPUT_JSON_BOX_PATH] [--output_json_external_box_path OUTPUT_JSON_EXTERNAL_BOX_PATH] [--input_json_box_path INPUT_JSON_BOX_PATH] [--input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH]
+    usage: cmip_run [-h] [-c CONFIG] --input_pdb_path INPUT_PDB_PATH [--input_probe_pdb_path INPUT_PROBE_PDB_PATH] [--output_pdb_path OUTPUT_PDB_PATH] [--output_grd_path OUTPUT_GRD_PATH] [--output_cube_path OUTPUT_CUBE_PATH] [--output_rst_path OUTPUT_RST_PATH] [--input_rst_path INPUT_RST_PATH] [--output_byat_path OUTPUT_BYAT_PATH] [--output_log_path OUTPUT_LOG_PATH] [--input_vdw_params_path INPUT_VDW_PARAMS_PATH] [--input_params_path INPUT_PARAMS_PATH] [--output_json_box_path OUTPUT_JSON_BOX_PATH] [--output_json_external_box_path OUTPUT_JSON_EXTERNAL_BOX_PATH] [--input_json_box_path INPUT_JSON_BOX_PATH] [--input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH]
     
     Wrapper of the CMIP cmip module.
     
@@ -222,10 +222,10 @@ cmip_run -h
     required arguments:
       --input_pdb_path INPUT_PDB_PATH
                             Path to the input PDB file. Accepted formats: pdb.
-      --input_probe_pdb_path INPUT_PROBE_PDB_PATH
-                            Path to the input probe file in PDB format. Accepted formats: pdb.
     
     optional arguments:
+      --input_probe_pdb_path INPUT_PROBE_PDB_PATH
+                            Path to the input probe file in PDB format. Accepted formats: pdb.
       --output_pdb_path OUTPUT_PDB_PATH
                             Path to the output PDB file. Accepted formats: pdb.
       --output_grd_path OUTPUT_GRD_PATH
@@ -275,18 +275,18 @@ Config input / output arguments for this building block:
 Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
-* **execution_type** (*string*): (mip_pos) Default options for the params file, each one creates a different params file. .
-* **params** (*object*): ({}) CMIP options specification..
-* **binary_path** (*string*): (cmip) Path to the CMIP cmip executable binary..
-* **remove_tmp** (*boolean*): (True) Remove temporal files..
-* **restart** (*boolean*): (False) Do not execute if output files exist..
-* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
-* **container_path** (*string*): (None) Path to the binary executable of your container..
-* **container_image** (*string*): (cmip/cmip:latest) Container Image identifier..
-* **container_volume_path** (*string*): (/data) Path to an internal directory in the container..
-* **container_working_dir** (*string*): (None) Path to the internal CWD in the container..
-* **container_user_id** (*string*): (None) User number id to be mapped inside the container..
-* **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
+* **execution_type** (*string*): (mip_pos) Default options for the params file, each one creates a different params file. 
+* **params** (*object*): ({}) CMIP options specification.
+* **binary_path** (*string*): (cmip) Path to the CMIP cmip executable binary.
+* **remove_tmp** (*boolean*): (True) Remove temporal files.
+* **restart** (*boolean*): (False) Do not execute if output files exist.
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory.
+* **container_path** (*string*): (None) Path to the binary executable of your container.
+* **container_image** (*string*): (cmip/cmip:latest) Container Image identifier.
+* **container_volume_path** (*string*): (/data) Path to an internal directory in the container.
+* **container_working_dir** (*string*): (None) Path to the internal CWD in the container.
+* **container_user_id** (*string*): (None) User number id to be mapped inside the container.
+* **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell.
 ### YAML
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run.yml)
 ```python
@@ -395,22 +395,22 @@ Config input / output arguments for this building block:
 Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
-* **params** (*object*): ({}) CMIP options specification..
-* **energy_cutoff** (*number*): (9999.9) Energy cutoff, extremely hight value to enable the addition of all the ions and waters before reaching the cutoff..
-* **num_wats** (*integer*): (10) Number of water molecules to be added..
-* **neutral** (*boolean*): (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account..
-* **num_positive_ions** (*integer*): (10) Number of positive ions to be added (Tipatom IP=Na+)..
-* **num_negative_ions** (*integer*): (10) Number of negative ions to be added (Tipatom IM=Cl-)..
-* **binary_path** (*string*): (titration) Path to the CMIP Titration executable binary..
-* **remove_tmp** (*boolean*): (True) Remove temporal files..
-* **restart** (*boolean*): (False) Do not execute if output files exist..
-* **sandbox_path** (*string*): (./) Parent path to the sandbox directory..
-* **container_path** (*string*): (None) Path to the binary executable of your container..
-* **container_image** (*string*): (cmip/cmip:latest) Container Image identifier..
-* **container_volume_path** (*string*): (/data) Path to an internal directory in the container..
-* **container_working_dir** (*string*): (None) Path to the internal CWD in the container..
-* **container_user_id** (*string*): (None) User number id to be mapped inside the container..
-* **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell..
+* **params** (*object*): ({}) CMIP options specification.
+* **energy_cutoff** (*number*): (9999.9) Energy cutoff, extremely hight value to enable the addition of all the ions and waters before reaching the cutoff.
+* **num_wats** (*integer*): (10) Number of water molecules to be added.
+* **neutral** (*boolean*): (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account.
+* **num_positive_ions** (*integer*): (10) Number of positive ions to be added (Tipatom IP=Na+).
+* **num_negative_ions** (*integer*): (10) Number of negative ions to be added (Tipatom IM=Cl-).
+* **binary_path** (*string*): (titration) Path to the CMIP Titration executable binary.
+* **remove_tmp** (*boolean*): (True) Remove temporal files.
+* **restart** (*boolean*): (False) Do not execute if output files exist.
+* **sandbox_path** (*string*): (./) Parent path to the sandbox directory.
+* **container_path** (*string*): (None) Path to the binary executable of your container.
+* **container_image** (*string*): (cmip/cmip:latest) Container Image identifier.
+* **container_volume_path** (*string*): (/data) Path to an internal directory in the container.
+* **container_working_dir** (*string*): (None) Path to the internal CWD in the container.
+* **container_user_id** (*string*): (None) User number id to be mapped inside the container.
+* **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell.
 ### YAML
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration.yml)
 ```python
