@@ -180,8 +180,13 @@ class CmipRun(BiobbObject):
 
         self.stage_files()
 
+        if self.container_path:
+            working_dir = self.container_volume_path if self.container_volume_path else "/data"
+        else:
+            working_dir = self.stage_io_dict["unique_dir"]
+
         self.cmd = ["cd",
-                    self.stage_io_dict["unique_dir"],
+                    working_dir,
                     ";",
                     self.binary_path,
                     '-i', PurePath(self.stage_io_dict['in']['combined_params_path']).name,
