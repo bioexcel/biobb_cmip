@@ -94,6 +94,7 @@ jobs:
       - name: Set absolute paths in conf.yml
         run: |
           sed -i "s|path_to_vdwprm|${{ github.workspace }}/${{ github.event.repository.name }}/cmip/dat/vdwprm|g" ${{ github.workspace }}/${{ github.event.repository.name }}/test/conf.yml
+          more ${{ github.workspace }}/${{ github.event.repository.name }}/test/conf.yml
 
       - name: Run container tests
         shell: bash -l {0}
