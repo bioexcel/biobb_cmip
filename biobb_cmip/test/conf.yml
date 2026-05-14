@@ -17,6 +17,7 @@ cmip_titration_docker:
     ref_output_pdb_path: file:test_reference_dir/cmip/titration.container.pdb
   properties:
     neutral: True
+    input_vdw_params_path: /usr/local/share/cmip/dat/vdwprm
     container_path: docker
     container_image: quay.io/biocontainers/biobb_cmip:5.2.3--pyhdfd78af_0
     container_volume_path: /inout
@@ -28,6 +29,7 @@ cmip_titration_singularity:
     ref_output_pdb_path: file:test_reference_dir/cmip/titration.container.pdb
   properties:
     neutral: True
+    input_vdw_params_path: /usr/local/share/cmip/dat/vdwprm
     container_path: singularity
     container_image: https://depot.galaxyproject.org/singularity/biobb_cmip:5.2.3--pyhdfd78af_0
     container_volume_path: /inout
@@ -49,6 +51,7 @@ cmip_run_docker:
     ref_output_byat_path: file:test_reference_dir/cmip/RBD.energies.byat.container.out
   properties:
     execution_type: pb_interaction_energy
+    input_vdw_params_path: /usr/local/share/cmip/dat/vdwprm
     container_path: docker
     container_image: quay.io/biocontainers/biobb_cmip:5.2.3--pyhdfd78af_0
     container_volume_path: /inout
@@ -61,6 +64,7 @@ cmip_run_singularity:
     ref_output_byat_path: file:test_reference_dir/cmip/RBD.energies.byat.container.out
   properties:
     execution_type: mip_pos
+    input_vdw_params_path: /usr/local/share/cmip/dat/vdwprm
     container_path: singularity
     container_image: https://depot.galaxyproject.org/singularity/biobb_cmip:5.2.3--pyhdfd78af_0
     container_volume_path: /inout
