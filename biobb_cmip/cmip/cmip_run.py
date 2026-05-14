@@ -105,7 +105,10 @@ class CmipRun(BiobbObject):
         self.params = {k: str(v) for k, v in properties.get('params', dict()).items()}
 
         if not self.io_dict['in'].get('input_vdw_params_path'):
-            self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
+            if properties.get('input_vdw_params_path'):
+                self.io_dict['in']['input_vdw_params_path'] = properties.get('input_vdw_params_path')
+            else:
+                self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
         self.io_dict['in']['combined_params_path'] = properties.get('combined_params_path', 'params')
 
         # Check the properties
