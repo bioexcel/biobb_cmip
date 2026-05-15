@@ -190,8 +190,7 @@ class CmipRun(BiobbObject):
                     ";",
                     self.binary_path,
                     '-i', PurePath(self.stage_io_dict['in']['combined_params_path']).name,
-                    # '-vdw', PurePath(self.stage_io_dict['in']['input_vdw_params_path']).name,
-                    '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
+                    '-vdw', PurePath(self.stage_io_dict['in']['input_vdw_params_path']).name,
                     '-hs', PurePath(self.stage_io_dict['in']['input_pdb_path']).name]
 
         if self.stage_io_dict["in"].get("input_probe_pdb_path") and Path(
