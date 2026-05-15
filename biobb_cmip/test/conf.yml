@@ -64,7 +64,7 @@ cmip_run_singularity:
     ref_output_byat_path: file:test_reference_dir/cmip/RBD.energies.byat.container.out
     input_vdw_params_path: path_to_vdwprm
   properties:
-    execution_type: mip_pos
+    execution_type: pb_interaction_energy
     container_path: singularity
     container_image: https://depot.galaxyproject.org/singularity/biobb_cmip:5.2.3--pyhdfd78af_0
     container_volume_path: /inout
