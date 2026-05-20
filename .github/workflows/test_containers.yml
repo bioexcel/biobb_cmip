@@ -75,7 +75,8 @@ jobs:
             pytest
             pytest-cov
             pytest-html
-            mdanalysis >=2.0.0
+            mdanalysis>=2.0.0
+            biobb_structure_checking==3.15.6
             biobb_common${{ steps.biobb_common_version.outputs.version }}
 
       - name: List installed package versions
