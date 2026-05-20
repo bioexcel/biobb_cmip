@@ -52,6 +52,12 @@ jobs:
           sudo apt-get install -y apptainer
           singularity --version
 
+      - name: Get biobb_common version from env.yaml
+        id: biobb_common_version
+        run: |
+          VERSION=$(grep 'biobb_common' .github/env.yaml | sed 's/.*biobb_common *//')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: setup-micromamba
         uses: mamba-org/setup-micromamba@v2.0.0
         with:
@@ -60,26 +66,24 @@ jobs:
           post-cleanup: 'all'
           init-shell: bash
           environment-name: test-env
+          condarc: |
+            channels:
+              - bioconda
+              - conda-forge
           create-args: >-
             python=${{ matrix.python-version }}
             pytest
             pytest-cov
             pytest-html
+            biobb_common${{ steps.biobb_common_version.outputs.version }}
 
       - name: List installed package versions
         shell: bash -l {0}
         run: micromamba list
 
-      - name: Checkout biobb_common
-        uses: actions/checkout@v4
-        with:
-          repository: bioexcel/biobb_common
-          path: './biobb_common'
-
       - name: Install ${{ github.event.repository.name }}
         shell: bash -l {0}
         run: |
-          export PYTHONPATH=.:./biobb_common:$PYTHONPATH
           pip install -e .
 
       - name: Pre-pull ${{ github.event.repository.name }} Singularity image
@@ -91,15 +95,9 @@ jobs:
           singularity pull --name ${{ github.event.repository.name }}:${VERSION}.sif ${SINGULARITY_URL}
           ls -lh ${{ github.event.repository.name }}:${VERSION}.sif
 
-      - name: Set absolute paths in conf.yml
-        run: |
-          sed -i "s|path_to_vdwprm|${{ github.workspace }}/${{ github.event.repository.name }}/cmip/dat/vdwprm|g" ${{ github.workspace }}/${{ github.event.repository.name }}/test/conf.yml
-          more ${{ github.workspace }}/${{ github.event.repository.name }}/test/conf.yml
-
       - name: Run container tests
         shell: bash -l {0}
         run: |
-          export PYTHONPATH=.:./biobb_common:$PYTHONPATH
-          pytest ${{ github.event.repository.name }}/test/unitests/ --ignore-glob=*titration* -k "container" -v 
+          pytest ${{ github.event.repository.name }}/test/unitests/ -k "container" --ignore-glob=*titration* -v 
 
 
