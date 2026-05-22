@@ -24,7 +24,7 @@
             "type": "string",
             "description": "Path to the input PDB file",
             "filetype": "input",
-            "sample": "https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/1kim_h.pdb",
+            "sample": "https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/RBD-hACE2.hACE2.cmip.pdb",
             "enum": [
                 ".*\\.pdb$"
             ],
@@ -56,7 +56,7 @@
             "type": "string",
             "description": "Path to the output PDB file",
             "filetype": "output",
-            "sample": "https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/1kim_neutral.pdb",
+            "sample": "https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/RBD.energies.byat.out",
             "enum": [
                 ".*\\.pdb$"
             ],
