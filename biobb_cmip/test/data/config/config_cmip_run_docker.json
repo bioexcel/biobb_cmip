@@ -1,9 +1,8 @@
 {
   "properties": {
-    "remove_tmp": true,
     "execution_type": "pb_interaction_energy",
     "container_path": "docker",
-    "container_image": "quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0",
+    "container_image": "quay.io/biocontainers/biobb_cmip:5.2.3--pyhdfd78af_0",
     "container_volume_path": "/inout"
   }
 }

@@ -46,7 +46,6 @@ Config parameters for this building block:
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_ignore_residues.yml)
 ```python
 properties:
-  remove_tmp: true
   residue_list: 3
 
 ```
@@ -59,8 +58,7 @@ cmip_ignore_residues --config config_cmip_ignore_residues.yml --input_cmip_pdb_p
 ```python
 {
   "properties": {
-    "residue_list": 3,
-    "remove_tmp": true
+    "residue_list": 3
   }
 }
 ```
@@ -297,26 +295,24 @@ properties:
 #### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run_docker.yml)
 ```python
 properties:
-  container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
+  container_image: quay.io/biocontainers/biobb_cmip:5.2.3--pyhdfd78af_0
   container_path: docker
   container_volume_path: /inout
   execution_type: pb_interaction_energy
-  remove_tmp: true
 
 ```
 #### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run_singularity.yml)
 ```python
 properties:
-  container_image: cmip.simg
+  container_image: https://depot.galaxyproject.org/singularity/biobb_cmip:5.2.3--pyhdfd78af_0
   container_path: singularity
   container_volume_path: /inout
-  execution_type: mip_pos
-  remove_tmp: true
+  execution_type: pb_interaction_energy
 
 ```
 #### Command line
 ```python
-cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_pdb_path RBD-hACE2.RBD.cmip.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path output.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path output.json --output_json_external_box_path output.json --input_json_box_path input.json --input_json_external_box_path input.json
+cmip_run --config config_cmip_run.yml --input_pdb_path RBD-hACE2.hACE2.cmip.pdb --input_probe_pdb_path RBD-hACE2.RBD.cmip.pdb --output_pdb_path RBD.energies.byat.out --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path output.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path output.json --output_json_external_box_path output.json --input_json_box_path input.json --input_json_external_box_path input.json
 ```
 ### JSON
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_run.json)
@@ -331,10 +327,9 @@ cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_
 ```python
 {
   "properties": {
-    "remove_tmp": true,
     "execution_type": "pb_interaction_energy",
     "container_path": "docker",
-    "container_image": "quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0",
+    "container_image": "quay.io/biocontainers/biobb_cmip:5.2.3--pyhdfd78af_0",
     "container_volume_path": "/inout"
   }
 }
@@ -343,17 +338,16 @@ cmip_run --config config_cmip_run.yml --input_pdb_path 1kim_h.pdb --input_probe_
 ```python
 {
   "properties": {
-    "remove_tmp": true,
-    "execution_type": "mip_pos",
+    "execution_type": "pb_interaction_energy",
     "container_path": "singularity",
-    "container_image": "cmip.simg",
+    "container_image": "https://depot.galaxyproject.org/singularity/biobb_cmip:5.2.3--pyhdfd78af_0",
     "container_volume_path": "/inout"
   }
 }
 ```
 #### Command line
 ```python
-cmip_run --config config_cmip_run.json --input_pdb_path 1kim_h.pdb --input_probe_pdb_path RBD-hACE2.RBD.cmip.pdb --output_pdb_path 1kim_neutral.pdb --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path output.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path output.json --output_json_external_box_path output.json --input_json_box_path input.json --input_json_external_box_path input.json
+cmip_run --config config_cmip_run.json --input_pdb_path RBD-hACE2.hACE2.cmip.pdb --input_probe_pdb_path RBD-hACE2.RBD.cmip.pdb --output_pdb_path RBD.energies.byat.out --output_grd_path output.grd --output_cube_path output.cube --output_rst_path output.txt --input_rst_path input.txt --output_byat_path output.txt --output_log_path output.log --input_vdw_params_path input.txt --input_params_path input.txt --output_json_box_path output.json --output_json_external_box_path output.json --input_json_box_path input.json --input_json_external_box_path input.json
 ```
 
 ## Cmip_titration
@@ -416,13 +410,12 @@ Config parameters for this building block:
 ```python
 properties:
   neutral: true
-  remove_tmp: false
 
 ```
 #### [Docker config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_docker.yml)
 ```python
 properties:
-  container_image: quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0
+  container_image: quay.io/biocontainers/biobb_cmip:5.2.3--pyhdfd78af_0
   container_path: docker
   container_volume_path: /inout
   neutral: true
@@ -431,7 +424,7 @@ properties:
 #### [Singularity config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_titration_singularity.yml)
 ```python
 properties:
-  container_image: cmip.simg
+  container_image: https://depot.galaxyproject.org/singularity/biobb_cmip:5.2.3--pyhdfd78af_0
   container_path: singularity
   container_volume_path: /inout
   neutral: true
@@ -446,7 +439,6 @@ cmip_titration --config config_cmip_titration.yml --input_pdb_path 1kim_h.pdb --
 ```python
 {
   "properties": {
-    "remove_tmp": false,
     "neutral": true
   }
 }
@@ -457,7 +449,7 @@ cmip_titration --config config_cmip_titration.yml --input_pdb_path 1kim_h.pdb --
   "properties": {
     "neutral": true,
     "container_path": "docker",
-    "container_image": "quay.io/biocontainers/cmip:2.7.0--h8c3ec31_0",
+    "container_image": "quay.io/biocontainers/biobb_cmip:5.2.3--pyhdfd78af_0",
     "container_volume_path": "/inout"
   }
 }
@@ -468,7 +460,7 @@ cmip_titration --config config_cmip_titration.yml --input_pdb_path 1kim_h.pdb --
   "properties": {
     "neutral": true,
     "container_path": "singularity",
-    "container_image": "cmip.simg",
+    "container_image": "https://depot.galaxyproject.org/singularity/biobb_cmip:5.2.3--pyhdfd78af_0",
     "container_volume_path": "/inout"
   }
 }

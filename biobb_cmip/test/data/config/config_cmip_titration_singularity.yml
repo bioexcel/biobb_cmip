@@ -1,5 +1,5 @@
 properties:
-  container_image: cmip.simg
+  container_image: https://depot.galaxyproject.org/singularity/biobb_cmip:5.2.3--pyhdfd78af_0
   container_path: singularity
   container_volume_path: /inout
   neutral: true
