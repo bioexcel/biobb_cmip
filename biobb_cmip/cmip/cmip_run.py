@@ -254,8 +254,11 @@ class CmipRun(BiobbObject):
                 fu.log(f"WARNING: File not found output_pdb_path: {output_pdb_path} Abs Path: {Path(output_pdb_path).resolve()}", self.out_log, self.global_log)
 
         # Create json_box_path file from CMIP log file
+        # (read from the host-side sandbox: in container mode the staged path is the
+        # container path, but the file is written into unique_dir via the bind mount)
         if self.io_dict['out'].get('output_json_box_path'):
-            origin, size, grid_params = get_grid(self.stage_io_dict["out"]["output_log_path"])
+            cmip_log_path = str(Path(self.stage_io_dict["unique_dir"]).joinpath(Path(self.io_dict['out']['output_log_path']).name))
+            origin, size, grid_params = get_grid(cmip_log_path)
             grid_params['DIM'] = (int(grid_params['DIM'][0]),
                                   int(grid_params['DIM'][1]),
                                   int(grid_params['DIM'][2]))
@@ -273,7 +276,8 @@ class CmipRun(BiobbObject):
 
         # Create external_json_box_path file from CMIP log file
         if self.io_dict['out'].get('output_json_external_box_path'):
-            origin, size, grid_params = get_grid(self.stage_io_dict["out"]["output_log_path"], True)
+            cmip_log_path = str(Path(self.stage_io_dict["unique_dir"]).joinpath(Path(self.io_dict['out']['output_log_path']).name))
+            origin, size, grid_params = get_grid(cmip_log_path, True)
             grid_params['DIM'] = (int(grid_params['DIM'][0]),
                                   int(grid_params['DIM'][1]),
                                   int(grid_params['DIM'][2]))

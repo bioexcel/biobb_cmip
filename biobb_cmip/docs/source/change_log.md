@@ -1,6 +1,12 @@
-# Biobb CMIP changelog
-
-## What's new in version [5.3.0](https://github.com/bioexcel/biobb_amber/releases/tag/v5.3.0)?
+ # Biobb CMIP changelog
+ 
+ ## What's new in version [5.3.1](https://github.com/bioexcel/biobb_amber/releases/tag/v5.3.1)?
+ 
+ ### Changes
+ 
+ * [FIX] CmipRun read the CMIP log from the staged output path, which in container mode is the container path; read it from the host-side sandbox (unique_dir) instead, so the json box outputs are created when running with a container
+ 
+ ## What's new in version [5.3.0](https://github.com/bioexcel/biobb_amber/releases/tag/v5.3.0)?
 
 ### Changes
 
