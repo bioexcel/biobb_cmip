@@ -154,6 +154,11 @@ jobs:
           sed -i "s|path_to_vdwprm|${{ github.workspace }}/${{ github.event.repository.name }}/cmip/dat/vdwprm|g" ${{ github.workspace }}/${{ github.event.repository.name }}/test/conf.yml
           more ${{ github.workspace }}/${{ github.event.repository.name }}/test/conf.yml
 
+      # CMIP titration allocates a 24 GB array but uses less than 4 GB: the kernel refuses
+      # the allocation on the 16 GB runners ("ERROR when trying to allocate") unless it can overcommit
+      - name: Allow memory overcommit
+        run: sudo sysctl -w vm.overcommit_memory=1
+
       - name: Run container tests
         shell: bash -l {0}
         run: |
