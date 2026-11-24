@@ -7,7 +7,6 @@ from typing import Any
 from pathlib import Path, PurePath
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.tools import file_utils as fu
-from biobb_common.tools.file_utils import launchlogger
 from biobb_cmip.cmip.common import create_params_file
 from biobb_cmip.cmip.common import params_preset
 from biobb_cmip.cmip.common import get_pdb_total_charge
@@ -90,17 +89,8 @@ class CmipTitration(BiobbObject):
         self.params: dict[str, Any] = {k: str(v) for k, v in properties.get('params', dict()).items()}
         self.energy_cutoff = properties.get('energy_cutoff', 9999.9)
 
-        # Check the properties
-        self.check_properties(properties)
-        self.check_arguments()
-
-    @launchlogger
-    def launch(self) -> int:
-        """Execute the :class:`Titration <cmip.titration.Titration>` object."""
-        # Setup Biobb
-        if self.check_restart():
-            return 0
-
+    def prepare(self) -> None:
+        """Create the CMIP parameters file."""
         # Check if output_pdb_path ends with ".pdb"
         if not self.io_dict['out']['output_pdb_path'].endswith('.pdb'):
             fu.log('ERROR: output_pdb_path name must end in .pdb', self.out_log, self.global_log)
@@ -133,14 +123,15 @@ class CmipTitration(BiobbObject):
             self.params['titcut'] = str(self.energy_cutoff)
 
         combined_params_dir = fu.create_unique_dir()
+        self.tmp_files.append(combined_params_dir)
         self.io_dict['in']['combined_params_path'] = create_params_file(
             output_params_path=str(Path(combined_params_dir).joinpath(self.output_params_path)),
             input_params_path=self.io_dict['in']['input_params_path'],
             params_preset_dict=params_preset(execution_type='titration'),
             params_properties_dict=self.params)
 
-        self.stage_files()
-
+    def run(self) -> int:
+        """Execute the :class:`Titration <cmip.titration.Titration>` object."""
         if self.container_path:
             working_dir = self.container_volume_path if self.container_volume_path else "/data"
         else:
@@ -162,7 +153,6 @@ class CmipTitration(BiobbObject):
         self.copy_to_host()
 
         # remove temporary folder(s)
-        self.tmp_files.append(combined_params_dir)
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)

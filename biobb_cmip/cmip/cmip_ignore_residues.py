@@ -5,7 +5,6 @@ from typing import Optional
 import shutil
 from biobb_cmip.cmip.common import mark_residues
 from biobb_common.generic.biobb_object import BiobbObject
-from biobb_common.tools.file_utils import launchlogger
 import biobb_common.tools.file_utils as fu
 
 
@@ -62,17 +61,11 @@ class CmipIgnoreResidues(BiobbObject):
         self.residue_list = properties.get('residue_list', None)
         self.ignore_all = properties.get('ignore_all', False)
 
-        # Check the properties
-        self.check_properties(properties)
-        self.check_arguments()
+    def stage_files(self) -> None:
+        """The block does not use the sandbox: there are no files to stage."""
 
-    @launchlogger
-    def launch(self) -> int:
+    def run(self) -> int:
         """Execute the :class:`IgnoreResidues <cmip.ignore_residues.IgnoreResidues>` object."""
-
-        # Setup Biobb
-        if self.check_restart():
-            return 0
 
         if not self.ignore_all and not self.residue_list:
             fu.log("Residue_list is empty and ignore_all is false nothing will be done.", self.out_log, self.global_log)

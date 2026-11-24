@@ -9,7 +9,6 @@ import shutil
 from pathlib import Path, PurePath
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.tools import file_utils as fu
-from biobb_common.tools.file_utils import launchlogger
 from biobb_cmip.cmip.common import create_params_file
 from biobb_cmip.cmip.common import params_preset
 from biobb_cmip.cmip.common import get_grid
@@ -108,18 +107,8 @@ class CmipRun(BiobbObject):
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
         self.io_dict['in']['combined_params_path'] = properties.get('combined_params_path', 'params')
 
-        # Check the properties
-        self.check_properties(properties)
-        self.check_arguments()
-
-    @launchlogger
-    def launch(self) -> int:
-        """Execute the :class:`Cmip <cmip.cmip.Cmip>` object."""
-
-        # Setup Biobb
-        if self.check_restart():
-            return 0
-
+    def prepare(self) -> None:
+        """Create the CMIP parameters file."""
         # Check if output_pdb_path ends with ".pdb" and does not contain underscores
         if self.io_dict['out']['output_pdb_path']:
             if (not self.io_dict['out']['output_pdb_path'].endswith('.pdb')) or \
@@ -172,13 +161,15 @@ class CmipRun(BiobbObject):
             params_preset_dict['IREST'] = 0
 
         combined_params_dir = fu.create_unique_dir()
+        self.tmp_files.append(combined_params_dir)
         self.io_dict['in']['combined_params_path'] = create_params_file(
             output_params_path=str(Path(combined_params_dir).joinpath(self.io_dict['in']['combined_params_path'])),
             input_params_path=self.io_dict['in'].get('input_params_path'),
             params_preset_dict=params_preset_dict,
             params_properties_dict=self.params)
 
-        self.stage_files()
+    def run(self) -> int:
+        """Execute the :class:`Cmip <cmip.cmip.Cmip>` object."""
 
         if self.container_path:
             working_dir = self.container_volume_path if self.container_volume_path else "/data"
@@ -297,7 +288,6 @@ class CmipRun(BiobbObject):
         self.copy_to_host()
 
         # remove temporary folder(s)
-        self.tmp_files.append(combined_params_dir)
         self.remove_tmp_files()
 
         self.check_arguments(output_files_created=True, raise_exception=False)

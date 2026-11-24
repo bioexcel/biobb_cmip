@@ -6,7 +6,6 @@ import warnings
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject
 from biobb_common.tools import file_utils as fu
-from biobb_common.tools.file_utils import launchlogger
 
 # Write the CMIP PDB
 from biobb_cmip.cmip.common import write_cmip_pdb
@@ -72,17 +71,11 @@ class CmipPrepareStructure(BiobbObject):
             "out": {"output_cmip_pdb_path": output_cmip_pdb_path}
         }
 
-        # Check the properties
-        self.check_properties(properties)
-        self.check_arguments()
+    def stage_files(self) -> None:
+        """The block does not use the sandbox: there are no files to stage."""
 
-    @launchlogger
-    def launch(self) -> int:
+    def run(self) -> int:
         """Execute the :class:`Cmip <cmip.cmip.PrepareStructure>` object."""
-        # Setup Biobb
-        if self.check_restart():
-            return 0
-
         # Dani's method
         if self.io_dict['in']['input_topology_path']:
             top_file = self.io_dict['in']['input_topology_path']

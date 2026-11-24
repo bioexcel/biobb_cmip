@@ -3,7 +3,6 @@
 """Module containing the PreparePDB class and the command line interface."""
 from typing import Optional
 from biobb_common.generic.biobb_object import BiobbObject
-from biobb_common.tools.file_utils import launchlogger
 
 
 class CmipPreparePDB(BiobbObject):
@@ -65,18 +64,8 @@ class CmipPreparePDB(BiobbObject):
         self.fix_sidechains = properties.get('fix_sidechains', True)
         self.fix_backbone_atoms = properties.get('fix_backbone_atoms', True)
 
-        # Check the properties
-        self.check_properties(properties)
-        self.check_arguments()
-
-    @launchlogger
-    def launch(self) -> int:
+    def run(self) -> int:
         """Execute the :class:`PreparePDB <cmip.prepare_pdb.PreparePDB>` object."""
-
-        # Setup Biobb
-        if self.check_restart():
-            return 0
-        self.stage_files()
 
         command_list = ""
         if self.remove_water:
