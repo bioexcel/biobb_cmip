@@ -144,6 +144,9 @@ class CmipRun(BiobbObject):
             key_value_log_dir = fu.create_unique_dir()
             self.io_dict['out']['key_value_log_path'] = str(Path(key_value_log_dir).joinpath("key_value_cmip_log.log"))
             self.tmp_files.append(key_value_log_dir)
+            # The boxes are read from the CMIP log
+            if not self.io_dict['out']['output_log_path']:
+                self.io_dict['out']['output_log_path'] = str(Path(key_value_log_dir).joinpath("cmip.log"))
 
         # Restart OUT
         if self.io_dict["out"].get("output_rst_path"):
