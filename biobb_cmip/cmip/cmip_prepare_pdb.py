@@ -79,7 +79,7 @@ class CmipPreparePDB(BiobbObject):
 
         command_list += 'add_hydrogen --add_mode auto '
         if self.keep_hydrogen:
-            command_list += ' -keep_h '
+            command_list += ' --keep_h '
         command_list += '--add_charges CMIP'
 
         self.cmd = [self.check_structure_path,
