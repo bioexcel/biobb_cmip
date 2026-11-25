@@ -141,9 +141,8 @@ class CmipRun(BiobbObject):
 
         if self.io_dict['out']['output_json_box_path'] or self.io_dict['out']['output_json_external_box_path']:
             params_preset_dict['WRITELOG'] = 1
-            key_value_log_dir = fu.create_unique_dir()
+            key_value_log_dir = self.create_tmp_dir()
             self.io_dict['out']['key_value_log_path'] = str(Path(key_value_log_dir).joinpath("key_value_cmip_log.log"))
-            self.tmp_files.append(key_value_log_dir)
             # The boxes are read from the CMIP log
             if not self.io_dict['out']['output_log_path']:
                 self.io_dict['out']['output_log_path'] = str(Path(key_value_log_dir).joinpath("cmip.log"))
@@ -157,13 +156,12 @@ class CmipRun(BiobbObject):
         if self.io_dict['in']["input_rst_path"]:
             params_preset_dict['IREST'] = 2
             if not self.io_dict["out"].get("output_rst_path"):
-                self.io_dict["out"]["output_rst_path"] = fu.create_unique_file_path()
+                self.io_dict["out"]["output_rst_path"] = self.create_tmp_file("")
 
         else:
             params_preset_dict['IREST'] = 0
 
-        combined_params_dir = fu.create_unique_dir()
-        self.tmp_files.append(combined_params_dir)
+        combined_params_dir = self.create_tmp_dir()
         self.io_dict['in']['combined_params_path'] = create_params_file(
             output_params_path=str(Path(combined_params_dir).joinpath(self.io_dict['in']['combined_params_path'])),
             input_params_path=self.io_dict['in'].get('input_params_path'),

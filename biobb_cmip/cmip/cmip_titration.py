@@ -122,8 +122,7 @@ class CmipTitration(BiobbObject):
         if self.energy_cutoff:
             self.params['titcut'] = str(self.energy_cutoff)
 
-        combined_params_dir = fu.create_unique_dir()
-        self.tmp_files.append(combined_params_dir)
+        combined_params_dir = self.create_tmp_dir()
         self.io_dict['in']['combined_params_path'] = create_params_file(
             output_params_path=str(Path(combined_params_dir).joinpath(self.output_params_path)),
             input_params_path=self.io_dict['in']['input_params_path'],
