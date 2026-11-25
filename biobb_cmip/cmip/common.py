@@ -299,7 +299,7 @@ def probe_params_grid(probe_id: int = 0, readgrid: int = 2, pbfocus: int = 1, pe
     grid_dict[f"readgrid{probe_id}"] = f"{readgrid}"
     grid_dict[f"perfill{probe_id}"] = f"{perfill}"
     grid_dict['pbfocus'] = f"{pbfocus}"
-    grid_dict['grid_int'] = f"INTX{probe_id}={grid_int[0]},INTY{probe_id}={grid_int[1]},INTZ{probe_id}={grid_int[2]}"
+    grid_dict[f"grid_int{probe_id}"] = f"INTX{probe_id}={grid_int[0]},INTY{probe_id}={grid_int[1]},INTZ{probe_id}={grid_int[2]}"
 
     return grid_dict
 
