@@ -297,7 +297,7 @@ class CmipRun(BiobbObject):
 
 def cmip_run(input_pdb_path: str, input_probe_pdb_path: Optional[str] = None, output_pdb_path: Optional[str] = None,
              output_grd_path: Optional[str] = None, output_cube_path: Optional[str] = None, output_rst_path: Optional[str] = None,
-             output_byat_path: Optional[str] = None, output_log_path: Optional[str] = None,
+             input_rst_path: Optional[str] = None, output_byat_path: Optional[str] = None, output_log_path: Optional[str] = None,
              input_vdw_params_path: Optional[str] = None, input_params_path: Optional[str] = None, output_json_box_path: Optional[str] = None,
              output_json_external_box_path: Optional[str] = None, input_json_box_path: Optional[str] = None,
              input_json_external_box_path: Optional[str] = None, properties: Optional[dict] = None, **kwargs) -> int:
