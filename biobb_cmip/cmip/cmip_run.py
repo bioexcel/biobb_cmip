@@ -155,7 +155,6 @@ class CmipRun(BiobbObject):
             params_preset_dict['IREST'] = 2
             if not self.io_dict["out"].get("output_rst_path"):
                 self.io_dict["out"]["output_rst_path"] = fu.create_unique_file_path()
-            shutil.copy2(self.io_dict['in']["input_rst_path"], self.io_dict["out"]["output_rst_path"])
 
         else:
             params_preset_dict['IREST'] = 0
@@ -216,6 +215,11 @@ class CmipRun(BiobbObject):
         if self.stage_io_dict['out'].get('output_json_box_path') or self.stage_io_dict['out'].get('output_json_external_box_path'):
             self.cmd.append('-l')
             self.cmd.append(PurePath(self.stage_io_dict["out"]["key_value_log_path"]).name)
+
+        # CMIP reads the input restart from the -rst file (written in the sandbox)
+        if self.io_dict['in']["input_rst_path"]:
+            shutil.copy2(self.io_dict['in']["input_rst_path"],
+                         Path(self.stage_io_dict["unique_dir"]).joinpath(Path(self.io_dict["out"]["output_rst_path"]).name))
 
         # Run Biobb block
         self.run_biobb()
