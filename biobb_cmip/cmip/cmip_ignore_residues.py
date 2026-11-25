@@ -64,13 +64,13 @@ class CmipIgnoreResidues(BiobbObject):
     def stage_files(self) -> None:
         """The block does not use the sandbox: there are no files to stage."""
 
-    def run(self) -> int:
+    def run(self) -> None:
         """Execute the :class:`IgnoreResidues <cmip.ignore_residues.IgnoreResidues>` object."""
 
         if not self.ignore_all and not self.residue_list:
             fu.log("Residue_list is empty and ignore_all is false nothing will be done.", self.out_log, self.global_log)
             shutil.copyfile(self.io_dict["in"]["input_cmip_pdb_path"], self.io_dict["out"]["output_cmip_pdb_path"])
-            return self.return_code
+            return
 
         if self.ignore_all:
             self.residue_list = None
@@ -88,13 +88,6 @@ class CmipIgnoreResidues(BiobbObject):
                 self.residue_list[i] = chain.strip().upper()+":"+str(resnum).strip()
 
         mark_residues(residue_list=self.residue_list or [], input_cmip_pdb_path=self.io_dict["in"]["input_cmip_pdb_path"], output_cmip_pdb_path=self.io_dict["out"]["output_cmip_pdb_path"], out_log=self.out_log, global_log=self.global_log)
-
-        # remove temporary
-        self.remove_tmp_files()
-
-        self.check_arguments(output_files_created=True, raise_exception=False)
-
-        return self.return_code
 
 
 def cmip_ignore_residues(input_cmip_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> int:

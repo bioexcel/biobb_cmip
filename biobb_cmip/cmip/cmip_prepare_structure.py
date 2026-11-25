@@ -74,7 +74,7 @@ class CmipPrepareStructure(BiobbObject):
     def stage_files(self) -> None:
         """The block does not use the sandbox: there are no files to stage."""
 
-    def run(self) -> int:
+    def run(self) -> None:
         """Execute the :class:`Cmip <cmip.cmip.PrepareStructure>` object."""
         # Dani's method
         if self.io_dict['in']['input_topology_path']:
@@ -105,13 +105,6 @@ class CmipPrepareStructure(BiobbObject):
                        elements_list)
 
         ###################################
-
-        # remove temporary folder(s)
-        self.remove_tmp_files()
-
-        self.check_arguments(output_files_created=True, raise_exception=False)
-
-        return 0
 
 
 def cmip_prepare_structure(input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: Optional[str] = None,

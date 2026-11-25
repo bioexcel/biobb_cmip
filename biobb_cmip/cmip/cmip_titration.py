@@ -130,7 +130,7 @@ class CmipTitration(BiobbObject):
             params_preset_dict=params_preset(execution_type='titration'),
             params_properties_dict=self.params)
 
-    def run(self) -> int:
+    def run(self) -> None:
         """Execute the :class:`Titration <cmip.titration.Titration>` object."""
         if self.container_path:
             working_dir = self.container_volume_path if self.container_volume_path else "/data"
@@ -148,15 +148,6 @@ class CmipTitration(BiobbObject):
 
         # Run Biobb block
         self.run_biobb()
-
-        # Copy files to host
-        self.copy_to_host()
-
-        # remove temporary folder(s)
-        self.remove_tmp_files()
-
-        self.check_arguments(output_files_created=True, raise_exception=False)
-        return self.return_code
 
 
 def cmip_titration(input_pdb_path: str, output_pdb_path: str,

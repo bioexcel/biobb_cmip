@@ -64,7 +64,7 @@ class CmipPreparePDB(BiobbObject):
         self.fix_sidechains = properties.get('fix_sidechains', True)
         self.fix_backbone_atoms = properties.get('fix_backbone_atoms', True)
 
-    def run(self) -> int:
+    def run(self) -> None:
         """Execute the :class:`PreparePDB <cmip.prepare_pdb.PreparePDB>` object."""
 
         command_list = ""
@@ -93,16 +93,6 @@ class CmipPreparePDB(BiobbObject):
 
         # Run Biobb block
         self.run_biobb()
-
-        # Copy files to host
-        self.copy_to_host()
-
-        # remove temporary folder(s)
-        self.remove_tmp_files()
-
-        self.check_arguments(output_files_created=True, raise_exception=False)
-
-        return self.return_code
 
 
 def cmip_prepare_pdb(input_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> int:

@@ -170,7 +170,7 @@ class CmipRun(BiobbObject):
             params_preset_dict=params_preset_dict,
             params_properties_dict=self.params)
 
-    def run(self) -> int:
+    def run(self) -> None:
         """Execute the :class:`Cmip <cmip.cmip.Cmip>` object."""
 
         if self.container_path:
@@ -290,16 +290,6 @@ class CmipRun(BiobbObject):
                          'params': grid_params}
             with open(self.io_dict['out'].get('output_json_external_box_path', ''), 'w') as json_file:
                 json_file.write(json.dumps(grid_dict, indent=4))
-
-        # Copy files to host
-        self.copy_to_host()
-
-        # remove temporary folder(s)
-        self.remove_tmp_files()
-
-        self.check_arguments(output_files_created=True, raise_exception=False)
-
-        return self.return_code
 
 
 def cmip_run(input_pdb_path: str, input_probe_pdb_path: Optional[str] = None, output_pdb_path: Optional[str] = None,
