@@ -102,9 +102,9 @@
                 },
                 "num_wats": {
                     "type": "integer",
-                    "default": 10,
+                    "default": null,
                     "wf_prop": false,
-                    "description": "Number of water molecules to be added."
+                    "description": "Number of water molecules to be added. If not set, the value of the params property or the CMIP default."
                 },
                 "neutral": {
                     "type": "boolean",
@@ -114,15 +114,15 @@
                 },
                 "num_positive_ions": {
                     "type": "integer",
-                    "default": 10,
+                    "default": null,
                     "wf_prop": false,
-                    "description": "Number of positive ions to be added (Tipatom IP=Na+)."
+                    "description": "Number of positive ions to be added (Tipatom IP=Na+). If not set, the value of the params property or the CMIP default."
                 },
                 "num_negative_ions": {
                     "type": "integer",
-                    "default": 10,
+                    "default": null,
                     "wf_prop": false,
-                    "description": "Number of negative ions to be added (Tipatom IM=Cl-)."
+                    "description": "Number of negative ions to be added (Tipatom IM=Cl-). If not set, the value of the params property or the CMIP default."
                 },
                 "binary_path": {
                     "type": "string",

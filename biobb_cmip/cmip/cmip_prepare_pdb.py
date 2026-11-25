@@ -45,24 +45,10 @@ class CmipPreparePDB(BiobbObject):
     """
 
     def __init__(self, input_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> None:
-        properties = properties or {}
-
-        # Call parent class constructor
-        super().__init__(properties)
-        self.locals_var_dict = locals().copy()
-
-        # Input/Output files
-        self.io_dict = {
-            "in": {"input_pdb_path": input_pdb_path},
-            "out": {"output_cmip_pdb_path": output_cmip_pdb_path}
-        }
+        super().__init__(**locals())
 
         # Properties specific for BB
-        self.check_structure_path = properties.get('check_structure_path', 'check_structure')
-        self.remove_water = properties.get('remove_water', True)
-        self.keep_hydrogen = properties.get('keep_hydrogen', False)
-        self.fix_sidechains = properties.get('fix_sidechains', True)
-        self.fix_backbone_atoms = properties.get('fix_backbone_atoms', True)
+        self.check_structure_path = self.properties.get('check_structure_path', 'check_structure')
 
     def run(self) -> None:
         """Execute the :class:`PreparePDB <cmip.prepare_pdb.PreparePDB>` object."""

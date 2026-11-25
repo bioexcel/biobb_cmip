@@ -77,35 +77,14 @@ class CmipRun(BiobbObject):
                  input_vdw_params_path: Optional[str] = None, input_params_path: Optional[str] = None, output_json_box_path: Optional[str] = None,
                  output_json_external_box_path: Optional[str] = None, input_json_box_path: Optional[str] = None,
                  input_json_external_box_path: Optional[str] = None, properties: Optional[dict] = None, **kwargs) -> None:
-
-        properties = properties or {}
-
-        # Call parent class constructor
-        super().__init__(properties)
-        self.locals_var_dict = locals().copy()
-
-        # Input/Output files
-        self.io_dict = {
-            "in": {"input_pdb_path": input_pdb_path, "input_probe_pdb_path": input_probe_pdb_path,
-                   "input_vdw_params_path": input_vdw_params_path, "input_params_path": input_params_path,
-                   "input_json_box_path": input_json_box_path,
-                   "input_json_external_box_path": input_json_external_box_path,
-                   "input_rst_path": input_rst_path},
-            "out": {"output_pdb_path": output_pdb_path, "output_grd_path": output_grd_path,
-                    "output_cube_path": output_cube_path, "output_rst_path": output_rst_path,
-                    "output_byat_path": output_byat_path, "output_log_path": output_log_path,
-                    "output_json_box_path": output_json_box_path,
-                    "output_json_external_box_path": output_json_external_box_path}
-        }
+        super().__init__(**locals())
 
         # Properties specific for BB
-        self.binary_path = properties.get('binary_path', 'cmip')
-        self.execution_type = properties.get('execution_type', 'mip_pos')
-        self.params = {k: str(v) for k, v in properties.get('params', dict()).items()}
+        self.params = {k: str(v) for k, v in self.params.items()}
 
         if not self.io_dict['in'].get('input_vdw_params_path'):
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
-        self.io_dict['in']['combined_params_path'] = properties.get('combined_params_path', 'params')
+        self.io_dict['in']['combined_params_path'] = self.properties.get('combined_params_path', 'params')
 
     def prepare(self) -> None:
         """Create the CMIP parameters file."""

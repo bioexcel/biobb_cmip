@@ -26,10 +26,10 @@ class CmipTitration(BiobbObject):
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **params** (*dict*) - ({}) CMIP options specification.
             * **energy_cutoff** (*float*) - (9999.9) Energy cutoff, extremely hight value to enable the addition of all the ions and waters before reaching the cutoff.
-            * **num_wats** (*int*) - (10) Number of water molecules to be added.
+            * **num_wats** (*int*) - (None) Number of water molecules to be added. If not set, the value of the params property or the CMIP default.
             * **neutral** (*bool*) - (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account.
-            * **num_positive_ions** (*int*) - (10) Number of positive ions to be added (Tipatom IP=Na+).
-            * **num_negative_ions** (*int*) - (10) Number of negative ions to be added (Tipatom IM=Cl-).
+            * **num_positive_ions** (*int*) - (None) Number of positive ions to be added (Tipatom IP=Na+). If not set, the value of the params property or the CMIP default.
+            * **num_negative_ions** (*int*) - (None) Number of negative ions to be added (Tipatom IM=Cl-). If not set, the value of the params property or the CMIP default.
             * **binary_path** (*str*) - ("titration") Path to the CMIP Titration executable binary.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
             * **restart** (*bool*) - (False) [WF property] Do not execute if output files exist.
@@ -64,30 +64,13 @@ class CmipTitration(BiobbObject):
     def __init__(self, input_pdb_path: str, output_pdb_path: str,
                  input_vdw_params_path: Optional[str] = None, input_params_path: Optional[str] = None,
                  properties: Optional[dict] = None, **kwargs) -> None:
-        properties = properties or {}
-
-        # Call parent class constructor
-        super().__init__(properties)
-        self.locals_var_dict = locals().copy()
-
-        # Input/Output files
-        self.io_dict = {
-            "in": {"input_pdb_path": input_pdb_path, "input_vdw_params_path": input_vdw_params_path,
-                   "input_params_path": input_params_path},
-            "out": {"output_pdb_path": output_pdb_path}
-        }
+        super().__init__(**locals())
 
         # Properties specific for BB
-        self.neutral = properties.get('neutral', False)
-        self.num_wats = properties.get('num_wats')
-        self.num_positive_ions = properties.get('num_positive_ions')
-        self.num_negative_ions = properties.get('num_negative_ions')
-        self.binary_path = properties.get('binary_path', 'titration')
-        self.output_params_path = properties.get('output_params_path', 'params')
+        self.output_params_path = self.properties.get('output_params_path', 'params')
         if not self.io_dict['in'].get('input_vdw_params_path'):
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
-        self.params: dict[str, Any] = {k: str(v) for k, v in properties.get('params', dict()).items()}
-        self.energy_cutoff = properties.get('energy_cutoff', 9999.9)
+        self.params: dict[str, Any] = {k: str(v) for k, v in self.params.items()}
 
     def prepare(self) -> None:
         """Create the CMIP parameters file."""

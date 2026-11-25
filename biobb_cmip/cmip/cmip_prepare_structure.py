@@ -59,17 +59,7 @@ class CmipPrepareStructure(BiobbObject):
     """
 
     def __init__(self, input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: Optional[str] = None, properties: Optional[dict] = None, **kwargs) -> None:
-        properties = properties or {}
-
-        # Call parent class constructor
-        super().__init__(properties)
-        self.locals_var_dict = locals().copy()
-
-        # Input/Output files
-        self.io_dict = {
-            "in": {"input_pdb_path": input_pdb_path, "input_topology_path": input_topology_path},
-            "out": {"output_cmip_pdb_path": output_cmip_pdb_path}
-        }
+        super().__init__(**locals())
 
     def stage_files(self) -> None:
         """The block does not use the sandbox: there are no files to stage."""
