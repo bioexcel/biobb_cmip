@@ -97,11 +97,11 @@ class CmipTitration(BiobbObject):
             raise ValueError("ERROR: output_pdb_path name must end in .pdb")
 
         # Adding neutral, num_negative_ions, num_positive_ions, num_wats, cutoff
-        if self.num_wats:
+        if self.num_wats is not None:
             self.params['titwat'] = str(self.num_wats)
-        if self.num_positive_ions:
+        if self.num_positive_ions is not None:
             self.params['titip'] = str(self.num_positive_ions)
-        if self.num_negative_ions:
+        if self.num_negative_ions is not None:
             self.params['titim'] = str(self.num_negative_ions)
         if self.neutral:
             charge = get_pdb_total_charge(self.io_dict['in']['input_pdb_path'])
