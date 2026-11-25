@@ -226,20 +226,17 @@ class CmipRun(BiobbObject):
         # Run Biobb block
         self.run_biobb()
 
-        # CMIP removes or adds a .pdb extension from pdb output name
-        # manual copy_to_host or unstage
-        if self.io_dict['out'].get('output_pdb_path'):
-            output_pdb_path = self.sandbox_file("output_pdb_path")
+        # CMIP removes or adds a .pdb extension from pdb output name: rename it in the sandbox
+        output_pdb_path = self.sandbox_file("output_pdb_path")
+        if output_pdb_path:
             if Path(output_pdb_path[:-4]).exists():
-                shutil.move(output_pdb_path[:-4], self.io_dict['out'].get('output_pdb_path', ''))
+                shutil.move(output_pdb_path[:-4], output_pdb_path)
             elif Path(output_pdb_path + ".pdb").exists():
-                shutil.move(output_pdb_path + ".pdb", self.io_dict['out'].get('output_pdb_path', ''))
+                shutil.move(output_pdb_path + ".pdb", output_pdb_path)
             elif not Path(output_pdb_path).exists():
                 fu.log(f"WARNING: File not found output_pdb_path: {output_pdb_path}", self.out_log, self.global_log)
 
         # Replace "ATOMTM" tag for "ATOM  "
-
-        output_pdb_path = self.io_dict['out'].get('output_pdb_path', '')
         if output_pdb_path:
             if Path(output_pdb_path).exists():
                 with open(output_pdb_path) as pdb_file:
@@ -266,7 +263,7 @@ class CmipRun(BiobbObject):
             grid_dict = {'origin': origin_dict,
                          'size': size_dict,
                          'params': grid_params}
-            with open(self.io_dict['out'].get('output_json_box_path', ''), 'w') as json_file:
+            with open(self.sandbox_file("output_json_box_path"), 'w') as json_file:
                 json_file.write(json.dumps(grid_dict, indent=4))
 
         # Create external_json_box_path file from CMIP log file
@@ -285,7 +282,7 @@ class CmipRun(BiobbObject):
             grid_dict = {'origin': origin_dict,
                          'size': size_dict,
                          'params': grid_params}
-            with open(self.io_dict['out'].get('output_json_external_box_path', ''), 'w') as json_file:
+            with open(self.sandbox_file("output_json_external_box_path"), 'w') as json_file:
                 json_file.write(json.dumps(grid_dict, indent=4))
 
 
