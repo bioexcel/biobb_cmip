@@ -99,8 +99,7 @@ Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
 * **remove_water** (*boolean*): (True) Remove Water molecules.
-* **add_hydrogen** (*boolean*): (True) Add Hydrogen atoms to the structure.
-* **keep_hydrogen** (*boolean*): (False) If **add_hydrogen** is True. All hydrogen atoms will be removed before adding the new ones unless this option is set True.
+* **keep_hydrogen** (*boolean*): (False) All hydrogen atoms will be removed before adding the new ones unless this option is set True.
 * **fix_sidechains** (*boolean*): (True) Complete side chains (heavy atoms, protein only).
 * **fix_backbone_atoms** (*boolean*): (True) Add missing O, OXT backbone atoms.
 * **remove_tmp** (*boolean*): (True) Remove temporal files.

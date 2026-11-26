@@ -62,17 +62,11 @@
                     "wf_prop": false,
                     "description": "Remove Water molecules."
                 },
-                "add_hydrogen": {
-                    "type": "boolean",
-                    "default": true,
-                    "wf_prop": false,
-                    "description": "Add Hydrogen atoms to the structure."
-                },
                 "keep_hydrogen": {
                     "type": "boolean",
                     "default": false,
                     "wf_prop": false,
-                    "description": "If **add_hydrogen** is True. All hydrogen atoms will be removed before adding the new ones unless this option is set True."
+                    "description": "All hydrogen atoms will be removed before adding the new ones unless this option is set True."
                 },
                 "fix_sidechains": {
                     "type": "boolean",

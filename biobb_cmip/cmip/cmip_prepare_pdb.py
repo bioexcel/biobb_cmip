@@ -16,8 +16,7 @@ class CmipPreparePDB(BiobbObject):
         output_cmip_pdb_path (str): Output PDB file path. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/egfr_cmip.pdb>`_. Accepted formats: pdb (edam:format_1476).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **remove_water** (*bool*) - (True) Remove Water molecules.
-            * **add_hydrogen** (*bool*) - (True) Add Hydrogen atoms to the structure.
-            * **keep_hydrogen** (*bool*) - (False) If **add_hydrogen** is True. All hydrogen atoms will be removed before adding the new ones unless this option is set True.
+            * **keep_hydrogen** (*bool*) - (False) All hydrogen atoms will be removed before adding the new ones unless this option is set True.
             * **fix_sidechains** (*bool*) - (True) Complete side chains (heavy atoms, protein only).
             * **fix_backbone_atoms** (*bool*) - (True) Add missing O, OXT backbone atoms.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
