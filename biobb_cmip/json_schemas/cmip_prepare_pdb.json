@@ -80,6 +80,12 @@
                     "wf_prop": false,
                     "description": "Add missing O, OXT backbone atoms."
                 },
+                "check_structure_path": {
+                    "type": "string",
+                    "default": "check_structure",
+                    "wf_prop": false,
+                    "description": "Path to the check_structure executable binary of biobb_structure_checking."
+                },
                 "remove_tmp": {
                     "type": "boolean",
                     "default": true,

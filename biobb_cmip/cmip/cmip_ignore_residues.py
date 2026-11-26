@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Module containing the IgnoreResidues class and the command line interface."""
+"""Module containing the CmipIgnoreResidues class and the command line interface."""
 from typing import Optional
 import shutil
 from biobb_cmip.cmip.common import mark_residues
@@ -18,7 +18,7 @@ class CmipIgnoreResidues(BiobbObject):
         input_cmip_pdb_path (str): Input PDB file path. File type: input. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/data/cmip/input_ignore_res.pdb>`_. Accepted formats: pdb (edam:format_1476).
         output_cmip_pdb_path (str): Output PDB file path. File type: output. `Sample file <https://github.com/bioexcel/biobb_cmip/raw/master/biobb_cmip/test/reference/cmip/ignore_res_gln3.pdb>`_. Accepted formats: pdb (edam:format_1476).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
-            * **residue_list** (*str*) - (None) Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. If no chain is provided all the residues in the pdb file will be market. ie: "A:3".
+            * **residue_list** (*str*) - (None) Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. A residue without chain ("3") is marked in every chain, a chain without residue number ("A:") marks the whole chain. ie: "A:3".
             * **ignore_all** (*bool*) - (False) Mark all the residues in the PDB file.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
             * **restart** (*bool*) - (False) [WF property] Do not execute if output files exist.
@@ -51,7 +51,7 @@ class CmipIgnoreResidues(BiobbObject):
         """The block does not use the sandbox: there are no files to stage."""
 
     def run(self) -> None:
-        """Execute the :class:`IgnoreResidues <cmip.ignore_residues.IgnoreResidues>` object."""
+        """Execute the :class:`CmipIgnoreResidues <cmip.cmip_ignore_residues.CmipIgnoreResidues>` object."""
 
         if not self.ignore_all and not self.residue_list:
             fu.log("Residue_list is empty and ignore_all is false nothing will be done.", self.out_log, self.global_log)

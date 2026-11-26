@@ -14,9 +14,9 @@ from biobb_cmip.cmip.common import get_pdb_total_charge
 
 class CmipTitration(BiobbObject):
     """
-    | biobb_cmip Titration
+    | biobb_cmip CmipTitration
     | Wrapper class for the CMIP titration module.
-    | The CMIP titration module. CMIP titration module adds water molecules, positive ions (Na+) and negative ions (Cl-) in the energetically most favorable structure locations.
+    | Add water molecules, positive ions (Na+) and negative ions (Cl-) in the energetically most favorable locations of a structure with the CMIP titration module.
 
     Args:
         input_pdb_path (str): Path to the input PDB file. File type: input. `Sample file <https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/1kim_h.pdb>`_. Accepted formats: pdb (edam:format_1476).
@@ -25,7 +25,7 @@ class CmipTitration(BiobbObject):
         input_params_path (str) (Optional): Path to the CMIP input parameters file. File type: input. Accepted formats: txt (edam:format_2330).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **params** (*dict*) - ({}) CMIP options specification.
-            * **energy_cutoff** (*float*) - (9999.9) Energy cutoff, extremely hight value to enable the addition of all the ions and waters before reaching the cutoff.
+            * **energy_cutoff** (*float*) - (9999.9) Energy cutoff, extremely high value to enable the addition of all the ions and waters before reaching the cutoff.
             * **num_wats** (*int*) - (None) Number of water molecules to be added. If not set, the value of the params property or the CMIP default.
             * **neutral** (*bool*) - (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account.
             * **num_positive_ions** (*int*) - (None) Number of positive ions to be added (Tipatom IP=Na+). If not set, the value of the params property or the CMIP default.
@@ -44,11 +44,11 @@ class CmipTitration(BiobbObject):
     Examples:
         This is a use example of how to use the building block from Python::
 
-            from biobb_cmip.cmip.titration import titration
-            prop = { 'binary_path': 'titration' }
-            titration(input_pdb_path='/path/to/myStructure.pdb',
-                      output_pdb_path='/path/to/newStructure.pdb',
-                      properties=prop)
+            from biobb_cmip.cmip.cmip_titration import cmip_titration
+            prop = { 'neutral': True }
+            cmip_titration(input_pdb_path='/path/to/myStructure.pdb',
+                           output_pdb_path='/path/to/newStructure.pdb',
+                           properties=prop)
 
     Info:
         * wrapped_software:

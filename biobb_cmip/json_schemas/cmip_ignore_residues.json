@@ -60,7 +60,7 @@
                     "type": "string",
                     "default": null,
                     "wf_prop": false,
-                    "description": "Residue list in the format \"Chain:Resnum\" (no spaces between the elements) separated by commas. If no chain is provided all the residues in the pdb file will be market. ie: \"A:3\"."
+                    "description": "Residue list in the format \"Chain:Resnum\" (no spaces between the elements) separated by commas. A residue without chain (\"3\") is marked in every chain, a chain without residue number (\"A:\") marks the whole chain. ie: \"A:3\"."
                 },
                 "ignore_all": {
                     "type": "boolean",

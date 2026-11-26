@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Module containing the PreparePDB class and the command line interface."""
+"""Module containing the CmipPreparePDB class and the command line interface."""
 from typing import Optional
 from biobb_common.generic.biobb_object import BiobbObject, launcher
 
@@ -19,6 +19,7 @@ class CmipPreparePDB(BiobbObject):
             * **keep_hydrogen** (*bool*) - (False) All hydrogen atoms will be removed before adding the new ones unless this option is set True.
             * **fix_sidechains** (*bool*) - (True) Complete side chains (heavy atoms, protein only).
             * **fix_backbone_atoms** (*bool*) - (True) Add missing O, OXT backbone atoms.
+            * **check_structure_path** (*str*) - ("check_structure") Path to the check_structure executable binary of biobb_structure_checking.
             * **remove_tmp** (*bool*) - (True) [WF property] Remove temporal files.
             * **restart** (*bool*) - (False) [WF property] Do not execute if output files exist.
             * **sandbox_path** (*str*) - ("./") [WF property] Parent path to the sandbox directory.
@@ -46,11 +47,8 @@ class CmipPreparePDB(BiobbObject):
     def __init__(self, input_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> None:
         super().__init__(**locals())
 
-        # Properties specific for BB
-        self.check_structure_path = self.properties.get('check_structure_path', 'check_structure')
-
     def run(self) -> None:
-        """Execute the :class:`PreparePDB <cmip.prepare_pdb.PreparePDB>` object."""
+        """Execute the :class:`CmipPreparePDB <cmip.cmip_prepare_pdb.CmipPreparePDB>` object."""
 
         command_list = ""
         if self.remove_water:

@@ -21,14 +21,14 @@ _FILE_FLAGS = {'input_probe_pdb_path': '-pr', 'output_pdb_path': '-outpdb', 'out
 
 class CmipRun(BiobbObject):
     """
-    | biobb_cmip Titration
+    | biobb_cmip CmipRun
     | Wrapper class for the CMIP cmip module.
-    | The CMIP cmip module. CMIP cmip module compute classical molecular interaction potentials.
+    | Compute classical molecular interaction potentials with the CMIP cmip module.
 
     Args:
         input_pdb_path (str): Path to the input PDB file. File type: input. `Sample file <https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/RBD-hACE2.hACE2.cmip.pdb>`_. Accepted formats: pdb (edam:format_1476).
         input_probe_pdb_path (str) (Optional): Path to the input probe file in PDB format. File type: input. `Sample file <https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/RBD-hACE2.RBD.cmip.pdb>`_. Accepted formats: pdb (edam:format_1476).
-        output_pdb_path (str) (Optional): Path to the output PDB file. File type: output. `Sample file <https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/RBD.energies.byat.out>`_. Accepted formats: pdb (edam:format_1476).
+        output_pdb_path (str) (Optional): Path to the output PDB file, its name must end in .pdb and not contain underscores. File type: output. `Sample file <https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/cmip_docking.pdb>`_. Accepted formats: pdb (edam:format_1476).
         output_grd_path (str) (Optional): Path to the output grid file in GRD format. File type: output. Accepted formats: grd (edam:format_2330).
         output_cube_path (str) (Optional): Path to the output grid file in cube format. File type: output. Accepted formats: cube (edam:format_2330).
         output_rst_path (str) (Optional): Path to the output restart file. File type: output. Accepted formats: txt (edam:format_2330).
@@ -40,7 +40,7 @@ class CmipRun(BiobbObject):
         output_json_box_path (str) (Optional): Path to the output CMIP box in JSON format. File type: output. Accepted formats: json (edam:format_3464).
         output_json_external_box_path (str) (Optional): Path to the output external CMIP box in JSON format. File type: output. Accepted formats: json (edam:format_3464).
         input_json_box_path (str) (Optional): Path to the input CMIP box in JSON format. File type: input. Accepted formats: json (edam:format_3464).
-        input_json_external_box_path (str) (Optional): Path to the input CMIP box in JSON format. File type: input. Accepted formats: json (edam:format_3464).
+        input_json_external_box_path (str) (Optional): Path to the input external CMIP box in JSON format. File type: input. Accepted formats: json (edam:format_3464).
         properties (dict - Python dictionary object containing the tool parameters, not input/output files):
             * **execution_type** (*str*) - ("mip_pos") Default options for the params file, each one creates a different params file. Values: check_only (Dry Run of CMIP), mip_pos (MIP O+  Mehler Solmajer dielectric), mip_neg (MIP O-  Mehler Solmajer dielectric), mip_neu (MIP Oxygen Mehler Solmajer dielectric), solvation (Solvation & MEP), pb_interaction_energy (Docking Interaction energy calculation. PB electrostatics), docking (Docking Mehler Solmajer dielectric), docking_rst (Docking from restart file).
             * **params** (*dict*) - ({}) CMIP options specification.
@@ -58,12 +58,12 @@ class CmipRun(BiobbObject):
     Examples:
         This is a use example of how to use the building block from Python::
 
-            from biobb_cmip.cmip.cmip import cmip
-            prop = { 'binary_path': 'cmip' }
-            cmip(input_pdb_path='/path/to/myStructure.pdb',
-                      output_pdb_path='/path/to/newStructure.pdb',
-                      output_log_path='/path/to/newStructureLog.log',
-                      properties=prop)
+            from biobb_cmip.cmip.cmip_run import cmip_run
+            prop = { 'execution_type': 'mip_pos' }
+            cmip_run(input_pdb_path='/path/to/myStructure.pdb',
+                     output_cube_path='/path/to/myGrid.cube',
+                     output_log_path='/path/to/myLog.log',
+                     properties=prop)
 
     Info:
         * wrapped_software:

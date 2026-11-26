@@ -37,7 +37,7 @@ Config input / output arguments for this building block:
 Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
-* **residue_list** (*string*): (None) Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. If no chain is provided all the residues in the pdb file will be market. ie: "A:3".
+* **residue_list** (*string*): (None) Residue list in the format "Chain:Resnum" (no spaces between the elements) separated by commas. A residue without chain ("3") is marked in every chain, a chain without residue number ("A:") marks the whole chain. ie: "A:3".
 * **ignore_all** (*boolean*): (False) Mark all the residues in the PDB file.
 * **remove_tmp** (*boolean*): (True) Remove temporal files.
 * **restart** (*boolean*): (False) Do not execute if output files exist.
@@ -102,6 +102,7 @@ Config parameters for this building block:
 * **keep_hydrogen** (*boolean*): (False) All hydrogen atoms will be removed before adding the new ones unless this option is set True.
 * **fix_sidechains** (*boolean*): (True) Complete side chains (heavy atoms, protein only).
 * **fix_backbone_atoms** (*boolean*): (True) Add missing O, OXT backbone atoms.
+* **check_structure_path** (*string*): (check_structure) Path to the check_structure executable binary of biobb_structure_checking.
 * **remove_tmp** (*boolean*): (True) Remove temporal files.
 * **restart** (*boolean*): (False) Do not execute if output files exist.
 * **sandbox_path** (*string*): (./) Parent path to the sandbox directory.
@@ -169,11 +170,6 @@ Config parameters for this building block:
 * **remove_tmp** (*boolean*): (True) Remove temporal files.
 * **restart** (*boolean*): (False) Do not execute if output files exist.
 * **sandbox_path** (*string*): (./) Parent path to the sandbox directory.
-* **container_path** (*string*): (None) Path to the binary executable of your container.
-* **container_image** (*string*): (cmip/cmip:latest) Container Image identifier.
-* **container_volume_path** (*string*): (/data) Path to an internal directory in the container.
-* **container_user_id** (*string*): (None) User number id to be mapped inside the container.
-* **container_shell_path** (*string*): (/bin/bash) Path to the binary executable of the container shell.
 ### YAML
 #### [Common config file](https://github.com/bioexcel/biobb_cmip/blob/master/biobb_cmip/test/data/config/config_cmip_prepare_structure.yml)
 ```python
@@ -223,7 +219,7 @@ cmip_run -h
       --input_probe_pdb_path INPUT_PROBE_PDB_PATH
                             Path to the input probe file in PDB format. Accepted formats: pdb.
       --output_pdb_path OUTPUT_PDB_PATH
-                            Path to the output PDB file. Accepted formats: pdb.
+                            Path to the output PDB file, its name must end in .pdb and not contain underscores. Accepted formats: pdb.
       --output_grd_path OUTPUT_GRD_PATH
                             Path to the output grid file in GRD format. Accepted formats: grd.
       --output_cube_path OUTPUT_CUBE_PATH
@@ -247,14 +243,14 @@ cmip_run -h
       --input_json_box_path INPUT_JSON_BOX_PATH
                             Path to the input CMIP box in JSON format. Accepted formats: json.
       --input_json_external_box_path INPUT_JSON_EXTERNAL_BOX_PATH
-                            Path to the input CMIP box in JSON format. Accepted formats: json.
+                            Path to the input external CMIP box in JSON format. Accepted formats: json.
 ### I / O Arguments
 Syntax: input_argument (datatype) : Definition
 
 Config input / output arguments for this building block:
 * **input_pdb_path** (*string*): Path to the input PDB file. File type: input. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/RBD-hACE2.hACE2.cmip.pdb). Accepted formats: PDB
 * **input_probe_pdb_path** (*string*): Path to the input probe file in PDB format. File type: input. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/data/cmip/RBD-hACE2.RBD.cmip.pdb). Accepted formats: PDB
-* **output_pdb_path** (*string*): Path to the output PDB file. File type: output. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/RBD.energies.byat.out). Accepted formats: PDB
+* **output_pdb_path** (*string*): Path to the output PDB file, its name must end in .pdb and not contain underscores. File type: output. [Sample file](https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/cmip_docking.pdb). Accepted formats: PDB
 * **output_grd_path** (*string*): Path to the output grid file in GRD format. File type: output. [Sample file](None). Accepted formats: GRD
 * **output_cube_path** (*string*): Path to the output grid file in cube format. File type: output. [Sample file](None). Accepted formats: CUBE
 * **output_rst_path** (*string*): Path to the output restart file. File type: output. [Sample file](None). Accepted formats: TXT
@@ -266,7 +262,7 @@ Config input / output arguments for this building block:
 * **output_json_box_path** (*string*): Path to the output CMIP box in JSON format. File type: output. [Sample file](None). Accepted formats: JSON
 * **output_json_external_box_path** (*string*): Path to the output external CMIP box in JSON format. File type: output. [Sample file](None). Accepted formats: JSON
 * **input_json_box_path** (*string*): Path to the input CMIP box in JSON format. File type: input. [Sample file](None). Accepted formats: JSON
-* **input_json_external_box_path** (*string*): Path to the input CMIP box in JSON format. File type: input. [Sample file](None). Accepted formats: JSON
+* **input_json_external_box_path** (*string*): Path to the input external CMIP box in JSON format. File type: input. [Sample file](None). Accepted formats: JSON
 ### Config
 Syntax: input_parameter (datatype) - (default_value) Definition
 
@@ -387,7 +383,7 @@ Syntax: input_parameter (datatype) - (default_value) Definition
 
 Config parameters for this building block:
 * **params** (*object*): ({}) CMIP options specification.
-* **energy_cutoff** (*number*): (9999.9) Energy cutoff, extremely hight value to enable the addition of all the ions and waters before reaching the cutoff.
+* **energy_cutoff** (*number*): (9999.9) Energy cutoff, extremely high value to enable the addition of all the ions and waters before reaching the cutoff.
 * **num_wats** (*integer*): (10) Number of water molecules to be added.
 * **neutral** (*boolean*): (False) Neutralize the charge of the system. If selected *num_positive_ions* and *num_negative_ions* values will not be taken into account.
 * **num_positive_ions** (*integer*): (10) Number of positive ions to be added (Tipatom IP=Na+).
