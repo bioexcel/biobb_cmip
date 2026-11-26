@@ -6,7 +6,8 @@ from typing import Union
 
 
 def get_energies_byat(cmip_energies_byat_out: Union[str, Path], cutoff: float = 100.0) -> tuple[list[str], dict[str, list[float]]]:
-
+    """Go from a CMIP atom by atom energy file to its atoms and their ES, VDW and ES&VDW energies
+    (0.0 for the energies above **cutoff**)."""
     with open(cmip_energies_byat_out, 'r') as energies_file:
         atom_list = []
         energy_dict: dict[str, list] = {"ES": [], "VDW": [], "ES&VDW": []}
@@ -24,23 +25,14 @@ def get_energies_byat(cmip_energies_byat_out: Union[str, Path], cutoff: float = 
 
 
 def get_energies_byres(cmip_energies_byat_out: Union[str, Path], cutoff: float = 100.0) -> tuple[list[str], dict[str, list[float]]]:
+    """Go from a CMIP atom by atom energy file to its residues and their ES, VDW and ES&VDW energies
+    (the atoms with energies above **cutoff** count 0.0)."""
     residues: list = []
     energy_dict: dict[str, list] = {"ES": [], "VDW": [], "ES&VDW": []}
     with open(cmip_energies_byat_out, 'r') as energies_file:
         for line in energies_file:
             chain = line[21:22].strip()
             residue_id = line[22:28].strip()
-#            residue_id = str(int(residue_id) + 697)
-#            if (int(residue_id) > 746):
-#                residue_id = str(int(residue_id) + 9)
-#            if (int(residue_id) > 749):
-#                residue_id = str(int(residue_id) + 4)
-#            if (int(residue_id) > 867):
-#                residue_id = str(int(residue_id) + 8)
-#            if (int(residue_id) > 987):
-#                residue_id = str(int(residue_id) + 7)
-#            if (int(residue_id) > 1004):
-#                residue_id = str(int(residue_id) + 5)
             resname = inverse_aa_codes.get(line[17:21].strip().upper(), "X")
             residue = resname+' '+chain+residue_id
             vdw = float(line[42:53]) if float(line[42:53]) < cutoff else 0.0
@@ -54,7 +46,6 @@ def get_energies_byres(cmip_energies_byat_out: Union[str, Path], cutoff: float =
                 energy_dict["ES&VDW"][index] += both
             else:
                 residues.append(residue)
-                # residues.append(int(residue_id)+696)
                 energy_dict["ES"].append(es)
                 energy_dict["VDW"].append(vdw)
                 energy_dict["ES&VDW"].append(both)
@@ -63,6 +54,8 @@ def get_energies_byres(cmip_energies_byat_out: Union[str, Path], cutoff: float =
 
 
 def create_box_representation(cmip_log_path: Union[str, Path], cmip_pdb_path: Union[str, Path]) -> tuple[str, list[list[str]]]:
+    """Go from a CMIP log or JSON box file and a PDB file to a copy of the PDB with the 8 vertices of the grid
+    box as ZN atoms (boxed_<name>), and the pairs of vertices of its 12 edges."""
     return _create_box_representation_file(cmip_log_path, cmip_pdb_path), _get_atom_pair()
 
 
@@ -118,24 +111,3 @@ def _get_atom_pair() -> list[list[str]]:
             ["9999:Z.ZN4", "9999:Z.ZN7"],
             ["9999:Z.ZN5", "9999:Z.ZN7"],
             ["9999:Z.ZN6", "9999:Z.ZN7"]]
-
-# AUTOMATIC OUTER GRID / titleGrid0=Automatic Outer Grid
-#
-# INT:
-#     spacing=   1.50000000     ,   1.50000000     ,   1.50000000
-#     Grid units:      1.500   1.500   1.500
-# CEN:
-#     center=   71.6100006     ,   67.7550049     ,   56.3150024
-#     Grid center:    71.610  67.755  56.315
-# DIM:
-#     dim=          64 ,          92 ,          72
-#     Grid density:    64   92   72
-#
-# To create graphic representations:
-# Size:
-#     Grid Size:      96.000 138.000 108.000  90.000  90.000  90.000
-#     size=   96.0000000     ,   138.000000     ,   108.000000
-#
-# Origin:
-#     Grid origin:    23.610  -1.245   2.315
-#     origin=   23.6100006     ,  -1.24499512     ,   2.31500244

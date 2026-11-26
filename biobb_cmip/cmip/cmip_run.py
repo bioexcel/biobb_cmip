@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
-"""Module containing the Cmip class and the command line interface."""
+"""Module containing the CmipRun class and the command line interface."""
 import os
-import json
 from typing import Optional
 from typing import Any
 import shutil
@@ -11,7 +10,13 @@ from biobb_common.generic.biobb_object import BiobbObject, launcher
 from biobb_common.tools import file_utils as fu
 from biobb_cmip.cmip.common import create_params_file
 from biobb_cmip.cmip.common import params_preset
-from biobb_cmip.cmip.common import get_grid
+from biobb_cmip.cmip.common import params_from_box
+from biobb_cmip.cmip.common import write_json_box
+
+# CMIP flag of each optional input and output file, in the order of the command
+_FILE_FLAGS = {'input_probe_pdb_path': '-pr', 'output_pdb_path': '-outpdb', 'output_grd_path': '-grdout',
+               'output_cube_path': '-cube', 'output_rst_path': '-rst', 'output_byat_path': '-byat',
+               'output_log_path': '-o'}
 
 
 class CmipRun(BiobbObject):
@@ -83,175 +88,81 @@ class CmipRun(BiobbObject):
 
         if not self.io_dict['in'].get('input_vdw_params_path'):
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
-        self.io_dict['in']['combined_params_path'] = self.properties.get('combined_params_path', 'params')
 
     def prepare(self) -> None:
         """Create the CMIP parameters file."""
-        # Check if output_pdb_path ends with ".pdb" and does not contain underscores
-        if self.io_dict['out']['output_pdb_path']:
-            if (not self.io_dict['out']['output_pdb_path'].endswith('.pdb')) or \
-               ("_" in str(Path(self.io_dict['out']['output_pdb_path']).name)):
-                fu.log(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']}) "
-                       f"name must end in .pdb and not contain underscores", self.out_log, self.global_log)
-                raise ValueError(f"ERROR: output_pdb_path ({self.io_dict['out']['output_pdb_path']})"
-                                 f"name must end in .pdb and not contain underscores")
+        output_pdb_path = self.io_dict['out']['output_pdb_path']
+        if output_pdb_path and (not output_pdb_path.endswith('.pdb') or "_" in Path(output_pdb_path).name):
+            message = f"ERROR: output_pdb_path ({output_pdb_path}) name must end in .pdb and not contain underscores"
+            fu.log(message, self.out_log, self.global_log)
+            raise ValueError(message)
 
         params_preset_dict: dict[str, Any] = params_preset(execution_type=self.execution_type)
-        if self.io_dict['in']["input_json_external_box_path"]:
-            params_preset_dict["readgrid0"] = 0
-            origin, size, grid_params = get_grid(self.io_dict['in']["input_json_external_box_path"])
-            params_preset_dict['grid_int0'] = \
-                f"INTX0={grid_params['INT'][0]},INTY0={grid_params['INT'][1]},INTZ0={grid_params['INT'][2]}"
-            params_preset_dict['grid_cen0'] = \
-                f"CENX0={grid_params['CEN'][0]},CENY0={grid_params['CEN'][1]},CENZ0={grid_params['CEN'][2]}"
-            params_preset_dict['grid_dim0'] = \
-                f"DIMX0={grid_params['DIM'][0]},DIMY0={grid_params['DIM'][1]},DIMZ0={grid_params['DIM'][2]}"
+        # Grids of the input boxes, the outer one first
+        for box_key, grid_id in (('input_json_external_box_path', '0'), ('input_json_box_path', '')):
+            if self.io_dict['in'][box_key]:
+                params_preset_dict.update(params_from_box(self.io_dict['in'][box_key], grid_id))
 
-        if self.io_dict['in']["input_json_box_path"]:
-            params_preset_dict["readgrid"] = 0
-            origin, size, grid_params = get_grid(self.io_dict['in']["input_json_box_path"])
-            params_preset_dict['grid_int'] = \
-                f"INTX={grid_params['INT'][0]},INTY={grid_params['INT'][1]},INTZ={grid_params['INT'][2]}"
-            params_preset_dict['grid_cen'] = \
-                f"CENX={grid_params['CEN'][0]},CENY={grid_params['CEN'][1]},CENZ={grid_params['CEN'][2]}"
-            params_preset_dict['grid_dim'] = \
-                f"DIMX={grid_params['DIM'][0]},DIMY={grid_params['DIM'][1]},DIMZ={grid_params['DIM'][2]}"
-
+        # The output boxes are read from the CMIP log
         if self.io_dict['out']['output_json_box_path'] or self.io_dict['out']['output_json_external_box_path']:
-            params_preset_dict['WRITELOG'] = 1
-            key_value_log_dir = self.create_tmp_dir()
-            self.io_dict['out']['key_value_log_path'] = str(Path(key_value_log_dir).joinpath("key_value_cmip_log.log"))
-            # The boxes are read from the CMIP log
             if not self.io_dict['out']['output_log_path']:
-                self.io_dict['out']['output_log_path'] = str(Path(key_value_log_dir).joinpath("cmip.log"))
+                self.io_dict['out']['output_log_path'] = self.create_tmp_file('.log')
 
         # Restart OUT
-        if self.io_dict["out"].get("output_rst_path"):
-            params_preset_dict['FULLRST'] = 1  # type: ignore
+        if self.io_dict['out']['output_rst_path']:
+            params_preset_dict['FULLRST'] = 1
             params_preset_dict['OREST'] = 1
 
         # Restart IN
-        if self.io_dict['in']["input_rst_path"]:
+        if self.io_dict['in']['input_rst_path']:
             params_preset_dict['IREST'] = 2
-            if not self.io_dict["out"].get("output_rst_path"):
-                self.io_dict["out"]["output_rst_path"] = self.create_tmp_file("")
-
+            if not self.io_dict['out']['output_rst_path']:
+                self.io_dict['out']['output_rst_path'] = self.create_tmp_file('')
         else:
             params_preset_dict['IREST'] = 0
 
-        combined_params_dir = self.create_tmp_dir()
         self.io_dict['in']['combined_params_path'] = create_params_file(
-            output_params_path=str(Path(combined_params_dir).joinpath(self.io_dict['in']['combined_params_path'])),
-            input_params_path=self.io_dict['in'].get('input_params_path'),
+            output_params_path=str(Path(self.create_tmp_dir()).joinpath('params')),
+            input_params_path=self.io_dict['in']['input_params_path'],
             params_preset_dict=params_preset_dict,
             params_properties_dict=self.params)
 
     def run(self) -> None:
-        """Execute the :class:`Cmip <cmip.cmip.Cmip>` object."""
+        """Execute the :class:`CmipRun <cmip.cmip_run.CmipRun>` object."""
 
         self.cmd = [self.binary_path,
                     '-i', self.stage_io_dict['in']['combined_params_path'],
                     '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
                     '-hs', self.stage_io_dict['in']['input_pdb_path']]
-
-        if self.stage_io_dict["in"].get("input_probe_pdb_path") and Path(
-                self.io_dict["in"].get("input_probe_pdb_path", "")).exists():
-            self.cmd.append('-pr')
-            self.cmd.append(self.stage_io_dict["in"].get("input_probe_pdb_path"))
-
-        if self.stage_io_dict["out"].get("output_pdb_path"):
-            self.cmd.append('-outpdb')
-            self.cmd.append(self.stage_io_dict['out']['output_pdb_path'])
-
-        if self.stage_io_dict["out"].get("output_grd_path"):
-            self.cmd.append('-grdout')
-            self.cmd.append(self.stage_io_dict["out"]["output_grd_path"])
-
-        if self.stage_io_dict["out"].get("output_cube_path"):
-            self.cmd.append('-cube')
-            self.cmd.append(self.stage_io_dict["out"]["output_cube_path"])
-
-        if self.stage_io_dict["out"].get("output_rst_path"):
-            self.cmd.append('-rst')
-            self.cmd.append(self.stage_io_dict["out"]["output_rst_path"])
-
-        if self.stage_io_dict["out"].get("output_byat_path"):
-            self.cmd.append('-byat')
-            self.cmd.append(self.stage_io_dict["out"]["output_byat_path"])
-
-        if self.stage_io_dict["out"].get("output_log_path"):
-            self.cmd.append('-o')
-            self.cmd.append(self.stage_io_dict["out"]["output_log_path"])
-
-        if self.stage_io_dict['out'].get('output_json_box_path') or self.stage_io_dict['out'].get('output_json_external_box_path'):
-            self.cmd.append('-l')
-            self.cmd.append(self.stage_io_dict["out"]["key_value_log_path"])
+        staged_files = {**self.stage_io_dict['in'], **self.stage_io_dict['out']}
+        for file_key, flag in _FILE_FLAGS.items():
+            if staged_files.get(file_key):
+                self.cmd += [flag, staged_files[file_key]]
 
         # CMIP reads the input restart from the -rst file (written in the sandbox)
-        if self.io_dict['in']["input_rst_path"]:
-            shutil.copy2(self.io_dict['in']["input_rst_path"], self.sandbox_file("output_rst_path"))
+        if self.io_dict['in']['input_rst_path']:
+            shutil.copy2(self.io_dict['in']['input_rst_path'], self.sandbox_file('output_rst_path'))
 
         # Run Biobb block
         self.run_biobb()
 
-        # CMIP removes or adds a .pdb extension from pdb output name: rename it in the sandbox
-        output_pdb_path = self.sandbox_file("output_pdb_path")
+        # CMIP removes or adds the .pdb extension of the output PDB and writes "ATOMTM" for "ATOM  "
+        output_pdb_path = self.sandbox_file('output_pdb_path')
         if output_pdb_path:
-            if Path(output_pdb_path[:-4]).exists():
-                shutil.move(output_pdb_path[:-4], output_pdb_path)
-            elif Path(output_pdb_path + ".pdb").exists():
-                shutil.move(output_pdb_path + ".pdb", output_pdb_path)
-            elif not Path(output_pdb_path).exists():
+            for cmip_pdb_path in (output_pdb_path[:-4], output_pdb_path + '.pdb'):
+                if Path(cmip_pdb_path).exists():
+                    shutil.move(cmip_pdb_path, output_pdb_path)
+                    break
+            if Path(output_pdb_path).exists():
+                pdb_text = Path(output_pdb_path).read_text()
+                Path(output_pdb_path).write_text(pdb_text.replace('ATOMTM', 'ATOM  '))
+            else:
                 fu.log(f"WARNING: File not found output_pdb_path: {output_pdb_path}", self.out_log, self.global_log)
 
-        # Replace "ATOMTM" tag for "ATOM  "
-        if output_pdb_path:
-            if Path(output_pdb_path).exists():
-                with open(output_pdb_path) as pdb_file:
-                    list_pdb_lines = pdb_file.readlines()
-                with open(output_pdb_path, 'w') as pdb_file:
-                    for line in list_pdb_lines:
-                        pdb_file.write(line.replace('ATOMTM', 'ATOM  '))
-            else:
-                fu.log(f"WARNING: File not found output_pdb_path: {output_pdb_path} Abs Path: {Path(output_pdb_path).resolve()}", self.out_log, self.global_log)
-
-        # Create json_box_path file from CMIP log file
-        if self.io_dict['out'].get('output_json_box_path'):
-            cmip_log_path = self.sandbox_file("output_log_path")
-            origin, size, grid_params = get_grid(cmip_log_path)
-            grid_params['DIM'] = (int(grid_params['DIM'][0]),
-                                  int(grid_params['DIM'][1]),
-                                  int(grid_params['DIM'][2]))
-            size_dict = {'x': round(grid_params['DIM'][0] * grid_params['INT'][0], 3),
-                         'y': round(grid_params['DIM'][1] * grid_params['INT'][1], 3),
-                         'z': round(grid_params['DIM'][2] * grid_params['INT'][2], 3)}
-            origin_dict = {'x': round(grid_params['CEN'][0] - size_dict['x'] / 2, 3),
-                           'y': round(grid_params['CEN'][1] - size_dict['y'] / 2, 3),
-                           'z': round(grid_params['CEN'][2] - size_dict['z'] / 2, 3)}
-            grid_dict = {'origin': origin_dict,
-                         'size': size_dict,
-                         'params': grid_params}
-            with open(self.sandbox_file("output_json_box_path"), 'w') as json_file:
-                json_file.write(json.dumps(grid_dict, indent=4))
-
-        # Create external_json_box_path file from CMIP log file
-        if self.io_dict['out'].get('output_json_external_box_path'):
-            cmip_log_path = self.sandbox_file("output_log_path")
-            origin, size, grid_params = get_grid(cmip_log_path, True)
-            grid_params['DIM'] = (int(grid_params['DIM'][0]),
-                                  int(grid_params['DIM'][1]),
-                                  int(grid_params['DIM'][2]))
-            size_dict = {'x': round(grid_params['DIM'][0] * grid_params['INT'][0], 3),
-                         'y': round(grid_params['DIM'][1] * grid_params['INT'][1], 3),
-                         'z': round(grid_params['DIM'][2] * grid_params['INT'][2], 3)}
-            origin_dict = {'x': round(grid_params['CEN'][0] - size_dict['x'] / 2, 3),
-                           'y': round(grid_params['CEN'][1] - size_dict['y'] / 2, 3),
-                           'z': round(grid_params['CEN'][2] - size_dict['z'] / 2, 3)}
-            grid_dict = {'origin': origin_dict,
-                         'size': size_dict,
-                         'params': grid_params}
-            with open(self.sandbox_file("output_json_external_box_path"), 'w') as json_file:
-                json_file.write(json.dumps(grid_dict, indent=4))
+        # JSON boxes from the CMIP log
+        for box_key, external in (('output_json_box_path', False), ('output_json_external_box_path', True)):
+            if self.io_dict['out'][box_key]:
+                write_json_box(self.sandbox_file('output_log_path'), self.sandbox_file(box_key), external)
 
 
 cmip_run = launcher(CmipRun)

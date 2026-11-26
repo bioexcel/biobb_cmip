@@ -1,5 +1,13 @@
  # Biobb CMIP changelog
  
+## Unreleased
+
+### Changes
+
+* [FIX] cmip_prepare_structure without a topology: an atom that is not in the CMIP residue library now stops the block with an error that names the missing atoms; it crashed with `AttributeError: 'dict' object has no attribute 'charg'`. Its warnings now go to the block log instead of the console.
+* [FIX] cmip_run and cmip_titration: an `input_params_path` file with blank lines or trailing commas (` tipcalc=0, calcgrid=1,`) is now read; it failed with `ValueError`.
+* [UPDATE] cmip_run and cmip_titration: the undocumented `combined_params_path` and `output_params_path` properties are removed; they only named the CMIP parameters file inside a temporary folder.
+
  ## What's new in version [5.3.1](https://github.com/bioexcel/biobb_amber/releases/tag/v5.3.1)?
  
  ### Changes

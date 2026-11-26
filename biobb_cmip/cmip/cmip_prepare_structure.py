@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
 
-"""Module containing the PrepareStructure class and the command line interface."""
+"""Module containing the CmipPrepareStructure class and the command line interface."""
 from typing import Optional
 import warnings
 from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject, launcher
 from biobb_common.tools import file_utils as fu
-
-# Write the CMIP PDB
 from biobb_cmip.cmip.common import write_cmip_pdb
-# Dani's methods using a topology and a PDB file
-from biobb_cmip.cmip.common import get_topology_cmip_elements_canonical
-from biobb_cmip.cmip.common import get_topology_charges
-# JLG methods using just the PDB file
-from biobb_cmip.cmip.common import get_pdb_charges
-from biobb_cmip.cmip.common import get_pdb_cmip_elements_canonical
+from biobb_cmip.cmip.common import get_topology_charges_and_elements
+from biobb_cmip.cmip.common import get_pdb_charges_and_elements
 
 
 class CmipPrepareStructure(BiobbObject):
@@ -64,36 +58,28 @@ class CmipPrepareStructure(BiobbObject):
         """The block does not use the sandbox: there are no files to stage."""
 
     def run(self) -> None:
-        """Execute the :class:`Cmip <cmip.cmip.PrepareStructure>` object."""
-        # Dani's method
+        """Execute the :class:`CmipPrepareStructure <cmip.cmip_prepare_structure.CmipPrepareStructure>` object."""
+        # Charges and atom types from the topology
         if self.io_dict['in']['input_topology_path']:
             top_file = self.io_dict['in']['input_topology_path']
-            if self.io_dict['in']['input_topology_path'].lower().endswith(".zip"):
-                # Unzip topology to topology_out
-                top_file = fu.unzip_top(zip_file=self.io_dict['in']['input_topology_path'], out_log=self.out_log)
-                top_dir = str(Path(top_file).parent)
-                self.tmp_files.append(top_dir)
+            if top_file.lower().endswith(".zip"):
+                top_file = fu.unzip_top(zip_file=top_file, out_log=self.out_log)
+                self.tmp_files.append(str(Path(top_file).parent))
 
+            fu.log(f'Reading the charges and atom types of {top_file}', self.out_log, self.global_log)
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=UserWarning)
-                fu.log(f'Reading: {top_file} to extract charges', self.out_log, self.global_log)
-                charges_list = get_topology_charges(top_file)
-                fu.log(f'Reading: {top_file} to extract elements', self.out_log, self.global_log)
-                elements_list = get_topology_cmip_elements_canonical(top_file)
-                two_letter_elements = {"CL": "Cl", "NA": "Na", "ZN": "Zn", "MG": "Mg"}
-                elements_list = [two_letter_elements.get(element, element) for element in elements_list]
+                charges_list, elements_list = get_topology_charges_and_elements(top_file)
 
-        # JLG's method
+        # Charges and atom types from the CMIP residue library
         else:
-            charges_list = get_pdb_charges(self.io_dict['in']['input_pdb_path'])
-            elements_list = get_pdb_cmip_elements_canonical(self.io_dict['in']['input_pdb_path'])
+            charges_list, elements_list = get_pdb_charges_and_elements(
+                self.io_dict['in']['input_pdb_path'], out_log=self.out_log, global_log=self.global_log)
 
         write_cmip_pdb(self.io_dict['in']['input_pdb_path'],
                        self.io_dict['out']['output_cmip_pdb_path'],
                        charges_list,
                        elements_list)
-
-        ###################################
 
 
 cmip_prepare_structure = launcher(CmipPrepareStructure)

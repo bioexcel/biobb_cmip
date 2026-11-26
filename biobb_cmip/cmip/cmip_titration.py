@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Module containing the Titration class and the command line interface."""
+"""Module containing the CmipTitration class and the command line interface."""
 import os
 from typing import Optional
 from typing import Any
@@ -66,7 +66,6 @@ class CmipTitration(BiobbObject):
         super().__init__(**locals())
 
         # Properties specific for BB
-        self.output_params_path = self.properties.get('output_params_path', 'params')
         if not self.io_dict['in'].get('input_vdw_params_path'):
             self.io_dict['in']['input_vdw_params_path'] = f"{os.environ.get('CONDA_PREFIX')}/share/cmip/dat/vdwprm"
         self.params: dict[str, Any] = {k: str(v) for k, v in self.params.items()}
@@ -92,7 +91,7 @@ class CmipTitration(BiobbObject):
             if int(round(charge)) > 0:
                 self.params['titim'] = str(int(round(charge)))
             elif int(round(charge)) < 0:
-                self.params['titip'] = abs(int(round(charge)))
+                self.params['titip'] = str(abs(int(round(charge))))
             else:
                 fu.log(f'Neutral flag activated however no positive or negative ions will be added because the system '
                        f'is already neutralized. System charge: {round(charge, 3)}', self.out_log, self.global_log)
@@ -106,13 +105,13 @@ class CmipTitration(BiobbObject):
 
         combined_params_dir = self.create_tmp_dir()
         self.io_dict['in']['combined_params_path'] = create_params_file(
-            output_params_path=str(Path(combined_params_dir).joinpath(self.output_params_path)),
+            output_params_path=str(Path(combined_params_dir).joinpath('params')),
             input_params_path=self.io_dict['in']['input_params_path'],
             params_preset_dict=params_preset(execution_type='titration'),
             params_properties_dict=self.params)
 
     def run(self) -> None:
-        """Execute the :class:`Titration <cmip.titration.Titration>` object."""
+        """Execute the :class:`CmipTitration <cmip.cmip_titration.CmipTitration>` object."""
 
         self.cmd = [self.binary_path,
                     '-i', self.stage_io_dict['in']['combined_params_path'],
