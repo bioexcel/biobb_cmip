@@ -6,7 +6,7 @@ import json
 from typing import Optional
 from typing import Any
 import shutil
-from pathlib import Path, PurePath
+from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject, launcher
 from biobb_common.tools import file_utils as fu
 from biobb_cmip.cmip.common import create_params_file
@@ -46,7 +46,6 @@ class CmipRun(BiobbObject):
             * **container_path** (*str*) - (None)  Path to the binary executable of your container.
             * **container_image** (*str*) - ("cmip/cmip:latest") Container Image identifier.
             * **container_volume_path** (*str*) - ("/data") Path to an internal directory in the container.
-            * **container_working_dir** (*str*) - (None) Path to the internal CWD in the container.
             * **container_user_id** (*str*) - (None) User number id to be mapped inside the container.
             * **container_shell_path** (*str*) - ("/bin/bash") Path to the binary executable of the container shell.
 
@@ -150,51 +149,43 @@ class CmipRun(BiobbObject):
     def run(self) -> None:
         """Execute the :class:`Cmip <cmip.cmip.Cmip>` object."""
 
-        if self.container_path:
-            working_dir = self.container_volume_path if self.container_volume_path else "/data"
-        else:
-            working_dir = self.stage_io_dict["unique_dir"]
-
-        self.cmd = ["cd",
-                    working_dir,
-                    ";",
-                    self.binary_path,
-                    '-i', PurePath(self.stage_io_dict['in']['combined_params_path']).name,
-                    '-vdw', PurePath(self.stage_io_dict['in']['input_vdw_params_path']).name,
-                    '-hs', PurePath(self.stage_io_dict['in']['input_pdb_path']).name]
+        self.cmd = [self.binary_path,
+                    '-i', self.stage_io_dict['in']['combined_params_path'],
+                    '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
+                    '-hs', self.stage_io_dict['in']['input_pdb_path']]
 
         if self.stage_io_dict["in"].get("input_probe_pdb_path") and Path(
                 self.io_dict["in"].get("input_probe_pdb_path", "")).exists():
             self.cmd.append('-pr')
-            self.cmd.append(PurePath(self.stage_io_dict["in"].get("input_probe_pdb_path")).name)
+            self.cmd.append(self.stage_io_dict["in"].get("input_probe_pdb_path"))
 
         if self.stage_io_dict["out"].get("output_pdb_path"):
             self.cmd.append('-outpdb')
-            self.cmd.append(PurePath(self.stage_io_dict['out']['output_pdb_path']).name)
+            self.cmd.append(self.stage_io_dict['out']['output_pdb_path'])
 
         if self.stage_io_dict["out"].get("output_grd_path"):
             self.cmd.append('-grdout')
-            self.cmd.append(PurePath(self.stage_io_dict["out"]["output_grd_path"]).name)
+            self.cmd.append(self.stage_io_dict["out"]["output_grd_path"])
 
         if self.stage_io_dict["out"].get("output_cube_path"):
             self.cmd.append('-cube')
-            self.cmd.append(PurePath(self.stage_io_dict["out"]["output_cube_path"]).name)
+            self.cmd.append(self.stage_io_dict["out"]["output_cube_path"])
 
         if self.stage_io_dict["out"].get("output_rst_path"):
             self.cmd.append('-rst')
-            self.cmd.append(PurePath(self.stage_io_dict["out"]["output_rst_path"]).name)
+            self.cmd.append(self.stage_io_dict["out"]["output_rst_path"])
 
         if self.stage_io_dict["out"].get("output_byat_path"):
             self.cmd.append('-byat')
-            self.cmd.append(PurePath(self.stage_io_dict["out"]["output_byat_path"]).name)
+            self.cmd.append(self.stage_io_dict["out"]["output_byat_path"])
 
         if self.stage_io_dict["out"].get("output_log_path"):
             self.cmd.append('-o')
-            self.cmd.append(PurePath(self.stage_io_dict["out"]["output_log_path"]).name)
+            self.cmd.append(self.stage_io_dict["out"]["output_log_path"])
 
         if self.stage_io_dict['out'].get('output_json_box_path') or self.stage_io_dict['out'].get('output_json_external_box_path'):
             self.cmd.append('-l')
-            self.cmd.append(PurePath(self.stage_io_dict["out"]["key_value_log_path"]).name)
+            self.cmd.append(self.stage_io_dict["out"]["key_value_log_path"])
 
         # CMIP reads the input restart from the -rst file (written in the sandbox)
         if self.io_dict['in']["input_rst_path"]:

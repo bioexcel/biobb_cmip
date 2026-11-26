@@ -4,7 +4,7 @@
 import os
 from typing import Optional
 from typing import Any
-from pathlib import Path, PurePath
+from pathlib import Path
 from biobb_common.generic.biobb_object import BiobbObject, launcher
 from biobb_common.tools import file_utils as fu
 from biobb_cmip.cmip.common import create_params_file
@@ -37,7 +37,6 @@ class CmipTitration(BiobbObject):
             * **container_path** (*str*) - (None)  Path to the binary executable of your container.
             * **container_image** (*str*) - ("cmip/cmip:latest") Container Image identifier.
             * **container_volume_path** (*str*) - ("/data") Path to an internal directory in the container.
-            * **container_working_dir** (*str*) - (None) Path to the internal CWD in the container.
             * **container_user_id** (*str*) - (None) User number id to be mapped inside the container.
             * **container_shell_path** (*str*) - ("/bin/bash") Path to the binary executable of the container shell.
 
@@ -114,19 +113,12 @@ class CmipTitration(BiobbObject):
 
     def run(self) -> None:
         """Execute the :class:`Titration <cmip.titration.Titration>` object."""
-        if self.container_path:
-            working_dir = self.container_volume_path if self.container_volume_path else "/data"
-        else:
-            working_dir = self.stage_io_dict["unique_dir"]
 
-        self.cmd = ["cd",
-                    working_dir,
-                    ";",
-                    self.binary_path,
-                    '-i', PurePath(self.stage_io_dict['in']['combined_params_path']).name,
-                    '-vdw', PurePath(self.stage_io_dict['in']['input_vdw_params_path']).name,
-                    '-hs', PurePath(self.stage_io_dict['in']['input_pdb_path']).name,
-                    '-outpdb', PurePath(self.stage_io_dict['out']['output_pdb_path'][:-4]).name]
+        self.cmd = [self.binary_path,
+                    '-i', self.stage_io_dict['in']['combined_params_path'],
+                    '-vdw', self.stage_io_dict['in']['input_vdw_params_path'],
+                    '-hs', self.stage_io_dict['in']['input_pdb_path'],
+                    '-outpdb', self.stage_io_dict['out']['output_pdb_path'][:-4]]
 
         # Run Biobb block
         self.run_biobb()
