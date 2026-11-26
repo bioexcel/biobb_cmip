@@ -2,7 +2,7 @@
 
 """Module containing the PreparePDB class and the command line interface."""
 from typing import Optional
-from biobb_common.generic.biobb_object import BiobbObject
+from biobb_common.generic.biobb_object import BiobbObject, launcher
 
 
 class CmipPreparePDB(BiobbObject):
@@ -81,14 +81,7 @@ class CmipPreparePDB(BiobbObject):
         self.run_biobb()
 
 
-def cmip_prepare_pdb(input_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> int:
-    """Create :class:`PreparePDB <cmip.prepare_pdb.PreparePDB>` class and
-    execute the :meth:`launch() <cmip.prepare_pdb.PreparePDB.launch>` method."""
-    return CmipPreparePDB(**dict(locals())).launch()
-
-
-cmip_prepare_pdb.__doc__ = CmipPreparePDB.__doc__
-main = CmipPreparePDB.get_main(cmip_prepare_pdb, "Model the missing atoms in the backbone of a PDB structure.")
+cmip_prepare_pdb = launcher(CmipPreparePDB)
 
 if __name__ == '__main__':
-    main()
+    CmipPreparePDB.main()

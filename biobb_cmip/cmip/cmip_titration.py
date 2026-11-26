@@ -5,7 +5,7 @@ import os
 from typing import Optional
 from typing import Any
 from pathlib import Path, PurePath
-from biobb_common.generic.biobb_object import BiobbObject
+from biobb_common.generic.biobb_object import BiobbObject, launcher
 from biobb_common.tools import file_utils as fu
 from biobb_cmip.cmip.common import create_params_file
 from biobb_cmip.cmip.common import params_preset
@@ -132,18 +132,7 @@ class CmipTitration(BiobbObject):
         self.run_biobb()
 
 
-def cmip_titration(input_pdb_path: str, output_pdb_path: str,
-                   input_vdw_params_path: Optional[str] = None, input_params_path: Optional[str] = None,
-                   properties: Optional[dict] = None, **kwargs) -> int:
-    """Create :class:`Titration <cmip.titration.Titration>` class and
-    execute the :meth:`launch() <cmip.titration.Titration.launch>` method."""
-    return CmipTitration(input_pdb_path=input_pdb_path, output_pdb_path=output_pdb_path,
-                         input_vdw_params_path=input_vdw_params_path, input_params_path=input_params_path,
-                         properties=properties, **kwargs).launch()
-
-
-cmip_titration.__doc__ = CmipTitration.__doc__
-main = CmipTitration.get_main(cmip_titration, "Wrapper of the CMIP Titration module.")
+cmip_titration = launcher(CmipTitration)
 
 if __name__ == '__main__':
-    main()
+    CmipTitration.main()

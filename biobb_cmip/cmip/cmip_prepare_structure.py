@@ -4,7 +4,7 @@
 from typing import Optional
 import warnings
 from pathlib import Path
-from biobb_common.generic.biobb_object import BiobbObject
+from biobb_common.generic.biobb_object import BiobbObject, launcher
 from biobb_common.tools import file_utils as fu
 
 # Write the CMIP PDB
@@ -97,15 +97,7 @@ class CmipPrepareStructure(BiobbObject):
         ###################################
 
 
-def cmip_prepare_structure(input_pdb_path: str, output_cmip_pdb_path: str, input_topology_path: Optional[str] = None,
-                           properties: Optional[dict] = None, **kwargs) -> int:
-    """Create :class:`Cmip <cmip.cmip.PrepareStructure>` class and
-    execute the :meth:`launch() <cmip.cmip.PrepareStructure.launch>` method."""
-    return CmipPrepareStructure(**dict(locals())).launch()
-
-
-cmip_prepare_structure.__doc__ = CmipPrepareStructure.__doc__
-main = CmipPrepareStructure.get_main(cmip_prepare_structure, "Wrapper of the cmip prepare_structure module.")
+cmip_prepare_structure = launcher(CmipPrepareStructure)
 
 if __name__ == '__main__':
-    main()
+    CmipPrepareStructure.main()

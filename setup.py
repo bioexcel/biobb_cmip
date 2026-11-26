@@ -28,11 +28,11 @@ setuptools.setup(
     python_requires='>=3.10',
     entry_points={
         "console_scripts": [
-            "cmip_run = biobb_cmip.cmip.cmip_run:main",
-            "cmip_titration = biobb_cmip.cmip.cmip_titration:main",
-            "cmip_prepare_structure = biobb_cmip.cmip.cmip_prepare_structure:main",
-            "cmip_prepare_pdb = biobb_cmip.cmip.cmip_prepare_pdb:main",
-            "cmip_ignore_residues = biobb_cmip.cmip.cmip_ignore_residues:main"
+            "cmip_run = biobb_cmip.cmip.cmip_run:CmipRun.main",
+            "cmip_titration = biobb_cmip.cmip.cmip_titration:CmipTitration.main",
+            "cmip_prepare_structure = biobb_cmip.cmip.cmip_prepare_structure:CmipPrepareStructure.main",
+            "cmip_prepare_pdb = biobb_cmip.cmip.cmip_prepare_pdb:CmipPreparePDB.main",
+            "cmip_ignore_residues = biobb_cmip.cmip.cmip_ignore_residues:CmipIgnoreResidues.main"
         ]
     },
     classifiers=[

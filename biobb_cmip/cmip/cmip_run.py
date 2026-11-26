@@ -7,7 +7,7 @@ from typing import Optional
 from typing import Any
 import shutil
 from pathlib import Path, PurePath
-from biobb_common.generic.biobb_object import BiobbObject
+from biobb_common.generic.biobb_object import BiobbObject, launcher
 from biobb_common.tools import file_utils as fu
 from biobb_cmip.cmip.common import create_params_file
 from biobb_cmip.cmip.common import params_preset
@@ -263,19 +263,7 @@ class CmipRun(BiobbObject):
                 json_file.write(json.dumps(grid_dict, indent=4))
 
 
-def cmip_run(input_pdb_path: str, input_probe_pdb_path: Optional[str] = None, output_pdb_path: Optional[str] = None,
-             output_grd_path: Optional[str] = None, output_cube_path: Optional[str] = None, output_rst_path: Optional[str] = None,
-             input_rst_path: Optional[str] = None, output_byat_path: Optional[str] = None, output_log_path: Optional[str] = None,
-             input_vdw_params_path: Optional[str] = None, input_params_path: Optional[str] = None, output_json_box_path: Optional[str] = None,
-             output_json_external_box_path: Optional[str] = None, input_json_box_path: Optional[str] = None,
-             input_json_external_box_path: Optional[str] = None, properties: Optional[dict] = None, **kwargs) -> int:
-    """Create :class:`Cmip <cmip.cmip.Cmip>` class and
-    execute the :meth:`launch() <cmip.cmip.Cmip.launch>` method."""
-    return CmipRun(**dict(locals())).launch()
-
-
-cmip_run.__doc__ = CmipRun.__doc__
-main = CmipRun.get_main(cmip_run, "Wrapper of the CMIP cmip module.")
+cmip_run = launcher(CmipRun)
 
 if __name__ == '__main__':
-    main()
+    CmipRun.main()

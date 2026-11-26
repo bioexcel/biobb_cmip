@@ -4,7 +4,7 @@
 from typing import Optional
 import shutil
 from biobb_cmip.cmip.common import mark_residues
-from biobb_common.generic.biobb_object import BiobbObject
+from biobb_common.generic.biobb_object import BiobbObject, launcher
 import biobb_common.tools.file_utils as fu
 
 
@@ -76,14 +76,7 @@ class CmipIgnoreResidues(BiobbObject):
         mark_residues(residue_list=self.residue_list or [], input_cmip_pdb_path=self.io_dict["in"]["input_cmip_pdb_path"], output_cmip_pdb_path=self.io_dict["out"]["output_cmip_pdb_path"], out_log=self.out_log, global_log=self.global_log)
 
 
-def cmip_ignore_residues(input_cmip_pdb_path: str, output_cmip_pdb_path: str, properties: Optional[dict] = None, **kwargs) -> int:
-    """Create :class:`IgnoreResidues <cmip.ignore_residues.IgnoreResidues>` class and
-    execute the :meth:`launch() <cmip.ignore_residues.IgnoreResidues.launch>` method."""
-    return CmipIgnoreResidues(**dict(locals())).launch()
-
-
-cmip_ignore_residues.__doc__ = CmipIgnoreResidues.__doc__
-main = CmipIgnoreResidues.get_main(cmip_ignore_residues, "Mark residues which charges will be ignored in the CMIP potential calculations.")
+cmip_ignore_residues = launcher(CmipIgnoreResidues)
 
 if __name__ == '__main__':
-    main()
+    CmipIgnoreResidues.main()
