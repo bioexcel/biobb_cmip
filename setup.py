@@ -25,7 +25,7 @@ setuptools.setup(
         'mdanalysis>=2.0.0',
         'biobb_structure_checking==3.15.6'
     ],
-    python_requires='>=3.10',
+    python_requires='>=3.11',
     entry_points={
         "console_scripts": [
             "cmip_run = biobb_cmip.cmip.cmip_run:CmipRun.main",
@@ -37,7 +37,9 @@ setuptools.setup(
     },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
-        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX",
