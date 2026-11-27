@@ -1,9 +1,9 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "http://bioexcel.eu/biobb_cmip/json_schemas/1.0/cmip_run",
-    "name": "biobb_cmip Titration",
+    "name": "biobb_cmip CmipRun",
     "title": "Wrapper class for the CMIP cmip module.",
-    "description": "The CMIP cmip module. CMIP cmip module compute classical molecular interaction potentials.",
+    "description": "Compute classical molecular interaction potentials with the CMIP cmip module.",
     "type": "object",
     "info": {
         "wrapped_software": {
@@ -54,16 +54,16 @@
         },
         "output_pdb_path": {
             "type": "string",
-            "description": "Path to the output PDB file",
+            "description": "Path to the output PDB file, its name must end in .pdb and not contain underscores",
             "filetype": "output",
-            "sample": "https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/RBD.energies.byat.out",
+            "sample": "https://raw.githubusercontent.com/bioexcel/biobb_cmip/master/biobb_cmip/test/reference/cmip/cmip_docking.pdb",
             "enum": [
                 ".*\\.pdb$"
             ],
             "file_formats": [
                 {
                     "extension": ".*\\.pdb$",
-                    "description": "Path to the output PDB file",
+                    "description": "Path to the output PDB file, its name must end in .pdb and not contain underscores",
                     "edam": "format_1476"
                 }
             ]
@@ -252,7 +252,7 @@
         },
         "input_json_external_box_path": {
             "type": "string",
-            "description": "Path to the input CMIP box in JSON format",
+            "description": "Path to the input external CMIP box in JSON format",
             "filetype": "input",
             "sample": null,
             "enum": [
@@ -261,7 +261,7 @@
             "file_formats": [
                 {
                     "extension": ".*\\.json$",
-                    "description": "Path to the input CMIP box in JSON format",
+                    "description": "Path to the input external CMIP box in JSON format",
                     "edam": "format_3464"
                 }
             ]
@@ -366,12 +366,6 @@
                     "default": "/data",
                     "wf_prop": false,
                     "description": "Path to an internal directory in the container."
-                },
-                "container_working_dir": {
-                    "type": "string",
-                    "default": null,
-                    "wf_prop": false,
-                    "description": "Path to the internal CWD in the container."
                 },
                 "container_user_id": {
                     "type": "string",

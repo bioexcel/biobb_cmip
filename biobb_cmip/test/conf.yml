@@ -73,7 +73,7 @@ cmip_prepare_structure:
   paths:
     input_pdb_path: file:test_data_dir/cmip/1aki.pdb
     output_cmip_pdb_path: 1aki_cmip.pdb
-    ref_output_prepare_structure_pdb_path: file:test_reference_dir/cmip/1aki_cmip.pdb
+    ref_output_prepare_structure_pdb_path: file:test_reference_dir/cmip/1aki_prepare_structure.pdb
   properties:
     remove_tmp: True
 

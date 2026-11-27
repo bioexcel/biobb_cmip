@@ -1,5 +1,23 @@
  # Biobb CMIP changelog
  
+## [Unreleased]
+
+## What's new in version [5.4.0](https://github.com/bioexcel/biobb_cmip/releases/tag/v5.4.0)?
+
+### Changes
+
+* [UPDATE] Update to biobb_common 5.4.0.
+* [FIX] cmip_prepare_structure without a topology: an atom that is not in the CMIP residue library now stops the block with an error that names the missing atoms; it crashed with `AttributeError: 'dict' object has no attribute 'charg'`. Its warnings now go to the block log instead of the console.
+* [FIX] cmip_run and cmip_titration: an `input_params_path` file with blank lines or trailing commas (` tipcalc=0, calcgrid=1,`) is now read; it failed with `ValueError`.
+* [UPDATE] cmip_run and cmip_titration: the undocumented `combined_params_path` and `output_params_path` properties are removed; they only named the CMIP parameters file inside a temporary folder.
+* [DOCS] cmip_prepare_structure: the `container_*` properties are no longer documented, as the block runs no command. cmip_prepare_pdb: the `check_structure_path` property is documented. cmip_run: the `output_pdb_path` name must end in .pdb and have no underscores (now documented). Fixed titles and examples of cmip_run, cmip_titration and cmip_prepare_structure.
+* [FIX] cmip_run: the input restart file (`input_rst_path`) is copied into the sandbox, where CMIP reads it; it was copied to the output path instead. `input_rst_path` is now an argument of the `cmip_run()` function.
+* [FIX] cmip_run: the JSON boxes (`output_json_box_path`, `output_json_external_box_path`) are written when `output_log_path` is not given; the z coordinate of their origin was computed from the x coordinate of the grid centre.
+* [FIX] cmip_run pb_interaction_energy: the outer grid spacing (1.5) no longer replaces the inner grid spacing (0.5) in the CMIP parameters.
+* [FIX] cmip_titration: `num_wats`, `num_positive_ions` and `num_negative_ions` set to 0 are used; they were ignored.
+* [FIX] cmip_prepare_pdb: `keep_hydrogen` passes `--keep_h` to check_structure (it passed `-keep_h`). The `add_hydrogen` property is removed: the block never read it and always adds hydrogens.
+* [UPDATE] Python 3.11 to 3.13.
+
  ## What's new in version [5.3.1](https://github.com/bioexcel/biobb_amber/releases/tag/v5.3.1)?
  
  ### Changes

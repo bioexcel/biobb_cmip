@@ -4,15 +4,15 @@
     "github": "https://github.com/bioexcel/biobb_cmip",
     "readthedocs": "https://biobb-cmip.readthedocs.io/en/latest/",
     "conda": "https://anaconda.org/bioconda/biobb_cmip",
-    "docker": "https://quay.io/biocontainers/biobb_cmip:5.3.1--pyhdfd78af_0",
-    "singularity": "https://depot.galaxyproject.org/singularity/biobb_cmip:5.3.1--pyhdfd78af_0",
-    "version": "5.3.1",
+    "docker": "https://quay.io/biocontainers/biobb_cmip:5.4.0--pyhdfd78af_0",
+    "singularity": "https://depot.galaxyproject.org/singularity/biobb_cmip:5.4.0--pyhdfd78af_0",
+    "version": "5.4.0",
     "rest": true,
     "tools": [
         {
             "block": "CmipRun",
             "tool": "CMIP cmip",
-            "desc": "CMIP cmip module compute classical molecular interaction potentials.",
+            "desc": "CMIP cmip module computes classical molecular interaction potentials.",
             "exec": "cmip_run",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_run",
             "rest": true
@@ -20,7 +20,7 @@
         {
             "block": "CmipTitration",
             "tool": "CMIP titration",
-            "desc": "CMIP cmip module compute classical molecular interaction potentials.",
+            "desc": "CMIP titration module adds water molecules, positive ions (Na+) and negative ions (Cl-) in the energetically most favorable locations of a structure.",
             "exec": "cmip_titration",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_titration",
             "rest": true
@@ -28,7 +28,7 @@
         {
             "block": "CmipPrepareStructure",
             "tool": "Prepare Structure",
-            "desc": "Creates a CMIP suitable PDB from an standar structure file",
+            "desc": "Creates a CMIP suitable PDB from a standard structure file",
             "exec": "cmip_prepare_structure",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_structure",
             "rest": true
@@ -36,7 +36,7 @@
         {
             "block": "CmipPreparePDB",
             "tool": "Prepare PDB",
-            "desc": "Creates a CMIP suitable PDB from an standar PDB file",
+            "desc": "Creates a CMIP suitable PDB from a standard PDB file",
             "exec": "cmip_prepare_pdb",
             "docs": "https://biobb-cmip.readthedocs.io/en/latest/cmip.html#module-cmip.cmip_prepare_pdb",
             "rest": true
@@ -51,12 +51,12 @@
         }
     ],
     "dep_pypi": [
-        "install_requires=['biobb_common==5.3.1', 'mdanalysis', 'biobb_structure_checking==3.15.6']",
-        "python_requires='>=3.10'"
+        "install_requires=['biobb_common==5.4.0', 'mdanalysis', 'biobb_structure_checking==3.15.6']",
+        "python_requires='>=3.11'"
     ],
     "dep_conda": [
-        "python >=3.10",
-        "biobb_common ==5.3.1",
+        "python >=3.11",
+        "biobb_common ==5.4.0",
         "cmip ==2.7.0",
         "mdanalysis >=2.0.0",
         "biobb_structure_checking==3.15.6"

@@ -18,11 +18,14 @@ on:
       - '**/test/data/**'
       - '**/test/references/**'
       - '.github/workflows/linting_and_testing.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test_containers:
     uses: bioexcel/biobb/.github/workflows/test_containers.yml@master
     with:
+      biobb-common-ref: ${{ github.event_name == 'pull_request' && 'master' || '' }}
       extra-packages: "mdanalysis>=2.0.0 biobb_structure_checking==3.15.6"
       setup-script: |
         sed -i "s|path_to_vdwprm|$GITHUB_WORKSPACE/biobb_cmip/cmip/dat/vdwprm|g" biobb_cmip/test/conf.yml
